@@ -1,0 +1,21 @@
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/campus-admin-web-dist.zip
+
+# Backend
+backend/.gradle/
+backend/build/
+backend/out/
+backend/.idea/
+backend/.env
+
+# Misc
+*.log

@@ -1,0 +1,9 @@
+services:
+  campus-web:
+    image: campus-web:latest
+    container_name: campus-web
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    environment:
+      WAS_UPSTREAM: http://10.10.10.20:8080

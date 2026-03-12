@@ -1,0 +1,664 @@
+import type {
+  AcademicEvent,
+  AdminCourse,
+  AdminEnrollment,
+  AdminStudentOverview,
+  AdminUser,
+  AssignmentDetail,
+  AssignmentSummary,
+  Course,
+  Role,
+  Submission,
+  User,
+  AnnouncementDetail,
+  AnnouncementSummary,
+} from "../types";
+
+interface RegisterPayload {
+  email: string;
+  password: string;
+  name: string;
+  role: Role;
+}
+
+interface LoginResponse {
+  accessToken: string;
+}
+
+interface MockUser extends User {
+  password: string;
+}
+
+interface MockAssignment {
+  id: number;
+  courseId: number;
+  title: string;
+  description: string;
+  dueAt: string;
+}
+
+interface MockEnrollment {
+  id: number;
+  courseId: number;
+  studentId: number;
+}
+
+interface MockSubmission {
+  id: number;
+  assignmentId: number;
+  studentId: number;
+  contentText: string;
+  submittedAt: string;
+  score: number | null;
+  feedback: string | null;
+}
+
+interface MockState {
+  users: MockUser[];
+  announcements: AnnouncementDetail[];
+  academicEvents: AcademicEvent[];
+  courses: Course[];
+  assignments: MockAssignment[];
+  enrollments: MockEnrollment[];
+  submissions: MockSubmission[];
+  sessionUserId: number | null;
+  nextIds: {
+    user: number;
+    enrollment: number;
+    submission: number;
+  };
+}
+
+class MockApiError extends Error {
+  status: number;
+
+  constructor(status: number, message: string) {
+    super(message);
+    this.name = "MockApiError";
+    this.status = status;
+  }
+}
+
+const STORAGE_KEY = "saessak-campus-mock-backend-v1";
+
+let stateCache: MockState | null = null;
+
+function toIsoDateTime(daysOffset: number) {
+  return new Date(Date.now() + daysOffset * 24 * 60 * 60 * 1000).toISOString();
+}
+
+function toIsoDate(daysOffset: number) {
+  return new Date(Date.now() + daysOffset * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+}
+
+function seedState(): MockState {
+  return {
+    users: [
+      {
+        id: 1,
+        email: "student1@campus.local",
+        name: "student1",
+        role: "STUDENT",
+        password: "Password123!",
+      },
+      {
+        id: 2,
+        email: "prof1@campus.local",
+        name: "prof1",
+        role: "PROFESSOR",
+        password: "Password123!",
+      },
+      {
+        id: 3,
+        email: "admin1@campus.local",
+        name: "admin1",
+        role: "ADMIN",
+        password: "Password123!",
+      },
+    ],
+    announcements: [
+      {
+        id: 1,
+        title: "2026학년도 1학기 개강 안내",
+        content: "개강일은 2026-03-04이며 첫 주는 수강정정 기간입니다.",
+        createdAt: toIsoDateTime(-7),
+      },
+      {
+        id: 2,
+        title: "도서관 운영시간 변경",
+        content: "중간고사 기간 동안 도서관이 24시간 운영됩니다.",
+        createdAt: toIsoDateTime(-4),
+      },
+      {
+        id: 3,
+        title: "캠퍼스 네트워크 점검",
+        content: "주말 오전 2시부터 5시까지 네트워크 점검이 예정되어 있습니다.",
+        createdAt: toIsoDateTime(-2),
+      },
+    ],
+    academicEvents: [
+      { id: 1, title: "개강", date: toIsoDate(5) },
+      { id: 2, title: "수강정정 마감", date: toIsoDate(12) },
+      { id: 3, title: "중간고사", date: toIsoDate(45) },
+    ],
+    courses: [
+      {
+        id: 1,
+        code: "CS101",
+        title: "웹프로그래밍 기초",
+        professorId: 2,
+        professorName: "prof1",
+      },
+      {
+        id: 2,
+        code: "SE320",
+        title: "소프트웨어공학",
+        professorId: 2,
+        professorName: "prof1",
+      },
+    ],
+    assignments: [
+      {
+        id: 1,
+        courseId: 1,
+        title: "과제 1 - 자기소개 페이지",
+        description: "React로 간단한 자기소개 페이지를 구현하세요.",
+        dueAt: toIsoDateTime(10),
+      },
+      {
+        id: 2,
+        courseId: 1,
+        title: "과제 2 - REST API 연동",
+        description: "axios를 사용해 공지사항 API를 연동하세요.",
+        dueAt: toIsoDateTime(20),
+      },
+    ],
+    enrollments: [
+      { id: 1, courseId: 1, studentId: 1 },
+    ],
+    submissions: [],
+    sessionUserId: null,
+    nextIds: {
+      user: 4,
+      enrollment: 2,
+      submission: 1,
+    },
+  };
+}
+
+function hasWindow() {
+  return typeof window !== "undefined";
+}
+
+function loadState() {
+  if (!hasWindow()) {
+    return seedState();
+  }
+
+  const raw = window.localStorage.getItem(STORAGE_KEY);
+  if (!raw) {
+    return seedState();
+  }
+
+  try {
+    const parsed = JSON.parse(raw) as MockState;
+    if (!parsed || !Array.isArray(parsed.users)) {
+      return seedState();
+    }
+    return parsed;
+  } catch {
+    return seedState();
+  }
+}
+
+function saveState() {
+  if (!stateCache || !hasWindow()) {
+    return;
+  }
+  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(stateCache));
+}
+
+function getState() {
+  if (!stateCache) {
+    stateCache = loadState();
+  }
+  return stateCache;
+}
+
+function asUser(user: MockUser): User {
+  return {
+    id: user.id,
+    email: user.email,
+    name: user.name,
+    role: user.role,
+  };
+}
+
+function nowIso() {
+  return new Date().toISOString();
+}
+
+function makeMockToken(userId: number) {
+  return `mock-token-${userId}-${Date.now()}`;
+}
+
+function parseId(value: string | number, name: string) {
+  const id = Number(value);
+  if (!Number.isInteger(id) || id <= 0) {
+    throw new MockApiError(400, `${name} is invalid`);
+  }
+  return id;
+}
+
+function getCurrentUser() {
+  const state = getState();
+  if (!state.sessionUserId) {
+    throw new MockApiError(401, "Authentication is required");
+  }
+  const user = state.users.find((item) => item.id === state.sessionUserId);
+  if (!user) {
+    state.sessionUserId = null;
+    saveState();
+    throw new MockApiError(401, "Authentication is required");
+  }
+  return user;
+}
+
+function requireAdmin(user: MockUser) {
+  if (user.role !== "ADMIN") {
+    throw new MockApiError(403, "Admin permission is required");
+  }
+}
+
+function getCourseOrThrow(courseId: number) {
+  const course = getState().courses.find((item) => item.id === courseId);
+  if (!course) {
+    throw new MockApiError(404, "Course not found");
+  }
+  return course;
+}
+
+function isEnrolled(courseId: number, studentId: number) {
+  return getState().enrollments.some(
+    (enrollment) => enrollment.courseId === courseId && enrollment.studentId === studentId,
+  );
+}
+
+function assertCanViewCourse(courseId: number, user: MockUser) {
+  const course = getCourseOrThrow(courseId);
+
+  if (user.role === "ADMIN") {
+    return;
+  }
+
+  if (user.role === "PROFESSOR") {
+    if (course.professorId !== user.id) {
+      throw new MockApiError(403, "Course is not assigned to this professor");
+    }
+    return;
+  }
+
+  if (user.role === "STUDENT") {
+    if (!isEnrolled(course.id, user.id)) {
+      throw new MockApiError(403, "Not enrolled in this course");
+    }
+    return;
+  }
+
+  throw new MockApiError(403, "Access denied");
+}
+
+function toSubmissionResponse(submission: MockSubmission): Submission {
+  const state = getState();
+  const student = state.users.find((item) => item.id === submission.studentId);
+  if (!student) {
+    throw new MockApiError(404, "Student not found");
+  }
+  return {
+    id: submission.id,
+    studentId: submission.studentId,
+    studentName: student.name,
+    contentText: submission.contentText,
+    submittedAt: submission.submittedAt,
+    score: submission.score,
+    feedback: submission.feedback,
+  };
+}
+
+function sortByDateAsc<T>(items: T[], selector: (item: T) => string) {
+  return [...items].sort(
+    (a, b) => new Date(selector(a)).getTime() - new Date(selector(b)).getTime(),
+  );
+}
+
+function sortByDateDesc<T>(items: T[], selector: (item: T) => string) {
+  return [...items].sort(
+    (a, b) => new Date(selector(b)).getTime() - new Date(selector(a)).getTime(),
+  );
+}
+
+export async function mockLogin(email: string, password: string): Promise<LoginResponse> {
+  const state = getState();
+  const user = state.users.find((item) => item.email.toLowerCase() === email.toLowerCase());
+  if (!user || user.password !== password) {
+    throw new MockApiError(401, "Invalid credentials");
+  }
+  state.sessionUserId = user.id;
+  saveState();
+  return { accessToken: makeMockToken(user.id) };
+}
+
+export async function mockRegister(payload: RegisterPayload): Promise<User> {
+  const state = getState();
+  const exists = state.users.some(
+    (item) => item.email.toLowerCase() === payload.email.toLowerCase(),
+  );
+  if (exists) {
+    throw new MockApiError(409, "Email already exists");
+  }
+
+  const nextId = state.nextIds.user++;
+  const user: MockUser = {
+    id: nextId,
+    email: payload.email,
+    password: payload.password,
+    name: payload.name,
+    role: payload.role,
+  };
+
+  state.users.push(user);
+  saveState();
+  return asUser(user);
+}
+
+export async function mockRefresh(): Promise<LoginResponse> {
+  const user = getCurrentUser();
+  return { accessToken: makeMockToken(user.id) };
+}
+
+export async function mockLogout() {
+  const state = getState();
+  state.sessionUserId = null;
+  saveState();
+}
+
+export async function mockMe(): Promise<User> {
+  return asUser(getCurrentUser());
+}
+
+export async function mockFetchAnnouncements(): Promise<AnnouncementSummary[]> {
+  const announcements = sortByDateDesc(getState().announcements, (item) => item.createdAt);
+  return announcements.map(({ id, title, createdAt }) => ({ id, title, createdAt }));
+}
+
+export async function mockFetchAnnouncement(id: string | number): Promise<AnnouncementDetail> {
+  const announcementId = parseId(id, "announcement id");
+  const announcement = getState().announcements.find((item) => item.id === announcementId);
+  if (!announcement) {
+    throw new MockApiError(404, "Announcement not found");
+  }
+  return announcement;
+}
+
+export async function mockFetchAcademicEvents(): Promise<AcademicEvent[]> {
+  return sortByDateAsc(getState().academicEvents, (item) => item.date);
+}
+
+export async function mockFetchMyCourses(): Promise<Course[]> {
+  const user = getCurrentUser();
+  const state = getState();
+
+  if (user.role === "STUDENT") {
+    const myCourseIds = state.enrollments
+      .filter((item) => item.studentId === user.id)
+      .map((item) => item.courseId);
+    return state.courses.filter((course) => myCourseIds.includes(course.id));
+  }
+
+  if (user.role === "PROFESSOR") {
+    return state.courses.filter((course) => course.professorId === user.id);
+  }
+
+  return state.courses;
+}
+
+export async function mockFetchCourseAssignments(
+  courseId: string | number,
+): Promise<AssignmentSummary[]> {
+  const user = getCurrentUser();
+  const parsedCourseId = parseId(courseId, "courseId");
+  assertCanViewCourse(parsedCourseId, user);
+
+  const assignments = getState().assignments
+    .filter((item) => item.courseId === parsedCourseId)
+    .map(({ id, title, dueAt }) => ({ id, title, dueAt }));
+
+  return sortByDateAsc(assignments, (item) => item.dueAt);
+}
+
+export async function mockFetchAssignmentDetail(id: string | number): Promise<AssignmentDetail> {
+  const user = getCurrentUser();
+  const assignmentId = parseId(id, "assignment id");
+  const state = getState();
+
+  const assignment = state.assignments.find((item) => item.id === assignmentId);
+  if (!assignment) {
+    throw new MockApiError(404, "Assignment not found");
+  }
+
+  assertCanViewCourse(assignment.courseId, user);
+
+  const course = getCourseOrThrow(assignment.courseId);
+
+  let submissions = state.submissions.filter((item) => item.assignmentId === assignment.id);
+  if (user.role === "STUDENT") {
+    submissions = submissions.filter((item) => item.studentId === user.id);
+  }
+
+  const mapped = sortByDateDesc(submissions, (item) => item.submittedAt).map((item) =>
+    toSubmissionResponse(item),
+  );
+
+  return {
+    id: assignment.id,
+    courseId: course.id,
+    courseTitle: course.title,
+    title: assignment.title,
+    description: assignment.description,
+    dueAt: assignment.dueAt,
+    submissions: mapped,
+  };
+}
+
+export async function mockSubmitAssignment(
+  id: string | number,
+  contentText: string,
+): Promise<Submission> {
+  const user = getCurrentUser();
+  if (user.role !== "STUDENT") {
+    throw new MockApiError(403, "Only students can submit assignments");
+  }
+
+  const assignmentId = parseId(id, "assignment id");
+  const state = getState();
+  const assignment = state.assignments.find((item) => item.id === assignmentId);
+  if (!assignment) {
+    throw new MockApiError(404, "Assignment not found");
+  }
+
+  if (!isEnrolled(assignment.courseId, user.id)) {
+    throw new MockApiError(403, "Not enrolled in this course");
+  }
+
+  const alreadySubmitted = state.submissions.some(
+    (submission) =>
+      submission.assignmentId === assignmentId && submission.studentId === user.id,
+  );
+  if (alreadySubmitted) {
+    throw new MockApiError(400, "Already submitted");
+  }
+
+  const submission: MockSubmission = {
+    id: state.nextIds.submission++,
+    assignmentId,
+    studentId: user.id,
+    contentText,
+    submittedAt: nowIso(),
+    score: null,
+    feedback: null,
+  };
+
+  state.submissions.push(submission);
+  saveState();
+  return toSubmissionResponse(submission);
+}
+
+export async function mockGradeSubmission(
+  submissionId: string | number,
+  score: number,
+  feedback: string,
+): Promise<Submission> {
+  const user = getCurrentUser();
+  if (user.role !== "PROFESSOR" && user.role !== "ADMIN") {
+    throw new MockApiError(403, "Only professor or admin can grade");
+  }
+
+  const parsedSubmissionId = parseId(submissionId, "submission id");
+  const state = getState();
+  const submission = state.submissions.find((item) => item.id === parsedSubmissionId);
+  if (!submission) {
+    throw new MockApiError(404, "Submission not found");
+  }
+
+  const assignment = state.assignments.find((item) => item.id === submission.assignmentId);
+  if (!assignment) {
+    throw new MockApiError(404, "Assignment not found");
+  }
+
+  const course = getCourseOrThrow(assignment.courseId);
+  if (user.role === "PROFESSOR" && course.professorId !== user.id) {
+    throw new MockApiError(403, "Only course professor can grade this submission");
+  }
+
+  submission.score = score;
+  submission.feedback = feedback;
+  saveState();
+  return toSubmissionResponse(submission);
+}
+
+export async function mockFetchAdminUsers(): Promise<AdminUser[]> {
+  requireAdmin(getCurrentUser());
+  return getState().users.map(asUser);
+}
+
+export async function mockFetchAdminCourses(): Promise<AdminCourse[]> {
+  requireAdmin(getCurrentUser());
+  return getState().courses;
+}
+
+export async function mockFetchAdminEnrollments(): Promise<AdminEnrollment[]> {
+  requireAdmin(getCurrentUser());
+  const state = getState();
+  const rows = [...state.enrollments].sort((a, b) => b.id - a.id);
+
+  return rows.map((enrollment) => {
+    const course = state.courses.find((item) => item.id === enrollment.courseId);
+    const student = state.users.find((item) => item.id === enrollment.studentId);
+    if (!course || !student) {
+      throw new MockApiError(404, "Enrollment dependency not found");
+    }
+    return {
+      id: enrollment.id,
+      courseId: course.id,
+      courseCode: course.code,
+      courseTitle: course.title,
+      studentId: student.id,
+      studentName: student.name,
+      studentEmail: student.email,
+    };
+  });
+}
+
+export async function mockCreateAdminEnrollment(
+  courseId: number,
+  studentId: number,
+): Promise<AdminEnrollment> {
+  requireAdmin(getCurrentUser());
+  const state = getState();
+
+  const course = state.courses.find((item) => item.id === courseId);
+  if (!course) {
+    throw new MockApiError(404, "Course not found");
+  }
+
+  const student = state.users.find((item) => item.id === studentId);
+  if (!student) {
+    throw new MockApiError(404, "Student not found");
+  }
+
+  if (student.role !== "STUDENT") {
+    throw new MockApiError(400, "Selected user is not a student");
+  }
+
+  const exists = state.enrollments.some(
+    (item) => item.courseId === courseId && item.studentId === studentId,
+  );
+  if (exists) {
+    throw new MockApiError(400, "Enrollment already exists");
+  }
+
+  const enrollment: MockEnrollment = {
+    id: state.nextIds.enrollment++,
+    courseId,
+    studentId,
+  };
+  state.enrollments.push(enrollment);
+  saveState();
+
+  return {
+    id: enrollment.id,
+    courseId: course.id,
+    courseCode: course.code,
+    courseTitle: course.title,
+    studentId: student.id,
+    studentName: student.name,
+    studentEmail: student.email,
+  };
+}
+
+export async function mockDeleteAdminEnrollment(enrollmentId: number) {
+  requireAdmin(getCurrentUser());
+  const state = getState();
+  const index = state.enrollments.findIndex((item) => item.id === enrollmentId);
+  if (index < 0) {
+    throw new MockApiError(404, "Enrollment not found");
+  }
+  state.enrollments.splice(index, 1);
+  saveState();
+}
+
+export async function mockFetchAdminStudentOverviews(): Promise<AdminStudentOverview[]> {
+  requireAdmin(getCurrentUser());
+  const state = getState();
+
+  return state.users
+    .filter((user) => user.role === "STUDENT")
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map((student) => {
+      const studentSubmissions = state.submissions.filter(
+        (submission) => submission.studentId === student.id,
+      );
+      return {
+        studentId: student.id,
+        studentName: student.name,
+        studentEmail: student.email,
+        enrolledCourseCount: state.enrollments.filter(
+          (enrollment) => enrollment.studentId === student.id,
+        ).length,
+        submissionCount: studentSubmissions.length,
+        gradedSubmissionCount: studentSubmissions.filter(
+          (submission) => submission.score !== null,
+        ).length,
+      };
+    });
+}

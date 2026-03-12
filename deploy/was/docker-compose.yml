@@ -1,0 +1,15 @@
+services:
+  campus-was:
+    image: campus-was:latest
+    container_name: campus-was
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      DB_URL: jdbc:postgresql://10.10.20.30:5432/campus
+      DB_USERNAME: campus
+      DB_PASSWORD: campus
+      JWT_SECRET: change-this-to-a-strong-secret
+      JWT_REFRESH_COOKIE_SECURE: "true"
+      ADMIN_NETWORK_ENABLED: "true"
+      ADMIN_ALLOWED_IP_RANGES: 10.10.30.40/32

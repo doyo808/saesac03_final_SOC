@@ -1,0 +1,9 @@
+services:
+  campus-admin-web:
+    image: campus-web-admin:latest
+    container_name: campus-admin-web
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+    environment:
+      WAS_UPSTREAM: http://10.10.10.20:8080
