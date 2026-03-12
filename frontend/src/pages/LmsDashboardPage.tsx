@@ -25,14 +25,14 @@ export function LmsDashboardPage() {
             </p>
             <p className="mt-1 text-sm text-white/80">{roleDescription[user?.role ?? ""]}</p>
           </div>
-          <div className="surface-soft border-white/20 bg-white/10 p-4">
-            <p className="text-xs font-semibold tracking-[0.1em] text-[#f6d89d]">READY TO GO</p>
-            <p className="mt-2 text-sm text-white/90">
+          <div className="hero-side-card p-5">
+            <p className="hero-side-label text-xs font-semibold tracking-[0.1em]">READY TO GO</p>
+            <p className="hero-side-text mt-2 text-sm leading-7">
               강의 목록으로 이동해 과제 제출 또는 채점을 진행하세요.
             </p>
             <Link
               to="/lms/courses"
-              className="btn-secondary mt-4 inline-flex px-4 py-2 text-sm font-semibold"
+              className="hero-side-button mt-4 inline-flex px-4 py-2 text-sm font-semibold"
             >
               내 강의 목록 열기
             </Link>

@@ -3,6 +3,8 @@ package com.campus.platform.config;
 import com.campus.platform.domain.AcademicEvent;
 import com.campus.platform.domain.Announcement;
 import com.campus.platform.domain.Assignment;
+import com.campus.platform.domain.BoardComment;
+import com.campus.platform.domain.BoardPost;
 import com.campus.platform.domain.Course;
 import com.campus.platform.domain.Enrollment;
 import com.campus.platform.domain.Role;
@@ -10,6 +12,8 @@ import com.campus.platform.domain.User;
 import com.campus.platform.repository.AcademicEventRepository;
 import com.campus.platform.repository.AnnouncementRepository;
 import com.campus.platform.repository.AssignmentRepository;
+import com.campus.platform.repository.BoardCommentRepository;
+import com.campus.platform.repository.BoardPostRepository;
 import com.campus.platform.repository.CourseRepository;
 import com.campus.platform.repository.EnrollmentRepository;
 import com.campus.platform.repository.UserRepository;
@@ -28,6 +32,8 @@ public class DataInitializer implements CommandLineRunner {
     private final CourseRepository courseRepository;
     private final EnrollmentRepository enrollmentRepository;
     private final AssignmentRepository assignmentRepository;
+    private final BoardPostRepository boardPostRepository;
+    private final BoardCommentRepository boardCommentRepository;
     private final PasswordEncoder passwordEncoder;
 
     public DataInitializer(
@@ -37,6 +43,8 @@ public class DataInitializer implements CommandLineRunner {
             CourseRepository courseRepository,
             EnrollmentRepository enrollmentRepository,
             AssignmentRepository assignmentRepository,
+            BoardPostRepository boardPostRepository,
+            BoardCommentRepository boardCommentRepository,
             PasswordEncoder passwordEncoder
     ) {
         this.userRepository = userRepository;
@@ -45,6 +53,8 @@ public class DataInitializer implements CommandLineRunner {
         this.courseRepository = courseRepository;
         this.enrollmentRepository = enrollmentRepository;
         this.assignmentRepository = assignmentRepository;
+        this.boardPostRepository = boardPostRepository;
+        this.boardCommentRepository = boardCommentRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -58,6 +68,12 @@ public class DataInitializer implements CommandLineRunner {
                 "student1@campus.local",
                 passwordEncoder.encode("Password123!"),
                 "student1",
+                Role.STUDENT
+        ));
+        User student2 = userRepository.save(new User(
+                "student2@campus.local",
+                passwordEncoder.encode("Password123!"),
+                "student2",
                 Role.STUDENT
         ));
         User prof1 = userRepository.save(new User(
@@ -109,6 +125,39 @@ public class DataInitializer implements CommandLineRunner {
                 "과제 2 - REST API 연동",
                 "axios를 사용해 공지사항 API를 연동하세요.",
                 LocalDateTime.now().plusDays(20)
+        ));
+
+        LocalDateTime now = LocalDateTime.now();
+        BoardPost post1 = boardPostRepository.save(new BoardPost(
+                student1,
+                "기숙사 와이파이 상태 어떤가요?",
+                "이번 주 들어서 기숙사 3층 와이파이가 조금 끊기는 느낌인데 다른 분들도 비슷한지 궁금합니다.",
+                now.minusDays(1)
+        ));
+        BoardPost post2 = boardPostRepository.save(new BoardPost(
+                student2,
+                "교양 수업 추천 부탁드립니다",
+                "2학기 수강신청 전에 부담이 너무 크지 않은 교양 과목 추천 부탁드립니다. 발표 비중도 궁금합니다.",
+                now.minusHours(10)
+        ));
+
+        boardCommentRepository.save(new BoardComment(
+                post1,
+                student2,
+                "어제 밤 기준으로는 괜찮았는데 오늘 저녁에 다시 확인해볼게요.",
+                now.minusHours(20)
+        ));
+        boardCommentRepository.save(new BoardComment(
+                post1,
+                student1,
+                "확인 감사합니다. 계속 끊기면 정보화본부에 문의 넣어보겠습니다.",
+                now.minusHours(18)
+        ));
+        boardCommentRepository.save(new BoardComment(
+                post2,
+                student1,
+                "저는 웹기획입문 들었는데 과제 부담이 적고 팀플도 없어서 무난했습니다.",
+                now.minusHours(7)
         ));
 
     }

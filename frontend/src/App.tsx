@@ -16,6 +16,8 @@ import { LmsDashboardPage } from "./pages/LmsDashboardPage";
 import { LoginPage } from "./pages/LoginPage";
 import { MyCoursesPage } from "./pages/MyCoursesPage";
 import { SaessakNewsPage } from "./pages/SaessakNewsPage";
+import { StudentBoardDetailPage } from "./pages/StudentBoardDetailPage";
+import { StudentBoardPage } from "./pages/StudentBoardPage";
 
 function NotFoundPage() {
   return (
@@ -45,6 +47,11 @@ export default function App() {
           <Route path="/lms/courses" element={<MyCoursesPage />} />
           <Route path="/lms/courses/:courseId" element={<CourseAssignmentsPage />} />
           <Route path="/lms/assignments/:id" element={<AssignmentDetailPage />} />
+        </Route>
+
+        <Route element={<ProtectedRoute allowedRoles={["STUDENT"]} />}>
+          <Route path="/student-board" element={<StudentBoardPage />} />
+          <Route path="/student-board/:id" element={<StudentBoardDetailPage />} />
         </Route>
 
         {ADMIN_PAGE_ENABLED && (

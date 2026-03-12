@@ -57,6 +57,41 @@ a {
   border-radius: 0.75rem;
 }
 
+.hero-side-card {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 1rem;
+  background:
+    radial-gradient(circle at top right, rgba(242, 204, 100, 0.18), transparent 42%),
+    linear-gradient(180deg, rgba(9, 28, 56, 0.82), rgba(18, 52, 96, 0.72));
+  color: #eff6ff;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 18px 38px -28px rgba(3, 14, 32, 0.82);
+  backdrop-filter: blur(10px);
+}
+
+.hero-side-label {
+  color: #f4d58b;
+}
+
+.hero-side-text {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.hero-side-button {
+  border-radius: 0.65rem;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.96);
+  color: #123d73;
+  transition: transform 140ms ease, background-color 140ms ease, border-color 140ms ease;
+}
+
+.hero-side-button:hover {
+  background: #edf5ff;
+  border-color: rgba(255, 255, 255, 0.42);
+  transform: translateY(-1px);
+}
+
 .brand-chip {
   display: inline-flex;
   align-items: center;

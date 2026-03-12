@@ -11,8 +11,8 @@ export function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const state = location.state as LocationState | null;
-  const [email, setEmail] = useState("student1@campus.local");
-  const [password, setPassword] = useState("Password123!");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -43,10 +43,6 @@ export function LoginPage() {
           <p className="mt-4 text-sm text-white/85">
             학생, 교수, 관리자 권한별로 강의와 과제 화면이 다르게 제공됩니다.
           </p>
-          <div className="mt-8 space-y-2 text-sm text-white/90">
-            <p>기본 계정: student1@campus.local</p>
-            <p>기본 비밀번호: Password123!</p>
-          </div>
         </aside>
 
         <div className="bg-[#fffdf9] px-7 py-8 md:px-9 md:py-10">

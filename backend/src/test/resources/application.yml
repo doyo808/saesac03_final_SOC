@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:campus;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+
+app:
+  jwt:
+    secret: test-only-secret-change-this-please-test-only-secret-change-this
+    access-token-minutes: 30
+    refresh-token-days: 7
+    refresh-cookie-name: refresh_token
+    refresh-cookie-secure: false

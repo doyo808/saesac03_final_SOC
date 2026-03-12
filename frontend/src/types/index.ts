@@ -26,6 +26,33 @@ export interface AcademicEvent {
   date: string;
 }
 
+export interface BoardPostSummary {
+  id: number;
+  title: string;
+  excerpt: string;
+  authorId: number;
+  authorName: string;
+  createdAt: string;
+}
+
+export interface BoardComment {
+  id: number;
+  authorId: number;
+  authorName: string;
+  content: string;
+  createdAt: string;
+}
+
+export interface BoardPostDetail {
+  id: number;
+  title: string;
+  content: string;
+  authorId: number;
+  authorName: string;
+  createdAt: string;
+  comments: BoardComment[];
+}
+
 export interface Course {
   id: number;
   code: string;

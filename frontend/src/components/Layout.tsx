@@ -86,6 +86,11 @@ export function Layout() {
           <NavLink to="/announcements" className={({ isActive }) => navClassName(isActive)}>
             공지사항
           </NavLink>
+          {user?.role === "STUDENT" && (
+            <NavLink to="/student-board" className={({ isActive }) => navClassName(isActive)}>
+              학생게시판
+            </NavLink>
+          )}
           {user && (
             <NavLink to="/lms" className={({ isActive }) => navClassName(isActive)}>
               LMS
