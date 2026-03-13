@@ -1,9 +1,11 @@
 services:
   campus-admin-web:
-    image: campus-web-admin:latest
+    image: ${WEB_ADMIN_IMAGE:?set WEB_ADMIN_IMAGE in .env}
     container_name: campus-admin-web
     restart: unless-stopped
     ports:
-      - "8081:80"
+      - "${WEB_ADMIN_BIND_PORT:-8081}:80"
+    env_file:
+      - .env
     environment:
-      WAS_UPSTREAM: http://10.10.10.20:8080
+      WAS_UPSTREAM: ${WAS_UPSTREAM:?set WAS_UPSTREAM in .env}

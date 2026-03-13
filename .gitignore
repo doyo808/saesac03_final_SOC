@@ -19,3 +19,5 @@ backend/.env
 
 # Misc
 *.log
+deploy/**/.env
+deploy/**/backups/

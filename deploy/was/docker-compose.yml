@@ -1,15 +1,21 @@
 services:
   campus-was:
-    image: campus-was:latest
+    image: ${WAS_IMAGE:?set WAS_IMAGE in .env}
     container_name: campus-was
     restart: unless-stopped
     ports:
-      - "8080:8080"
+      - "${WAS_BIND_PORT:-8080}:8080"
+    env_file:
+      - .env
     environment:
-      DB_URL: jdbc:postgresql://10.10.20.30:5432/campus
-      DB_USERNAME: campus
-      DB_PASSWORD: campus
-      JWT_SECRET: change-this-to-a-strong-secret
-      JWT_REFRESH_COOKIE_SECURE: "true"
-      ADMIN_NETWORK_ENABLED: "true"
-      ADMIN_ALLOWED_IP_RANGES: 10.10.30.40/32
+      DB_URL: ${DB_URL:?set DB_URL in .env}
+      DB_USERNAME: ${DB_USERNAME:?set DB_USERNAME in .env}
+      DB_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
+      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET in .env}
+      JWT_REFRESH_COOKIE_SECURE: ${JWT_REFRESH_COOKIE_SECURE:-true}
+      ADMIN_NETWORK_ENABLED: ${ADMIN_NETWORK_ENABLED:-true}
+      ADMIN_ALLOWED_IP_RANGES: ${ADMIN_ALLOWED_IP_RANGES:?set ADMIN_ALLOWED_IP_RANGES in .env}
+      ADMIN_USE_FORWARDED_FOR: ${ADMIN_USE_FORWARDED_FOR:-false}
+      ADMIN_FORWARDED_FOR_HEADER: ${ADMIN_FORWARDED_FOR_HEADER:-X-Forwarded-For}
+      APP_CORS_ALLOWED_ORIGINS: ${APP_CORS_ALLOWED_ORIGINS:-}
+      APP_CORS_ALLOWED_ORIGIN_PATTERNS: ${APP_CORS_ALLOWED_ORIGIN_PATTERNS:-}
