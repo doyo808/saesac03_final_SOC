@@ -1,11 +1,9 @@
 services:
   campus-web:
-    image: ${WEB_DMZ_IMAGE:?set WEB_DMZ_IMAGE in .env}
+    image: campus-web:latest
     container_name: campus-web
     restart: unless-stopped
     ports:
-      - "${WEB_DMZ_BIND_PORT:-80}:80"
-    env_file:
-      - .env
+      - "80:80"
     environment:
-      WAS_UPSTREAM: ${WAS_UPSTREAM:?set WAS_UPSTREAM in .env}
+      WAS_UPSTREAM: http://10.10.10.20:8080

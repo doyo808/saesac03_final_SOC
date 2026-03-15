@@ -10,25 +10,9 @@ campus-platform/
   .gitignore
   docker-compose.yml
   deploy/
-    README.md
-    common/update-compose.sh
-    db/
-      docker-compose.yml
-      .env.example
-      update.sh
-      backup.sh
-    was/
-      docker-compose.yml
-      .env.example
-      update.sh
-    dmz/
-      docker-compose.yml
-      .env.example
-      update.sh
-    admin-office/
-      docker-compose.yml
-      .env.example
-      update.sh
+    admin-office/docker-compose.yml
+    dmz/docker-compose.yml
+    was/docker-compose.yml
   docs/
     requirements.md
     architecture.md
@@ -50,7 +34,7 @@ campus-platform/
 ### 1) PostgreSQL 실행
 
 ```bash
-docker compose up -d
+docker-compose up -d
 ```
 
 ### 2) Backend 실행
@@ -127,18 +111,3 @@ Frontend:
 DMZ에 WEB, 내부망에 WAS/DB를 분리해서 배포하려면 아래 문서를 참고하세요.
 
 - `docs/deployment-dmz-was.md`
-
-서버별 배포 폴더에서 공통 절차는 아래와 같습니다.
-
-```bash
-cp .env.example .env
-chmod +x update.sh
-./update.sh
-```
-
-DB 서버는 업데이트 전 백업 스크립트를 먼저 실행하세요.
-
-```bash
-chmod +x backup.sh
-./backup.sh
-```

@@ -1,112 +1,115 @@
-# DMZ WEB + Internal WAS/DB Deployment Runbook
+# DMZ WEB + Internal WAS/DB Deployment
 
-이 문서는 Ubuntu 기반 3계층 서버(DB/WAS/WEB)에서 Docker Compose로
-안전하게 업데이트하는 표준 절차를 설명합니다.
+This repository supports segmented deployment:
 
-## 1) 서버 역할과 디렉터리
+- `WEB (DMZ)`: public portal only (admin page disabled at build time)
+- `WEB (Admin Office)`: internal admin portal (admin page enabled)
+- `WAS (Internal)`: Spring Boot API + JWT
+- `DB (Internal)`: PostgreSQL only
 
-- `deploy/db`: DB 서버(PostgreSQL)
-- `deploy/was`: WAS 서버(Spring Boot API)
-- `deploy/dmz`: DMZ WEB 서버(공개 포털)
-- `deploy/admin-office`: 내부 행정망 WEB 서버(관리자 포털)
-- `deploy/common`: 공통 업데이트 스크립트
+## 1) Build Images
 
-## 2) 핵심 운영 원칙
+### 1-1) DMZ WEB image (admin page OFF)
 
-1. `latest` 대신 버전 태그 이미지 사용
-2. 서버에서는 빌드하지 않고 `pull + up -d`만 실행
-3. 업데이트 순서 고정:
-   `DB 백업 -> WAS -> DMZ WEB -> ADMIN WEB`
-4. 롤백은 이전 이미지 태그로 즉시 복구
-
-## 3) 사전 준비
-
-각 서버에서 배포 폴더를 위치시키고 `.env`를 준비합니다.
+Build from `frontend/`:
 
 ```bash
-cp .env.example .env
-chmod +x update.sh
+docker build -t campus-web:latest \
+  --build-arg VITE_ADMIN_PAGE_ENABLED=false \
+  --build-arg VITE_API_BASE_URL=/ .
 ```
 
-DB 서버는 백업 스크립트도 실행 권한을 줍니다.
+### 1-2) Admin Office WEB image (admin page ON)
+
+Build from `frontend/`:
 
 ```bash
-chmod +x backup.sh
+docker build -t campus-web-admin:latest \
+  --build-arg VITE_ADMIN_PAGE_ENABLED=true \
+  --build-arg VITE_API_BASE_URL=/ .
 ```
 
-## 4) 이미지 태그 정책
+### 1-3) WAS image
 
-예시 릴리즈 태그:
-
-- `2026.03.13-5226ecd`
-
-각 `.env`의 `*_IMAGE` 값을 같은 릴리즈 태그로 맞춰주세요.
-예:
-
-- DMZ: `WEB_DMZ_IMAGE=ghcr.io/doyo808/campus-web:2026.03.13-5226ecd`
-- Admin: `WEB_ADMIN_IMAGE=ghcr.io/doyo808/campus-web-admin:2026.03.13-5226ecd`
-- WAS: `WAS_IMAGE=ghcr.io/doyo808/campus-was:2026.03.13-5226ecd`
-
-## 5) 표준 업데이트 절차
-
-### 5-1) DB 서버
-
-스키마 영향이 있거나 위험도가 있는 배포 전에는 반드시 백업:
+Build from `backend/`:
 
 ```bash
-cd deploy/db
-./backup.sh
+docker build -t campus-was:latest .
 ```
 
-DB 컨테이너 자체 업데이트가 필요한 경우:
+## 2) Run WAS in Internal Network
+
+`ADMIN_NETWORK_*` variables enforce admin API access source by IP/CIDR.
 
 ```bash
-cd deploy/db
-./update.sh
+docker run -d --name campus-was \
+  -p 8080:8080 \
+  -e DB_URL=jdbc:postgresql://<DB_PRIVATE_IP>:5432/campus \
+  -e DB_USERNAME=campus \
+  -e DB_PASSWORD=campus \
+  -e JWT_SECRET=<STRONG_SECRET> \
+  -e JWT_REFRESH_COOKIE_SECURE=true \
+  -e ADMIN_NETWORK_ENABLED=true \
+  -e ADMIN_ALLOWED_IP_RANGES=<ADMIN_WEB_SERVER_IP>/32 \
+  campus-was:latest
 ```
 
-### 5-2) WAS 서버
+Optional proxy mode:
+
+- `ADMIN_USE_FORWARDED_FOR=true`
+- `ADMIN_FORWARDED_FOR_HEADER=X-Forwarded-For`
+
+Use this only when you fully trust upstream reverse proxies.
+
+## 3) Run WEB in DMZ
+
+`WAS_UPSTREAM` must point to the internal WAS URL reachable from DMZ.
 
 ```bash
-cd deploy/was
-./update.sh
+docker run -d --name campus-web \
+  -p 80:80 \
+  -e WAS_UPSTREAM=http://<WAS_PRIVATE_IP>:8080 \
+  campus-web:latest
 ```
 
-`HEALTHCHECK_URL`이 설정되어 있으면 스크립트가 자동 확인합니다.
+## 4) Run WEB in Admin Office Network
 
-### 5-3) DMZ WEB 서버
+Deploy admin portal on admin office server:
 
 ```bash
-cd deploy/dmz
-./update.sh
+docker run -d --name campus-admin-web \
+  -p 8081:80 \
+  -e WAS_UPSTREAM=http://<WAS_PRIVATE_IP>:8080 \
+  campus-web-admin:latest
 ```
 
-### 5-4) ADMIN WEB 서버
+## 5) Optional Compose Files
 
-```bash
-cd deploy/admin-office
-./update.sh
-```
+- DMZ WEB compose: `deploy/dmz/docker-compose.yml`
+- Admin Office WEB compose: `deploy/admin-office/docker-compose.yml`
+- Internal WAS compose: `deploy/was/docker-compose.yml`
 
-## 6) 롤백
+Update placeholder IP/secret values before use.
 
-1. 각 서버 `.env`에서 이미지 태그를 이전 버전으로 변경
-2. 해당 서버에서 `./update.sh` 재실행
+## 6) WEB Nginx Behavior
 
-이 방식으로 서비스별 개별 롤백이 가능합니다.
+- `/` and client routes: served as SPA (`index.html` fallback)
+- `/api/*`: proxied to `WAS_UPSTREAM`
+- `/healthz`: returns `200 ok`
 
-## 7) Registry 접근이 어려운 망 분리 환경
+## 7) Admin Access Rule Summary
 
-Registry 직접 pull이 어려우면 아래 순서로 운영합니다.
+- Frontend: DMZ build removes `/lms/admin` route and admin links.
+- Backend: `/api/lms/admin/**` is allowed only when request source IP matches `ADMIN_ALLOWED_IP_RANGES`.
+- Result: even if someone obtains an ADMIN account outside admin network, admin API access is blocked.
 
-1. 빌드 서버에서 `docker save`로 이미지 tar 생성
-2. 대상 서버로 전송
-3. 대상 서버에서 `docker load`
-4. 기존과 동일하게 `./update.sh` 실행
+## 8) Network/Security Checklist
 
-## 8) 보안 체크리스트
-
-- DMZ에는 WEB 80/443만 외부 노출
-- WAS/DB는 내부망에서만 접근
-- `JWT_SECRET`, DB 비밀번호는 `.env`에서 강한 값 사용
-- `ADMIN_ALLOWED_IP_RANGES`는 최소 CIDR만 허용
+- Expose only DMZ WEB `80/443` publicly
+- Do not expose internal admin WEB and WAS publicly
+- Do not expose DB `5432` publicly
+- Allow only specific hops in firewall:
+  - DMZ WEB -> WAS
+  - Admin WEB -> WAS
+  - WAS -> DB
+- Use HTTPS at DMZ and admin network entry points
