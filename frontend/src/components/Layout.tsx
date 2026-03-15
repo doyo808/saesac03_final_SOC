@@ -20,7 +20,7 @@ export function Layout() {
       <div className="bg-[#0a4f9f] text-white">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 px-4 py-2">
           <p className="text-[11px] font-medium tracking-[0.06em] text-white/90">
-            새싹 대학교 통합 캠퍼스 포털
+            관제대학교 통합 캠퍼스 포털
           </p>
           <div className="flex items-center gap-3">
             <Link className="utility-link" to="/academic-guide">
@@ -40,14 +40,14 @@ export function Layout() {
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-5">
           <Link to="/" className="group flex items-center gap-3">
             <div className="grid h-12 w-12 place-items-center rounded-full border-2 border-[#0a4f9f] text-xs font-bold text-[#0a4f9f]">
-              새싹대
+              관제대
             </div>
             <div>
               <p className="text-xs font-semibold tracking-[0.15em] text-[#2f67ae]">
-                SAESSAK UNIVERSITY
+                KWANJAE UNIVERSITY
               </p>
               <p className="font-display text-[1.35rem] text-[#0d3f7f] group-hover:underline">
-                새싹 대학교 포털
+                관제대학교 포털
               </p>
             </div>
           </Link>
@@ -108,7 +108,7 @@ export function Layout() {
             대학생활
           </NavLink>
           <NavLink to="/saessak-news" className={({ isActive }) => navClassName(isActive)}>
-            새싹 소식
+            관제 소식
           </NavLink>
         </div>
       </nav>
@@ -119,7 +119,7 @@ export function Layout() {
 
       <footer className="mt-12 border-t border-[#d8e3f3] bg-white">
         <div className="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-6 text-xs text-slate-600 sm:flex-row sm:items-center sm:justify-between">
-          <p>새싹 대학교 · 621 Hwarang-ro, Seoul</p>
+          <p>관제대학교 · 621 Hwarang-ro, Seoul</p>
           <p>대표전화 02-970-5000 · 입학상담 02-970-5051</p>
         </div>
       </footer>

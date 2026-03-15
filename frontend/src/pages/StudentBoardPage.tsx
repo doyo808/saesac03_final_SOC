@@ -1,26 +1,31 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { createBoardPost, fetchBoardPosts } from "../api/boardApi";
+import { useAuth } from "../auth/AuthContext";
 import type { BoardPostSummary } from "../types";
+import { getErrorMessage } from "../utils/apiError";
 import { formatDateTime } from "../utils/date";
 
 export function StudentBoardPage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [posts, setPosts] = useState<BoardPostSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [keywordInput, setKeywordInput] = useState("");
+  const [searchKeyword, setSearchKeyword] = useState("");
 
   const load = async () => {
     setLoading(true);
     setError(null);
     try {
-      const data = await fetchBoardPosts();
+      const data = await fetchBoardPosts(searchKeyword);
       setPosts(data);
-    } catch {
-      setError("학생 게시판을 불러오지 못했습니다.");
+    } catch (error) {
+      setError(getErrorMessage(error, "학생 게시판을 불러오지 못했습니다.", user?.email));
     } finally {
       setLoading(false);
     }
@@ -28,7 +33,7 @@ export function StudentBoardPage() {
 
   useEffect(() => {
     void load();
-  }, []);
+  }, [searchKeyword]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -39,11 +44,21 @@ export function StudentBoardPage() {
       setTitle("");
       setContent("");
       navigate(`/student-board/${post.id}`);
-    } catch {
-      setError("게시글 작성에 실패했습니다.");
+    } catch (error) {
+      setError(getErrorMessage(error, "게시글 작성에 실패했습니다.", user?.email));
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const handleSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setSearchKeyword(keywordInput.trim());
+  };
+
+  const handleSearchReset = () => {
+    setKeywordInput("");
+    setSearchKeyword("");
   };
 
   return (
@@ -120,11 +135,33 @@ export function StudentBoardPage() {
           {!loading && <p className="text-sm text-slate-500">총 {posts.length}개의 글</p>}
         </div>
 
+        <form onSubmit={handleSearchSubmit} className="surface-card flex flex-wrap gap-2 p-4">
+          <input
+            value={keywordInput}
+            onChange={(event) => setKeywordInput(event.target.value)}
+            className="min-w-64 flex-1 rounded-xl border border-[#cfd9e9] bg-white px-4 py-2 text-sm outline-none ring-[#173f72]/30 transition focus:ring-2"
+            placeholder="제목/내용 검색"
+            maxLength={100}
+          />
+          <button type="submit" className="btn-primary px-4 py-2 text-sm font-semibold">
+            검색
+          </button>
+          <button
+            type="button"
+            onClick={handleSearchReset}
+            className="btn-secondary px-4 py-2 text-sm font-semibold"
+          >
+            초기화
+          </button>
+        </form>
+
         {loading ? (
           <div className="surface-card p-8 text-sm text-slate-600">게시글 목록을 불러오는 중입니다...</div>
         ) : posts.length === 0 ? (
           <div className="surface-card p-8 text-sm text-slate-600">
-            아직 등록된 게시글이 없습니다. 첫 글을 작성해 보세요.
+            {searchKeyword
+              ? "검색 결과가 없습니다. 다른 키워드로 다시 시도해 보세요."
+              : "아직 등록된 게시글이 없습니다. 첫 글을 작성해 보세요."}
           </div>
         ) : (
           <div className="grid gap-4 stagger">

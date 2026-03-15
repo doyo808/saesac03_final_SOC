@@ -14,7 +14,7 @@ interface HeroSlide {
 
 const heroSlides: HeroSlide[] = [
   {
-    badge: "SAESSAK CAMPUS",
+    badge: "KWANJAE CAMPUS",
     title: "미래를 준비하는\n스마트 캠퍼스",
     description: "학사, 공지, LMS 서비스를 통합한 대학교 메인 포털",
     gradient: "from-[#0a4f9f] via-[#1f64b8] to-[#3d84d6]",
@@ -181,7 +181,7 @@ export function HomePage() {
       <section className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
         <article className="surface-card p-6 md:p-7">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="font-display text-2xl text-[#0f4f9b]">새싹대 공지</h2>
+            <h2 className="font-display text-2xl text-[#0f4f9b]">관제대 공지</h2>
             <Link to="/announcements" className="text-sm font-semibold text-[#0f4f9b] hover:underline">
               + 더보기
             </Link>
@@ -203,7 +203,7 @@ export function HomePage() {
 
         <article className="surface-card p-6 md:p-7">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="font-display text-2xl text-[#0f4f9b]">새싹대 일정</h2>
+            <h2 className="font-display text-2xl text-[#0f4f9b]">관제대 일정</h2>
           </div>
           <ul className="space-y-3">
             {events.map((event) => (

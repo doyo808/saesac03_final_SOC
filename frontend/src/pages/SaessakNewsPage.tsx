@@ -17,8 +17,8 @@ export function SaessakNewsPage() {
   return (
     <section className="space-y-5">
       <header className="surface-card fade-up p-7 md:p-8">
-        <span className="brand-chip">Saessak News</span>
-        <h1 className="mt-4 text-3xl text-[#0d274d]">새싹 소식</h1>
+        <span className="brand-chip">Kwanjae News</span>
+        <h1 className="mt-4 text-3xl text-[#0d274d]">관제 소식</h1>
         <p className="mt-2 text-sm text-slate-600">
           대학 주요 행사, 공지, 프로젝트 소식을 확인할 수 있습니다.
         </p>

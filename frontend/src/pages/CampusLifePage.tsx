@@ -11,7 +11,7 @@ export function CampusLifePage() {
         <span className="brand-chip">Campus Life</span>
         <h1 className="mt-4 text-3xl text-[#0d274d]">대학생활</h1>
         <p className="mt-2 text-sm text-slate-600">
-          새싹 대학교의 학생지원과 캠퍼스 생활 정보를 제공합니다.
+          관제대학교의 학생지원과 캠퍼스 생활 정보를 제공합니다.
         </p>
       </header>
 

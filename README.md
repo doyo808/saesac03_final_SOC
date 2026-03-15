@@ -75,6 +75,10 @@ npm run dev
 - `student1@campus.local` (STUDENT)
 - `prof1@campus.local` (PROFESSOR)
 - `admin1@campus.local` (ADMIN)
+- `student2@campus.local` (STUDENT)
+- `student3@campus.local` (STUDENT)
+- `student4@campus.local` (STUDENT)
+- `student5@campus.local` (STUDENT)
 
 ## 주요 기능
 

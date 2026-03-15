@@ -1,16 +1,36 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { createBoardComment, fetchBoardPost } from "../api/boardApi";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import {
+  createBoardComment,
+  deleteBoardComment,
+  deleteBoardPost,
+  fetchBoardPost,
+  updateBoardComment,
+  updateBoardPost,
+} from "../api/boardApi";
+import { useAuth } from "../auth/AuthContext";
 import type { BoardPostDetail } from "../types";
+import { getErrorMessage } from "../utils/apiError";
 import { formatDateTime } from "../utils/date";
 
 export function StudentBoardDetailPage() {
+  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
+  const { user } = useAuth();
   const [post, setPost] = useState<BoardPostDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [commentContent, setCommentContent] = useState("");
-  const [submitting, setSubmitting] = useState(false);
+  const [submittingComment, setSubmittingComment] = useState(false);
+
+  const [editingPost, setEditingPost] = useState(false);
+  const [editTitle, setEditTitle] = useState("");
+  const [editContent, setEditContent] = useState("");
+  const [postActionLoading, setPostActionLoading] = useState(false);
+
+  const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
+  const [editingCommentContent, setEditingCommentContent] = useState("");
+  const [commentActionLoading, setCommentActionLoading] = useState<number | null>(null);
 
   const load = async () => {
     if (!id) {
@@ -24,8 +44,10 @@ export function StudentBoardDetailPage() {
     try {
       const data = await fetchBoardPost(id);
       setPost(data);
-    } catch {
-      setError("게시글 상세를 불러오지 못했습니다.");
+      setEditTitle(data.title);
+      setEditContent(data.content);
+    } catch (error) {
+      setError(getErrorMessage(error, "게시글 상세를 불러오지 못했습니다.", user?.email));
     } finally {
       setLoading(false);
     }
@@ -41,16 +63,105 @@ export function StudentBoardDetailPage() {
       return;
     }
 
-    setSubmitting(true);
+    setSubmittingComment(true);
     setError(null);
     try {
       await createBoardComment(id, commentContent);
       setCommentContent("");
       await load();
-    } catch {
-      setError("댓글 등록에 실패했습니다.");
+    } catch (error) {
+      setError(getErrorMessage(error, "댓글 등록에 실패했습니다.", user?.email));
     } finally {
-      setSubmitting(false);
+      setSubmittingComment(false);
+    }
+  };
+
+  const handlePostUpdate = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!id) {
+      return;
+    }
+
+    setPostActionLoading(true);
+    setError(null);
+    try {
+      const updated = await updateBoardPost(id, editTitle, editContent);
+      setPost(updated);
+      setEditingPost(false);
+    } catch (error) {
+      setError(getErrorMessage(error, "게시글 수정에 실패했습니다.", user?.email));
+    } finally {
+      setPostActionLoading(false);
+    }
+  };
+
+  const handlePostDelete = async () => {
+    if (!id) {
+      return;
+    }
+
+    if (!window.confirm("게시글을 삭제하시겠습니까?")) {
+      return;
+    }
+
+    setPostActionLoading(true);
+    setError(null);
+    try {
+      await deleteBoardPost(id);
+      navigate("/student-board");
+    } catch (error) {
+      setError(getErrorMessage(error, "게시글 삭제에 실패했습니다.", user?.email));
+    } finally {
+      setPostActionLoading(false);
+    }
+  };
+
+  const startCommentEdit = (commentId: number, content: string) => {
+    setEditingCommentId(commentId);
+    setEditingCommentContent(content);
+  };
+
+  const handleCommentUpdate = async (commentId: number) => {
+    if (!id) {
+      return;
+    }
+
+    setCommentActionLoading(commentId);
+    setError(null);
+    try {
+      await updateBoardComment(id, commentId, editingCommentContent);
+      setEditingCommentId(null);
+      setEditingCommentContent("");
+      await load();
+    } catch (error) {
+      setError(getErrorMessage(error, "댓글 수정에 실패했습니다.", user?.email));
+    } finally {
+      setCommentActionLoading(null);
+    }
+  };
+
+  const handleCommentDelete = async (commentId: number) => {
+    if (!id) {
+      return;
+    }
+
+    if (!window.confirm("댓글을 삭제하시겠습니까?")) {
+      return;
+    }
+
+    setCommentActionLoading(commentId);
+    setError(null);
+    try {
+      await deleteBoardComment(id, commentId);
+      if (editingCommentId === commentId) {
+        setEditingCommentId(null);
+        setEditingCommentContent("");
+      }
+      await load();
+    } catch (error) {
+      setError(getErrorMessage(error, "댓글 삭제에 실패했습니다.", user?.email));
+    } finally {
+      setCommentActionLoading(null);
     }
   };
 
@@ -77,15 +188,87 @@ export function StudentBoardDetailPage() {
 
       <section className="surface-card fade-up overflow-hidden">
         <header className="border-b border-[#dce4f1] bg-gradient-to-r from-[#eef6ff] to-[#f9f3e5] px-7 py-6 md:px-9">
-          <span className="brand-chip">Post Detail</span>
-          <h1 className="mt-3 text-3xl text-[#0d274d]">{post.title}</h1>
-          <div className="mt-3 flex flex-wrap gap-4 text-sm text-slate-600">
-            <span>작성자 {post.authorName}</span>
-            <span>{formatDateTime(post.createdAt)}</span>
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <span className="brand-chip">Post Detail</span>
+              <h1 className="mt-3 text-3xl text-[#0d274d]">{post.title}</h1>
+              <div className="mt-3 flex flex-wrap gap-4 text-sm text-slate-600">
+                <span>작성자 {post.authorName}</span>
+                <span>{formatDateTime(post.createdAt)}</span>
+              </div>
+            </div>
+            {user?.id === post.authorId && (
+              <div className="flex flex-wrap gap-2">
+                {!editingPost && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditingPost(true);
+                      setEditTitle(post.title);
+                      setEditContent(post.content);
+                    }}
+                    disabled={postActionLoading}
+                    className="btn-secondary px-3 py-2 text-sm font-semibold disabled:opacity-60"
+                  >
+                    수정
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={handlePostDelete}
+                  disabled={postActionLoading}
+                  className="rounded-xl border border-red-300 bg-red-50 px-3 py-2 text-sm font-semibold text-red-700 transition hover:bg-red-100 disabled:opacity-60"
+                >
+                  삭제
+                </button>
+              </div>
+            )}
           </div>
         </header>
         <div className="px-7 py-7 md:px-9">
-          <p className="whitespace-pre-wrap text-sm leading-8 text-slate-700">{post.content}</p>
+          {editingPost ? (
+            <form onSubmit={handlePostUpdate} className="space-y-3">
+              <input
+                value={editTitle}
+                onChange={(event) => setEditTitle(event.target.value)}
+                className="w-full rounded-xl border border-[#cfd9e9] bg-white px-4 py-3 text-sm outline-none ring-[#173f72]/30 transition focus:ring-2"
+                placeholder="제목을 입력하세요."
+                maxLength={120}
+                required
+              />
+              <textarea
+                value={editContent}
+                onChange={(event) => setEditContent(event.target.value)}
+                className="h-40 w-full rounded-xl border border-[#cfd9e9] bg-white px-4 py-3 text-sm outline-none ring-[#173f72]/30 transition focus:ring-2"
+                placeholder="내용을 입력하세요."
+                maxLength={10000}
+                required
+              />
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="submit"
+                  disabled={postActionLoading}
+                  className="btn-primary px-4 py-2 text-sm font-semibold disabled:opacity-60"
+                >
+                  {postActionLoading ? "저장 중..." : "저장"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEditingPost(false);
+                    setEditTitle(post.title);
+                    setEditContent(post.content);
+                  }}
+                  disabled={postActionLoading}
+                  className="btn-secondary px-4 py-2 text-sm font-semibold disabled:opacity-60"
+                >
+                  취소
+                </button>
+              </div>
+            </form>
+          ) : (
+            <p className="whitespace-pre-wrap text-sm leading-8 text-slate-700">{post.content}</p>
+          )}
         </div>
       </section>
 
@@ -113,10 +296,10 @@ export function StudentBoardDetailPage() {
           />
           <button
             type="submit"
-            disabled={submitting}
+            disabled={submittingComment}
             className="btn-primary px-4 py-2 text-sm font-semibold disabled:opacity-60"
           >
-            {submitting ? "등록 중..." : "댓글 등록"}
+            {submittingComment ? "등록 중..." : "댓글 등록"}
           </button>
         </form>
 
@@ -125,11 +308,68 @@ export function StudentBoardDetailPage() {
             <article key={comment.id} className="surface-soft p-5">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <p className="text-sm font-semibold text-[#0d274d]">{comment.authorName}</p>
-                <p className="text-xs text-slate-500">{formatDateTime(comment.createdAt)}</p>
+                <div className="flex flex-wrap items-center gap-3">
+                  <p className="text-xs text-slate-500">{formatDateTime(comment.createdAt)}</p>
+                  {user?.id === comment.authorId && (
+                    <div className="flex flex-wrap gap-2">
+                      {editingCommentId !== comment.id && (
+                        <button
+                          type="button"
+                          onClick={() => startCommentEdit(comment.id, comment.content)}
+                          disabled={commentActionLoading !== null}
+                          className="text-xs font-semibold text-[#1d4f91] hover:underline disabled:opacity-60"
+                        >
+                          수정
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => handleCommentDelete(comment.id)}
+                        disabled={commentActionLoading !== null}
+                        className="text-xs font-semibold text-red-700 hover:underline disabled:opacity-60"
+                      >
+                        삭제
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
-              <p className="mt-3 whitespace-pre-wrap text-sm leading-7 text-slate-700">
-                {comment.content}
-              </p>
+              {editingCommentId === comment.id ? (
+                <div className="mt-3 space-y-2">
+                  <textarea
+                    value={editingCommentContent}
+                    onChange={(event) => setEditingCommentContent(event.target.value)}
+                    className="h-28 w-full rounded-xl border border-[#cfd9e9] bg-white px-4 py-3 text-sm outline-none ring-[#173f72]/30 transition focus:ring-2"
+                    maxLength={4000}
+                    required
+                  />
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() => handleCommentUpdate(comment.id)}
+                      disabled={commentActionLoading !== null || editingCommentContent.trim().length === 0}
+                      className="btn-primary px-3 py-2 text-xs font-semibold disabled:opacity-60"
+                    >
+                      {commentActionLoading === comment.id ? "저장 중..." : "저장"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setEditingCommentId(null);
+                        setEditingCommentContent("");
+                      }}
+                      disabled={commentActionLoading !== null}
+                      className="btn-secondary px-3 py-2 text-xs font-semibold disabled:opacity-60"
+                    >
+                      취소
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <p className="mt-3 whitespace-pre-wrap text-sm leading-7 text-slate-700">
+                  {comment.content}
+                </p>
+              )}
             </article>
           ))}
           {post.comments.length === 0 && (

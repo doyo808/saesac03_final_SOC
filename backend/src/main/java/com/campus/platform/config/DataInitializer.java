@@ -60,34 +60,24 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        if (userRepository.count() > 0) {
+        User student1 = ensureUser("student1@campus.local", "Password123!", "student1", Role.STUDENT);
+        User student2 = ensureUser("student2@campus.local", "Password123!", "student2", Role.STUDENT);
+        ensureUser("student3@campus.local", "Password123!", "student3", Role.STUDENT);
+        ensureUser("student4@campus.local", "Password123!", "student4", Role.STUDENT);
+        ensureUser("student5@campus.local", "Password123!", "student5", Role.STUDENT);
+        User prof1 = ensureUser("prof1@campus.local", "Password123!", "prof1", Role.PROFESSOR);
+        ensureUser("admin1@campus.local", "Password123!", "admin1", Role.ADMIN);
+
+        boolean hasSeedData = announcementRepository.count() > 0
+                || academicEventRepository.count() > 0
+                || courseRepository.count() > 0
+                || enrollmentRepository.count() > 0
+                || assignmentRepository.count() > 0
+                || boardPostRepository.count() > 0
+                || boardCommentRepository.count() > 0;
+        if (hasSeedData) {
             return;
         }
-
-        User student1 = userRepository.save(new User(
-                "student1@campus.local",
-                passwordEncoder.encode("Password123!"),
-                "student1",
-                Role.STUDENT
-        ));
-        User student2 = userRepository.save(new User(
-                "student2@campus.local",
-                passwordEncoder.encode("Password123!"),
-                "student2",
-                Role.STUDENT
-        ));
-        User prof1 = userRepository.save(new User(
-                "prof1@campus.local",
-                passwordEncoder.encode("Password123!"),
-                "prof1",
-                Role.PROFESSOR
-        ));
-        userRepository.save(new User(
-                "admin1@campus.local",
-                passwordEncoder.encode("Password123!"),
-                "admin1",
-                Role.ADMIN
-        ));
 
         announcementRepository.save(new Announcement(
                 "2026학년도 1학기 개강 안내",
@@ -160,5 +150,15 @@ public class DataInitializer implements CommandLineRunner {
                 now.minusHours(7)
         ));
 
+    }
+
+    private User ensureUser(String email, String rawPassword, String name, Role role) {
+        return userRepository.findByEmail(email)
+                .orElseGet(() -> userRepository.save(new User(
+                        email,
+                        passwordEncoder.encode(rawPassword),
+                        name,
+                        role
+                )));
     }
 }

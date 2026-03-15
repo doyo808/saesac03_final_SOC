@@ -19,6 +19,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 @Service
 @Transactional(readOnly = true)
@@ -38,9 +39,21 @@ public class BoardService {
         this.userRepository = userRepository;
     }
 
-    public List<BoardPostSummaryResponse> getPosts(UserPrincipal principal) {
+    public List<BoardPostSummaryResponse> getPosts(UserPrincipal principal, String keyword) {
         getStudentUser(principal);
-        return boardPostRepository.findAllByOrderByCreatedAtDesc()
+
+        List<BoardPost> posts;
+        if (StringUtils.hasText(keyword)) {
+            String trimmed = keyword.trim();
+            posts = boardPostRepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCaseOrderByCreatedAtDesc(
+                    trimmed,
+                    trimmed
+            );
+        } else {
+            posts = boardPostRepository.findAllByOrderByCreatedAtDesc();
+        }
+
+        return posts
                 .stream()
                 .map(this::toSummaryResponse)
                 .toList();
@@ -84,6 +97,60 @@ public class BoardService {
         return toCommentResponse(saved);
     }
 
+    @Transactional
+    public BoardPostDetailResponse updatePost(
+            Long postId,
+            CreateBoardPostRequest request,
+            UserPrincipal principal
+    ) {
+        User student = getStudentUser(principal);
+        BoardPost post = boardPostRepository.findById(postId)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Board post not found"));
+
+        assertAuthor(post.getAuthor().getId(), student.getId(), "Only author can update post");
+        post.setTitle(request.title().trim());
+        post.setContent(request.content().trim());
+        return toDetailResponse(post);
+    }
+
+    @Transactional
+    public void deletePost(Long postId, UserPrincipal principal) {
+        User student = getStudentUser(principal);
+        BoardPost post = boardPostRepository.findById(postId)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Board post not found"));
+
+        assertAuthor(post.getAuthor().getId(), student.getId(), "Only author can delete post");
+
+        boardCommentRepository.deleteByPostId(postId);
+        boardPostRepository.delete(post);
+    }
+
+    @Transactional
+    public BoardCommentResponse updateComment(
+            Long postId,
+            Long commentId,
+            CreateBoardCommentRequest request,
+            UserPrincipal principal
+    ) {
+        User student = getStudentUser(principal);
+        BoardComment comment = boardCommentRepository.findByIdAndPostId(commentId, postId)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Board comment not found"));
+
+        assertAuthor(comment.getAuthor().getId(), student.getId(), "Only author can update comment");
+        comment.setContent(request.content().trim());
+        return toCommentResponse(comment);
+    }
+
+    @Transactional
+    public void deleteComment(Long postId, Long commentId, UserPrincipal principal) {
+        User student = getStudentUser(principal);
+        BoardComment comment = boardCommentRepository.findByIdAndPostId(commentId, postId)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Board comment not found"));
+
+        assertAuthor(comment.getAuthor().getId(), student.getId(), "Only author can delete comment");
+        boardCommentRepository.delete(comment);
+    }
+
     private User getStudentUser(UserPrincipal principal) {
         if (principal == null || principal.getRole() != Role.STUDENT) {
             throw new ApiException(HttpStatus.FORBIDDEN, "Student permission is required");
@@ -91,6 +158,12 @@ public class BoardService {
 
         return userRepository.findById(principal.getId())
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "User not found"));
+    }
+
+    private void assertAuthor(Long authorId, Long actorId, String message) {
+        if (!authorId.equals(actorId)) {
+            throw new ApiException(HttpStatus.FORBIDDEN, message);
+        }
     }
 
     private BoardPostSummaryResponse toSummaryResponse(BoardPost post) {

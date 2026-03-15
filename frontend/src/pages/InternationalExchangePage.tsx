@@ -36,7 +36,7 @@ export function InternationalExchangePage() {
           </span>
           <h1 className="mt-4 text-3xl">국제교류 안내</h1>
           <p className="mt-2 text-sm text-white/90">
-            새싹 대학교 국제교류센터는 교환학생, 단기연수, 글로벌 인턴십을 통합 지원합니다.
+            관제대학교 국제교류센터는 교환학생, 단기연수, 글로벌 인턴십을 통합 지원합니다.
           </p>
         </div>
       </section>

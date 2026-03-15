@@ -80,6 +80,57 @@ class MockApiError extends Error {
 }
 
 const STORAGE_KEY = "saessak-campus-mock-backend-v1";
+const DEFAULT_USERS: MockUser[] = [
+  {
+    id: 1,
+    email: "student1@campus.local",
+    name: "student1",
+    role: "STUDENT",
+    password: "Password123!",
+  },
+  {
+    id: 2,
+    email: "prof1@campus.local",
+    name: "prof1",
+    role: "PROFESSOR",
+    password: "Password123!",
+  },
+  {
+    id: 3,
+    email: "admin1@campus.local",
+    name: "admin1",
+    role: "ADMIN",
+    password: "Password123!",
+  },
+  {
+    id: 4,
+    email: "student2@campus.local",
+    name: "student2",
+    role: "STUDENT",
+    password: "Password123!",
+  },
+  {
+    id: 5,
+    email: "student3@campus.local",
+    name: "student3",
+    role: "STUDENT",
+    password: "Password123!",
+  },
+  {
+    id: 6,
+    email: "student4@campus.local",
+    name: "student4",
+    role: "STUDENT",
+    password: "Password123!",
+  },
+  {
+    id: 7,
+    email: "student5@campus.local",
+    name: "student5",
+    role: "STUDENT",
+    password: "Password123!",
+  },
+];
 
 let stateCache: MockState | null = null;
 
@@ -93,29 +144,7 @@ function toIsoDate(daysOffset: number) {
 
 function seedState(): MockState {
   return {
-    users: [
-      {
-        id: 1,
-        email: "student1@campus.local",
-        name: "student1",
-        role: "STUDENT",
-        password: "Password123!",
-      },
-      {
-        id: 2,
-        email: "prof1@campus.local",
-        name: "prof1",
-        role: "PROFESSOR",
-        password: "Password123!",
-      },
-      {
-        id: 3,
-        email: "admin1@campus.local",
-        name: "admin1",
-        role: "ADMIN",
-        password: "Password123!",
-      },
-    ],
+    users: DEFAULT_USERS.map((user) => ({ ...user })),
     announcements: [
       {
         id: 1,
@@ -179,7 +208,7 @@ function seedState(): MockState {
     submissions: [],
     sessionUserId: null,
     nextIds: {
-      user: 4,
+      user: 8,
       enrollment: 2,
       submission: 1,
     },
@@ -205,10 +234,26 @@ function loadState() {
     if (!parsed || !Array.isArray(parsed.users)) {
       return seedState();
     }
-    return parsed;
+    return ensureDefaultUsers(parsed);
   } catch {
     return seedState();
   }
+}
+
+function ensureDefaultUsers(state: MockState) {
+  const existingEmails = new Set(state.users.map((user) => user.email.toLowerCase()));
+  for (const user of DEFAULT_USERS) {
+    if (!existingEmails.has(user.email.toLowerCase())) {
+      state.users.push({ ...user });
+    }
+  }
+
+  const maxUserId = state.users.reduce((max, user) => Math.max(max, user.id), 0);
+  if (state.nextIds.user <= maxUserId) {
+    state.nextIds.user = maxUserId + 1;
+  }
+
+  return state;
 }
 
 function saveState() {
