@@ -12,7 +12,7 @@ import {
   me as meApi,
   refresh as refreshApi,
 } from "../api/authApi";
-import { clearAccessToken, setAccessToken } from "../api/client";
+import { clearAccessToken, getAccessToken, setAccessToken } from "../api/client";
 import type { User } from "../types";
 
 interface AuthContextValue {
@@ -36,6 +36,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const bootstrap = async () => {
     try {
+      // Reuse token persisted in the current browser session before refresh fallback.
+      if (getAccessToken()) {
+        try {
+          await reloadUser();
+          return;
+        } catch {
+          clearAccessToken();
+        }
+      }
+
       const token = await refreshApi();
       setAccessToken(token.accessToken);
       await reloadUser();

@@ -8,7 +8,35 @@ interface AuthTokenResponse {
   accessToken: string;
 }
 
-let accessToken: string | null = null;
+const ACCESS_TOKEN_STORAGE_KEY = "campus.access_token";
+
+function readStoredAccessToken() {
+  if (typeof window === "undefined") {
+    return null;
+  }
+  try {
+    return window.sessionStorage.getItem(ACCESS_TOKEN_STORAGE_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function writeStoredAccessToken(token: string | null) {
+  if (typeof window === "undefined") {
+    return;
+  }
+  try {
+    if (token) {
+      window.sessionStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, token);
+    } else {
+      window.sessionStorage.removeItem(ACCESS_TOKEN_STORAGE_KEY);
+    }
+  } catch {
+    // Ignore storage errors and keep in-memory token behavior.
+  }
+}
+
+let accessToken: string | null = readStoredAccessToken();
 
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8080").replace(/\/+$/, "");
 
@@ -23,6 +51,7 @@ export const api = axios.create({
 
 export function setAccessToken(token: string | null) {
   accessToken = token;
+  writeStoredAccessToken(token);
 }
 
 export function getAccessToken() {
@@ -30,7 +59,7 @@ export function getAccessToken() {
 }
 
 export function clearAccessToken() {
-  accessToken = null;
+  setAccessToken(null);
 }
 
 function shouldSkipRefresh(config?: InternalAxiosRequestConfig) {
