@@ -6,6 +6,9 @@ public record ApiErrorResponse(
         LocalDateTime timestamp,
         String path,
         String error,
-        String message
+        String message,
+        String requestId,
+        String reasonCode,
+        String source
 ) {
 }

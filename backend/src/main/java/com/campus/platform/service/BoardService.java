@@ -16,6 +16,8 @@ import com.campus.platform.repository.UserRepository;
 import com.campus.platform.security.UserPrincipal;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +27,7 @@ import org.springframework.util.StringUtils;
 @Transactional(readOnly = true)
 public class BoardService {
 
+    private static final Logger log = LoggerFactory.getLogger(BoardService.class);
     private final BoardPostRepository boardPostRepository;
     private final BoardCommentRepository boardCommentRepository;
     private final UserRepository userRepository;
@@ -62,13 +65,14 @@ public class BoardService {
     public BoardPostDetailResponse getPost(Long postId, UserPrincipal principal) {
         getStudentUser(principal);
         BoardPost post = boardPostRepository.findById(postId)
-                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Board post not found"));
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Board post not found", "BOARD_POST_NOT_FOUND"));
         return toDetailResponse(post);
     }
 
     @Transactional
     public BoardPostDetailResponse createPost(CreateBoardPostRequest request, UserPrincipal principal) {
         User student = getStudentUser(principal);
+        traceStudentOperation(student, "BOARD_POST_CREATE", "SUCCESS_CANDIDATE");
         BoardPost saved = boardPostRepository.save(new BoardPost(
                 student,
                 request.title().trim(),
@@ -86,7 +90,8 @@ public class BoardService {
     ) {
         User student = getStudentUser(principal);
         BoardPost post = boardPostRepository.findById(postId)
-                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Board post not found"));
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Board post not found", "BOARD_POST_NOT_FOUND"));
+        traceStudentOperation(student, "BOARD_COMMENT_CREATE", "SUCCESS_CANDIDATE");
 
         BoardComment saved = boardCommentRepository.save(new BoardComment(
                 post,
@@ -105,9 +110,15 @@ public class BoardService {
     ) {
         User student = getStudentUser(principal);
         BoardPost post = boardPostRepository.findById(postId)
-                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Board post not found"));
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Board post not found", "BOARD_POST_NOT_FOUND"));
 
-        assertAuthor(post.getAuthor().getId(), student.getId(), "Only author can update post");
+        assertAuthor(
+                post.getAuthor().getId(),
+                student.getId(),
+                "Only author can update post",
+                "POST_OWNER_MISMATCH"
+        );
+        traceStudentOperation(student, "BOARD_POST_UPDATE", "SUCCESS_CANDIDATE");
         post.setTitle(request.title().trim());
         post.setContent(request.content().trim());
         return toDetailResponse(post);
@@ -117,9 +128,15 @@ public class BoardService {
     public void deletePost(Long postId, UserPrincipal principal) {
         User student = getStudentUser(principal);
         BoardPost post = boardPostRepository.findById(postId)
-                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Board post not found"));
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Board post not found", "BOARD_POST_NOT_FOUND"));
 
-        assertAuthor(post.getAuthor().getId(), student.getId(), "Only author can delete post");
+        assertAuthor(
+                post.getAuthor().getId(),
+                student.getId(),
+                "Only author can delete post",
+                "POST_OWNER_MISMATCH"
+        );
+        traceStudentOperation(student, "BOARD_POST_DELETE", "SUCCESS_CANDIDATE");
 
         boardCommentRepository.deleteByPostId(postId);
         boardPostRepository.delete(post);
@@ -134,9 +151,15 @@ public class BoardService {
     ) {
         User student = getStudentUser(principal);
         BoardComment comment = boardCommentRepository.findByIdAndPostId(commentId, postId)
-                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Board comment not found"));
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Board comment not found", "BOARD_COMMENT_NOT_FOUND"));
 
-        assertAuthor(comment.getAuthor().getId(), student.getId(), "Only author can update comment");
+        assertAuthor(
+                comment.getAuthor().getId(),
+                student.getId(),
+                "Only author can update comment",
+                "COMMENT_OWNER_MISMATCH"
+        );
+        traceStudentOperation(student, "BOARD_COMMENT_UPDATE", "SUCCESS_CANDIDATE");
         comment.setContent(request.content().trim());
         return toCommentResponse(comment);
     }
@@ -145,25 +168,47 @@ public class BoardService {
     public void deleteComment(Long postId, Long commentId, UserPrincipal principal) {
         User student = getStudentUser(principal);
         BoardComment comment = boardCommentRepository.findByIdAndPostId(commentId, postId)
-                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Board comment not found"));
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Board comment not found", "BOARD_COMMENT_NOT_FOUND"));
 
-        assertAuthor(comment.getAuthor().getId(), student.getId(), "Only author can delete comment");
+        assertAuthor(
+                comment.getAuthor().getId(),
+                student.getId(),
+                "Only author can delete comment",
+                "COMMENT_OWNER_MISMATCH"
+        );
+        traceStudentOperation(student, "BOARD_COMMENT_DELETE", "SUCCESS_CANDIDATE");
         boardCommentRepository.delete(comment);
     }
 
     private User getStudentUser(UserPrincipal principal) {
-        if (principal == null || principal.getRole() != Role.STUDENT) {
-            throw new ApiException(HttpStatus.FORBIDDEN, "Student permission is required");
+        if (principal == null) {
+            throw new ApiException(HttpStatus.UNAUTHORIZED, "Authentication is required", "AUTH_REQUIRED");
+        }
+        if (principal.getRole() != Role.STUDENT) {
+            throw new ApiException(HttpStatus.FORBIDDEN, "Student permission is required", "ROLE_STUDENT_REQUIRED");
         }
 
         return userRepository.findById(principal.getId())
-                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "User not found"));
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "User not found", "USER_NOT_FOUND"));
     }
 
-    private void assertAuthor(Long authorId, Long actorId, String message) {
+    private void assertAuthor(Long authorId, Long actorId, String message, String reasonCode) {
         if (!authorId.equals(actorId)) {
-            throw new ApiException(HttpStatus.FORBIDDEN, message);
+            throw new ApiException(HttpStatus.FORBIDDEN, message, reasonCode);
         }
+    }
+
+    private void traceStudentOperation(User user, String action, String reasonCode) {
+        if (!"student1@campus.local".equalsIgnoreCase(user.getEmail())) {
+            return;
+        }
+        log.info(
+                "student-trace userId={} role={} action={} reasonCode={}",
+                user.getId(),
+                user.getRole().name(),
+                action,
+                reasonCode
+        );
     }
 
     private BoardPostSummaryResponse toSummaryResponse(BoardPost post) {

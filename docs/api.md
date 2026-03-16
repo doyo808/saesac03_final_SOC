@@ -47,6 +47,19 @@
 | DELETE | `/api/lms/admin/enrollments/{id}` | 수강신청 해제 |
 | GET | `/api/lms/admin/students/overviews` | 학생별 LMS 개인 현황(수강/제출/채점) |
 
+## Student Board (STUDENT 전용)
+
+| Method | Path | 설명 |
+|---|---|---|
+| GET | `/api/board/posts` | 게시글 목록 조회 (`keyword` 쿼리로 제목/내용 검색) |
+| GET | `/api/board/posts/{id}` | 게시글 상세 조회 |
+| POST | `/api/board/posts` | 게시글 작성 |
+| PUT | `/api/board/posts/{id}` | 게시글 수정 (작성자 본인만) |
+| DELETE | `/api/board/posts/{id}` | 게시글 삭제 (작성자 본인만) |
+| POST | `/api/board/posts/{id}/comments` | 댓글 작성 |
+| PUT | `/api/board/posts/{postId}/comments/{commentId}` | 댓글 수정 (작성자 본인만) |
+| DELETE | `/api/board/posts/{postId}/comments/{commentId}` | 댓글 삭제 (작성자 본인만) |
+
 ## 에러 응답 포맷
 
 ```json
@@ -54,6 +67,9 @@
   "timestamp": "2026-02-27T10:00:00",
   "path": "/api/lms/courses/my",
   "error": "UNAUTHORIZED",
-  "message": "Authentication is required"
+  "message": "Authentication is required",
+  "requestId": "34cf5270-22b2-4c01-bca9-18f98254f8f0",
+  "reasonCode": "AUTH_REQUIRED",
+  "source": "APP"
 }
 ```

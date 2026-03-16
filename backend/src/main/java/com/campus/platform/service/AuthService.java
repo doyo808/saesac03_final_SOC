@@ -18,11 +18,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseCookie.ResponseCookieBuilder;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 @Service
 public class AuthService {
@@ -40,6 +42,12 @@ public class AuthService {
 
     @Value("${app.jwt.refresh-token-days}")
     private long refreshTokenDays;
+
+    @Value("${app.jwt.refresh-cookie-same-site:Lax}")
+    private String refreshCookieSameSite;
+
+    @Value("${app.jwt.refresh-cookie-domain:}")
+    private String refreshCookieDomain;
 
     public AuthService(
             UserRepository userRepository,
@@ -77,7 +85,7 @@ public class AuthService {
         );
 
         User user = userRepository.findByEmail(request.email())
-                .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, "Invalid credentials"));
+                .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, "Invalid credentials", "INVALID_CREDENTIALS"));
 
         String accessToken = jwtTokenProvider.generateAccessToken(user);
         String refreshToken = jwtTokenProvider.generateRefreshToken(user);
@@ -89,15 +97,15 @@ public class AuthService {
     @Transactional(readOnly = true)
     public AuthTokenResponse refresh(HttpServletRequest request) {
         String refreshToken = readRefreshCookie(request)
-                .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, "Refresh token is missing"));
+                .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, "Refresh token is missing", "REFRESH_COOKIE_MISSING"));
 
         if (!jwtTokenProvider.isValidToken(refreshToken) || !jwtTokenProvider.isRefreshToken(refreshToken)) {
-            throw new ApiException(HttpStatus.UNAUTHORIZED, "Invalid refresh token");
+            throw new ApiException(HttpStatus.UNAUTHORIZED, "Invalid refresh token", "REFRESH_TOKEN_INVALID");
         }
 
         String email = jwtTokenProvider.getEmail(refreshToken);
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, "User not found"));
+                .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, "User not found", "REFRESH_USER_NOT_FOUND"));
 
         return new AuthTokenResponse(jwtTokenProvider.generateAccessToken(user));
     }
@@ -109,7 +117,7 @@ public class AuthService {
     @Transactional(readOnly = true)
     public MeResponse me(UserPrincipal principal) {
         User user = userRepository.findById(principal.getId())
-                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "User not found"));
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "User not found", "USER_NOT_FOUND"));
         return new MeResponse(user.getId(), user.getEmail(), user.getName(), user.getRole());
     }
 
@@ -127,24 +135,25 @@ public class AuthService {
     }
 
     private void setRefreshCookie(HttpServletResponse response, String refreshToken) {
-        ResponseCookie cookie = ResponseCookie.from(refreshCookieName, refreshToken)
-                .httpOnly(true)
-                .secure(refreshCookieSecure)
-                .path("/")
-                .sameSite("Lax")
-                .maxAge(Duration.ofDays(refreshTokenDays))
-                .build();
+        ResponseCookie cookie = buildRefreshCookie(refreshToken, Duration.ofDays(refreshTokenDays));
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 
     private void clearRefreshCookie(HttpServletResponse response) {
-        ResponseCookie cookie = ResponseCookie.from(refreshCookieName, "")
+        ResponseCookie cookie = buildRefreshCookie("", Duration.ZERO);
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+    }
+
+    private ResponseCookie buildRefreshCookie(String tokenValue, Duration maxAge) {
+        ResponseCookieBuilder builder = ResponseCookie.from(refreshCookieName, tokenValue)
                 .httpOnly(true)
                 .secure(refreshCookieSecure)
                 .path("/")
-                .sameSite("Lax")
-                .maxAge(Duration.ZERO)
-                .build();
-        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+                .sameSite(refreshCookieSameSite)
+                .maxAge(maxAge);
+        if (StringUtils.hasText(refreshCookieDomain)) {
+            builder.domain(refreshCookieDomain.trim());
+        }
+        return builder.build();
     }
 }

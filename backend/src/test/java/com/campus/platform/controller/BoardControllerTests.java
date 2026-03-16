@@ -2,6 +2,7 @@ package com.campus.platform.controller;
 
 import com.campus.platform.domain.BoardPost;
 import com.campus.platform.domain.User;
+import com.campus.platform.repository.BoardCommentRepository;
 import com.campus.platform.repository.BoardPostRepository;
 import com.campus.platform.repository.UserRepository;
 import com.campus.platform.security.UserPrincipal;
@@ -37,6 +38,9 @@ class BoardControllerTests {
 
     @Autowired
     private BoardPostRepository boardPostRepository;
+
+    @Autowired
+    private BoardCommentRepository boardCommentRepository;
 
     private UserPrincipal studentPrincipal;
     private UserPrincipal student2Principal;
@@ -91,7 +95,8 @@ class BoardControllerTests {
                                   "content": "교수 계정으로는 댓글을 달 수 없어야 합니다."
                                 }
                                 """))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.reasonCode").value("ROLE_STUDENT_REQUIRED"));
     }
 
     @Test
@@ -137,7 +142,8 @@ class BoardControllerTests {
                                   "content": "변경 시도"
                                 }
                                 """))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.reasonCode").value("POST_OWNER_MISMATCH"));
     }
 
     @Test
@@ -155,6 +161,121 @@ class BoardControllerTests {
                 .andExpect(status().isNoContent());
 
         assertThat(boardPostRepository.findById(post.getId())).isEmpty();
+    }
+
+    @Test
+    void returnsUnauthorizedWhenUpdatingPostWithoutAuthentication() throws Exception {
+        User student = userRepository.findByEmail("student1@campus.local").orElseThrow();
+        BoardPost post = boardPostRepository.save(new BoardPost(
+                student,
+                "인증 없이 수정 시도",
+                "원본",
+                LocalDateTime.now()
+        ));
+
+        mockMvc.perform(put("/api/board/posts/{id}", post.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "title": "인증 없이 수정",
+                                  "content": "실패해야 함"
+                                }
+                                """))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.reasonCode").value("AUTH_REQUIRED"));
+    }
+
+    @Test
+    void updatesBoardCommentForAuthor() throws Exception {
+        User student = userRepository.findByEmail("student1@campus.local").orElseThrow();
+        BoardPost post = boardPostRepository.save(new BoardPost(
+                student,
+                "댓글 수정 테스트",
+                "본문",
+                LocalDateTime.now()
+        ));
+
+        mockMvc.perform(post("/api/board/posts/{id}/comments", post.getId())
+                        .with(user(studentPrincipal))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "content": "수정 전 댓글"
+                                }
+                                """))
+                .andExpect(status().isCreated());
+
+        Long commentId = boardCommentRepository.findByPostIdOrderByCreatedAtAsc(post.getId()).get(0).getId();
+
+        assertThat(commentId).isNotNull();
+
+        mockMvc.perform(put("/api/board/posts/{postId}/comments/{commentId}", post.getId(), commentId)
+                        .with(user(studentPrincipal))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "content": "수정 후 댓글"
+                                }
+                                """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").value("수정 후 댓글"));
+    }
+
+    @Test
+    void deletesBoardCommentForAuthor() throws Exception {
+        User student = userRepository.findByEmail("student1@campus.local").orElseThrow();
+        BoardPost post = boardPostRepository.save(new BoardPost(
+                student,
+                "댓글 삭제 테스트",
+                "본문",
+                LocalDateTime.now()
+        ));
+
+        mockMvc.perform(post("/api/board/posts/{id}/comments", post.getId())
+                        .with(user(studentPrincipal))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "content": "삭제 대상 댓글"
+                                }
+                                """))
+                .andExpect(status().isCreated());
+
+        Long commentId = boardCommentRepository.findByPostIdOrderByCreatedAtAsc(post.getId()).get(0).getId();
+
+        mockMvc.perform(delete("/api/board/posts/{postId}/comments/{commentId}", post.getId(), commentId)
+                        .with(user(studentPrincipal)))
+                .andExpect(status().isNoContent());
+
+        assertThat(boardCommentRepository.findById(commentId)).isEmpty();
+    }
+
+    @Test
+    void blocksBoardCommentDeleteForNonAuthor() throws Exception {
+        User student = userRepository.findByEmail("student1@campus.local").orElseThrow();
+        BoardPost post = boardPostRepository.save(new BoardPost(
+                student,
+                "댓글 작성자 검증 테스트",
+                "본문",
+                LocalDateTime.now()
+        ));
+
+        mockMvc.perform(post("/api/board/posts/{id}/comments", post.getId())
+                        .with(user(studentPrincipal))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "content": "삭제 불가 댓글"
+                                }
+                                """))
+                .andExpect(status().isCreated());
+
+        Long commentId = boardCommentRepository.findByPostIdOrderByCreatedAtAsc(post.getId()).get(0).getId();
+
+        mockMvc.perform(delete("/api/board/posts/{postId}/comments/{commentId}", post.getId(), commentId)
+                        .with(user(student2Principal)))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.reasonCode").value("COMMENT_OWNER_MISMATCH"));
     }
 
     @Test

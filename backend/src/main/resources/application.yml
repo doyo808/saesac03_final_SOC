@@ -34,6 +34,8 @@ app:
     refresh-token-days: ${JWT_REFRESH_TOKEN_DAYS:7}
     refresh-cookie-name: ${JWT_REFRESH_COOKIE_NAME:refresh_token}
     refresh-cookie-secure: ${JWT_REFRESH_COOKIE_SECURE:false}
+    refresh-cookie-same-site: ${JWT_REFRESH_COOKIE_SAME_SITE:Lax}
+    refresh-cookie-domain: ${JWT_REFRESH_COOKIE_DOMAIN:}
   admin:
     network:
       enabled: ${ADMIN_NETWORK_ENABLED:false}
