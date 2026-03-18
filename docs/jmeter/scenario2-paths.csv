@@ -1,0 +1,8 @@
+method,url_path,ua
+GET,/admin,Mozilla/5.0
+GET,/.env,curl/8.6
+GET,/backup.zip,python-requests/2.32
+GET,/actuator/health,Mozilla/5.0
+GET,/api/lms/admin/users,kube-probe/1.30
+GET,/.git/config,Mozilla/5.0
+GET,/config.yml,curl/8.6

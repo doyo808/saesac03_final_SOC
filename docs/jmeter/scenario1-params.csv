@@ -1,0 +1,7 @@
+method,url_path,ua
+GET,/api/public/announcements?keyword=union+monthly+report,Mozilla/5.0
+GET,/api/public/announcements?keyword=select+course+summary,curl/8.6
+GET,/api/public/announcements?keyword=%3Cscript%3Eguide%3C%2Fscript%3E,Mozilla/5.0
+GET,/api/public/academic-events?q=..%2f..%2fdocs%2fmanual.pdf,Prometheus/2.50
+GET,/api/public/announcements?keyword=status%3Dok%26%26backup,kube-probe/1.30
+GET,/api/public/academic-events?q=onerror%3Dtest,Mozilla/5.0

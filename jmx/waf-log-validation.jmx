@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="WAF Log Validation Plan" enabled="true">
+      <stringProp name="TestPlan.comments">Validates access logs, ModSecurity audit logs, and blocking behavior with low load. Base URL is parameterized as http://&lt;WAF_HOST&gt;.</stringProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="base_url" elementType="Argument">
+            <stringProp name="Argument.name">base_url</stringProp>
+            <stringProp name="Argument.value">http://&lt;WAF_HOST&gt;</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="threads" elementType="Argument">
+            <stringProp name="Argument.name">threads</stringProp>
+            <stringProp name="Argument.value">1</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="ramp_up_seconds" elementType="Argument">
+            <stringProp name="Argument.name">ramp_up_seconds</stringProp>
+            <stringProp name="Argument.value">5</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="scenario_loops" elementType="Argument">
+            <stringProp name="Argument.name">scenario_loops</stringProp>
+            <stringProp name="Argument.value">20</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="base_delay_ms" elementType="Argument">
+            <stringProp name="Argument.name">base_delay_ms</stringProp>
+            <stringProp name="Argument.value">200</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="random_delay_ms" elementType="Argument">
+            <stringProp name="Argument.name">random_delay_ms</stringProp>
+            <stringProp name="Argument.value">300</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="detection_only_secret" elementType="Argument">
+            <stringProp name="Argument.name">detection_only_secret</stringProp>
+            <stringProp name="Argument.value">CHANGE_ME_SECRET</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="result_file" elementType="Argument">
+            <stringProp name="Argument.name">result_file</stringProp>
+            <stringProp name="Argument.value">waf-log-validation-results.jtl</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </elementProp>
+      <stringProp name="TestPlan.user_define_classpath"></stringProp>
+    </TestPlan>
+    <hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="WAF Log Validation Thread Group" enabled="true">
+        <stringProp name="TestPlan.comments">Default load is intentionally light. Increase threads to 2 or 3 only if the WAF host remains stable.</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Main Loop Controller" enabled="true">
+          <stringProp name="LoopController.loops">1</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">${threads}</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">${ramp_up_seconds}</stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Global Header Manager" enabled="true">
+          <collectionProp name="HeaderManager.headers">
+            <elementProp name="X-Request-ID" elementType="Header">
+              <stringProp name="Header.name">X-Request-ID</stringProp>
+              <stringProp name="Header.value">${__UUID()}</stringProp>
+            </elementProp>
+          </collectionProp>
+        </HeaderManager>
+        <hashTree/>
+        <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="Uniform Random Timer" enabled="true">
+          <stringProp name="RandomTimer.range">${random_delay_ms}</stringProp>
+          <stringProp name="ConstantTimer.delay">${base_delay_ms}</stringProp>
+        </UniformRandomTimer>
+        <hashTree/>
+
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="TC_normal_baseline" enabled="true">
+          <stringProp name="TestPlan.comments">Baseline allow request for access log validation.</stringProp>
+          <boolProp name="TransactionController.parent">false</boolProp>
+        </TransactionController>
+        <hashTree>
+          <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Loop_normal_baseline" enabled="true">
+            <stringProp name="LoopController.loops">${scenario_loops}</stringProp>
+            <boolProp name="LoopController.continue_forever">false</boolProp>
+          </LoopController>
+          <hashTree>
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="normal_baseline" enabled="true">
+              <stringProp name="TestPlan.comments">Expected 200 and ordinary access logging.</stringProp>
+              <stringProp name="HTTPSampler.path">${base_url}/health</stringProp>
+              <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+              <stringProp name="HTTPSampler.method">GET</stringProp>
+              <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+              <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+              <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+                <collectionProp name="Arguments.arguments"/>
+              </elementProp>
+              <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+            </HTTPSamplerProxy>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="TC_custom_header_990120" enabled="true">
+          <stringProp name="TestPlan.comments">Custom header based logging path for rule 990120.</stringProp>
+          <boolProp name="TransactionController.parent">false</boolProp>
+        </TransactionController>
+        <hashTree>
+          <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Loop_custom_header_990120" enabled="true">
+            <stringProp name="LoopController.loops">${scenario_loops}</stringProp>
+            <boolProp name="LoopController.continue_forever">false</boolProp>
+          </LoopController>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Header_custom_header_990120" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="X-SOC-Test" elementType="Header">
+                  <stringProp name="Header.name">X-SOC-Test</stringProp>
+                  <stringProp name="Header.value">true</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree/>
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="custom_header_990120" enabled="true">
+              <stringProp name="TestPlan.comments">Expected custom synthetic header log for rule 990120.</stringProp>
+              <stringProp name="HTTPSampler.path">${base_url}/</stringProp>
+              <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+              <stringProp name="HTTPSampler.method">GET</stringProp>
+              <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+              <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+              <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+                <collectionProp name="Arguments.arguments">
+                  <elementProp name="k" elementType="HTTPArgument">
+                    <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                    <stringProp name="Argument.name">k</stringProp>
+                    <stringProp name="Argument.value">v</stringProp>
+                    <stringProp name="Argument.metadata">=</stringProp>
+                    <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  </elementProp>
+                </collectionProp>
+              </elementProp>
+              <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+            </HTTPSamplerProxy>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="TC_custom_sqli_marker_990121" enabled="true">
+          <stringProp name="TestPlan.comments">Custom SQLi marker log path for rule 990121.</stringProp>
+          <boolProp name="TransactionController.parent">false</boolProp>
+        </TransactionController>
+        <hashTree>
+          <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Loop_custom_sqli_marker_990121" enabled="true">
+            <stringProp name="LoopController.loops">${scenario_loops}</stringProp>
+            <boolProp name="LoopController.continue_forever">false</boolProp>
+          </LoopController>
+          <hashTree>
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="custom_sqli_marker_990121" enabled="true">
+              <stringProp name="TestPlan.comments">Expected custom marker audit log for rule 990121.</stringProp>
+              <stringProp name="HTTPSampler.path">${base_url}/</stringProp>
+              <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+              <stringProp name="HTTPSampler.method">GET</stringProp>
+              <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+              <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+              <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+                <collectionProp name="Arguments.arguments">
+                  <elementProp name="q" elementType="HTTPArgument">
+                    <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                    <stringProp name="Argument.name">q</stringProp>
+                    <stringProp name="Argument.value">SOC_SQLI_TEST</stringProp>
+                    <stringProp name="Argument.metadata">=</stringProp>
+                    <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  </elementProp>
+                </collectionProp>
+              </elementProp>
+              <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+            </HTTPSamplerProxy>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="TC_custom_xss_marker_990122" enabled="true">
+          <stringProp name="TestPlan.comments">Custom XSS marker log path for rule 990122.</stringProp>
+          <boolProp name="TransactionController.parent">false</boolProp>
+        </TransactionController>
+        <hashTree>
+          <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Loop_custom_xss_marker_990122" enabled="true">
+            <stringProp name="LoopController.loops">${scenario_loops}</stringProp>
+            <boolProp name="LoopController.continue_forever">false</boolProp>
+          </LoopController>
+          <hashTree>
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="custom_xss_marker_990122" enabled="true">
+              <stringProp name="TestPlan.comments">Expected custom marker audit log for rule 990122.</stringProp>
+              <stringProp name="HTTPSampler.path">${base_url}/</stringProp>
+              <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+              <stringProp name="HTTPSampler.method">GET</stringProp>
+              <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+              <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+              <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+                <collectionProp name="Arguments.arguments">
+                  <elementProp name="q" elementType="HTTPArgument">
+                    <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                    <stringProp name="Argument.name">q</stringProp>
+                    <stringProp name="Argument.value">SOC_XSS_TEST</stringProp>
+                    <stringProp name="Argument.metadata">=</stringProp>
+                    <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  </elementProp>
+                </collectionProp>
+              </elementProp>
+              <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+            </HTTPSamplerProxy>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="TC_custom_lfi_marker_990123" enabled="true">
+          <stringProp name="TestPlan.comments">Custom LFI marker log path for rule 990123.</stringProp>
+          <boolProp name="TransactionController.parent">false</boolProp>
+        </TransactionController>
+        <hashTree>
+          <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Loop_custom_lfi_marker_990123" enabled="true">
+            <stringProp name="LoopController.loops">${scenario_loops}</stringProp>
+            <boolProp name="LoopController.continue_forever">false</boolProp>
+          </LoopController>
+          <hashTree>
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="custom_lfi_marker_990123" enabled="true">
+              <stringProp name="TestPlan.comments">Expected custom marker audit log for rule 990123.</stringProp>
+              <stringProp name="HTTPSampler.path">${base_url}/</stringProp>
+              <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+              <stringProp name="HTTPSampler.method">GET</stringProp>
+              <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+              <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+              <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+                <collectionProp name="Arguments.arguments">
+                  <elementProp name="q" elementType="HTTPArgument">
+                    <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                    <stringProp name="Argument.name">q</stringProp>
+                    <stringProp name="Argument.value">SOC_LFI_TEST</stringProp>
+                    <stringProp name="Argument.metadata">=</stringProp>
+                    <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  </elementProp>
+                </collectionProp>
+              </elementProp>
+              <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+            </HTTPSamplerProxy>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="TC_custom_cmd_marker_990124" enabled="true">
+          <stringProp name="TestPlan.comments">Custom CMD marker log path for rule 990124.</stringProp>
+          <boolProp name="TransactionController.parent">false</boolProp>
+        </TransactionController>
+        <hashTree>
+          <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Loop_custom_cmd_marker_990124" enabled="true">
+            <stringProp name="LoopController.loops">${scenario_loops}</stringProp>
+            <boolProp name="LoopController.continue_forever">false</boolProp>
+          </LoopController>
+          <hashTree>
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="custom_cmd_marker_990124" enabled="true">
+              <stringProp name="TestPlan.comments">Expected custom marker audit log for rule 990124.</stringProp>
+              <stringProp name="HTTPSampler.path">${base_url}/</stringProp>
+              <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+              <stringProp name="HTTPSampler.method">GET</stringProp>
+              <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+              <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+              <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+                <collectionProp name="Arguments.arguments">
+                  <elementProp name="q" elementType="HTTPArgument">
+                    <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                    <stringProp name="Argument.name">q</stringProp>
+                    <stringProp name="Argument.value">SOC_CMD_TEST</stringProp>
+                    <stringProp name="Argument.metadata">=</stringProp>
+                    <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  </elementProp>
+                </collectionProp>
+              </elementProp>
+              <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+            </HTTPSamplerProxy>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="TC_detection_only_bundle" enabled="true">
+          <stringProp name="TestPlan.comments">DetectionOnly bundle. For rules 990105 and 990110 to 990113, source IP must satisfy REMOTE_ADDR=127.0.0.1.</stringProp>
+          <boolProp name="TransactionController.parent">false</boolProp>
+        </TransactionController>
+        <hashTree>
+          <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Loop_detection_only_bundle" enabled="true">
+            <stringProp name="LoopController.loops">${scenario_loops}</stringProp>
+            <boolProp name="LoopController.continue_forever">false</boolProp>
+          </LoopController>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Header_detection_only_bundle" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="X-SOC-Test" elementType="Header">
+                  <stringProp name="Header.name">X-SOC-Test</stringProp>
+                  <stringProp name="Header.value">${detection_only_secret}</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree/>
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="detection_only_bundle" enabled="true">
+              <stringProp name="TestPlan.comments">Expected DetectionOnly logging without CRS block when source IP condition is met.</stringProp>
+              <stringProp name="HTTPSampler.path">${base_url}/soc-log-test</stringProp>
+              <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+              <stringProp name="HTTPSampler.method">GET</stringProp>
+              <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+              <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+              <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+                <collectionProp name="Arguments.arguments">
+                  <elementProp name="q" elementType="HTTPArgument">
+                    <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                    <stringProp name="Argument.name">q</stringProp>
+                    <stringProp name="Argument.value">union select javascript: whoami ../</stringProp>
+                    <stringProp name="Argument.metadata">=</stringProp>
+                    <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  </elementProp>
+                </collectionProp>
+              </elementProp>
+              <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+            </HTTPSamplerProxy>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="TC_crs_block_sqli_pl1" enabled="true">
+          <stringProp name="TestPlan.comments">CRS SQLi style payload expected to trigger detection and likely 403.</stringProp>
+          <boolProp name="TransactionController.parent">false</boolProp>
+        </TransactionController>
+        <hashTree>
+          <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Loop_crs_block_sqli_pl1" enabled="true">
+            <stringProp name="LoopController.loops">${scenario_loops}</stringProp>
+            <boolProp name="LoopController.continue_forever">false</boolProp>
+          </LoopController>
+          <hashTree>
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="crs_block_sqli_pl1" enabled="true">
+              <stringProp name="TestPlan.comments">Expected CRS anomaly detection and blocking log, commonly 403.</stringProp>
+              <stringProp name="HTTPSampler.path">${base_url}/</stringProp>
+              <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+              <stringProp name="HTTPSampler.method">GET</stringProp>
+              <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+              <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+              <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+                <collectionProp name="Arguments.arguments">
+                  <elementProp name="q" elementType="HTTPArgument">
+                    <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                    <stringProp name="Argument.name">q</stringProp>
+                    <stringProp name="Argument.value">' or 1=1--</stringProp>
+                    <stringProp name="Argument.metadata">=</stringProp>
+                    <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  </elementProp>
+                </collectionProp>
+              </elementProp>
+              <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+            </HTTPSamplerProxy>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="TC_crs_block_xss_pl1" enabled="true">
+          <stringProp name="TestPlan.comments">CRS XSS style payload expected to trigger detection and likely 403.</stringProp>
+          <boolProp name="TransactionController.parent">false</boolProp>
+        </TransactionController>
+        <hashTree>
+          <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Loop_crs_block_xss_pl1" enabled="true">
+            <stringProp name="LoopController.loops">${scenario_loops}</stringProp>
+            <boolProp name="LoopController.continue_forever">false</boolProp>
+          </LoopController>
+          <hashTree>
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="crs_block_xss_pl1" enabled="true">
+              <stringProp name="TestPlan.comments">Expected CRS anomaly detection and blocking log, commonly 403.</stringProp>
+              <stringProp name="HTTPSampler.path">${base_url}/</stringProp>
+              <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+              <stringProp name="HTTPSampler.method">GET</stringProp>
+              <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+              <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+              <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+                <collectionProp name="Arguments.arguments">
+                  <elementProp name="q" elementType="HTTPArgument">
+                    <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                    <stringProp name="Argument.name">q</stringProp>
+                    <stringProp name="Argument.value">&lt;script&gt;alert(1)&lt;/script&gt;</stringProp>
+                    <stringProp name="Argument.metadata">=</stringProp>
+                    <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                  </elementProp>
+                </collectionProp>
+              </elementProp>
+              <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+            </HTTPSamplerProxy>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+      </hashTree>
+
+      <ResultCollector guiclass="SimpleDataWriter" testclass="ResultCollector" testname="JTL Writer" enabled="true">
+        <stringProp name="TestPlan.comments">Writes sample results for quick status verification.</stringProp>
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>false</assertions>
+            <subresults>false</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>true</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>false</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <sentBytes>true</sentBytes>
+            <url>true</url>
+            <threadCounts>true</threadCounts>
+            <idleTime>true</idleTime>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename">${result_file}</stringProp>
+      </ResultCollector>
+      <hashTree/>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>
