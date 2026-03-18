@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Locale;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -22,6 +23,7 @@ public class JsonAccessDeniedHandler implements AccessDeniedHandler {
 
     private static final Logger log = LoggerFactory.getLogger(JsonAccessDeniedHandler.class);
     private static final String ERROR_SOURCE_APP = "APP_SECURITY";
+    private static final String TRACE_ACCOUNT_EMAIL = "student1@campus.local";
     private final ObjectMapper objectMapper;
 
     public JsonAccessDeniedHandler(ObjectMapper objectMapper) {
@@ -40,10 +42,13 @@ public class JsonAccessDeniedHandler implements AccessDeniedHandler {
 
         String userId = "-";
         String role = "ANONYMOUS";
+        String email = null;
         if (authentication != null && authentication.getPrincipal() instanceof UserPrincipal userPrincipal) {
             userId = String.valueOf(userPrincipal.getId());
             role = userPrincipal.getRole().name();
+            email = userPrincipal.getUsername().toLowerCase(Locale.ROOT);
         }
+        boolean traceAccount = TRACE_ACCOUNT_EMAIL.equals(email);
 
         log.warn(
                 "api-failure requestId={} source={} userId={} role={} endpoint={} method={} status={} reasonCode={} message={}",
@@ -67,10 +72,24 @@ public class JsonAccessDeniedHandler implements AccessDeniedHandler {
                 LocalDateTime.now(),
                 request.getRequestURI(),
                 "FORBIDDEN",
-                "You do not have permission to access this resource",
+                traceAccount
+                        ? "You do not have permission to access this resource"
+                        : "You do not have permission to access this resource",
                 requestId,
                 "ACCESS_DENIED",
-                ERROR_SOURCE_APP
+                ERROR_SOURCE_APP,
+                traceAccount
+                        ? "status=403 method=" + request.getMethod()
+                                + " path=" + request.getRequestURI()
+                                + " source=" + ERROR_SOURCE_APP
+                                + " requestId=" + requestId
+                                + " userId=" + userId
+                                + " role=" + role
+                                + " reasonCode=ACCESS_DENIED"
+                        : null,
+                traceAccount
+                        ? "APP_SECURITY 계층에서 차단된 403입니다. 컨트롤러 이전 보안 설정 또는 인증 상태를 확인하세요."
+                        : null
         );
         objectMapper.writeValue(response.getOutputStream(), body);
     }

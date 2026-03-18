@@ -20,6 +20,7 @@ public class JsonAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     private static final Logger log = LoggerFactory.getLogger(JsonAuthenticationEntryPoint.class);
     private static final String ERROR_SOURCE_APP = "APP_SECURITY";
+    private static final String TRACE_ACCOUNT_EMAIL = "student1@campus.local";
     private final ObjectMapper objectMapper;
 
     public JsonAuthenticationEntryPoint(ObjectMapper objectMapper) {
@@ -59,7 +60,17 @@ public class JsonAuthenticationEntryPoint implements AuthenticationEntryPoint {
                 "Authentication is required",
                 requestId,
                 "AUTH_REQUIRED",
-                ERROR_SOURCE_APP
+                ERROR_SOURCE_APP,
+                TRACE_ACCOUNT_EMAIL.equalsIgnoreCase(request.getRemoteUser())
+                        ? "status=401 method=" + request.getMethod()
+                                + " path=" + request.getRequestURI()
+                                + " source=" + ERROR_SOURCE_APP
+                                + " requestId=" + requestId
+                                + " userId=- role=ANONYMOUS reasonCode=AUTH_REQUIRED"
+                        : null,
+                TRACE_ACCOUNT_EMAIL.equalsIgnoreCase(request.getRemoteUser())
+                        ? "Authorization 헤더, access token 만료 여부, refresh cookie 전송 여부를 확인하세요."
+                        : null
         );
         objectMapper.writeValue(response.getOutputStream(), body);
     }

@@ -28,6 +28,7 @@ import org.springframework.util.StringUtils;
 public class BoardService {
 
     private static final Logger log = LoggerFactory.getLogger(BoardService.class);
+    private static final String TRACE_ACCOUNT_EMAIL = "student1@campus.local";
     private final BoardPostRepository boardPostRepository;
     private final BoardCommentRepository boardCommentRepository;
     private final UserRepository userRepository;
@@ -114,9 +115,11 @@ public class BoardService {
 
         assertAuthor(
                 post.getAuthor().getId(),
-                student.getId(),
+                student,
                 "Only author can update post",
-                "POST_OWNER_MISMATCH"
+                "POST_OWNER_MISMATCH",
+                "BOARD_POST",
+                postId
         );
         traceStudentOperation(student, "BOARD_POST_UPDATE", "SUCCESS_CANDIDATE");
         post.setTitle(request.title().trim());
@@ -132,9 +135,11 @@ public class BoardService {
 
         assertAuthor(
                 post.getAuthor().getId(),
-                student.getId(),
+                student,
                 "Only author can delete post",
-                "POST_OWNER_MISMATCH"
+                "POST_OWNER_MISMATCH",
+                "BOARD_POST",
+                postId
         );
         traceStudentOperation(student, "BOARD_POST_DELETE", "SUCCESS_CANDIDATE");
 
@@ -155,9 +160,11 @@ public class BoardService {
 
         assertAuthor(
                 comment.getAuthor().getId(),
-                student.getId(),
+                student,
                 "Only author can update comment",
-                "COMMENT_OWNER_MISMATCH"
+                "COMMENT_OWNER_MISMATCH",
+                "BOARD_COMMENT",
+                commentId
         );
         traceStudentOperation(student, "BOARD_COMMENT_UPDATE", "SUCCESS_CANDIDATE");
         comment.setContent(request.content().trim());
@@ -172,9 +179,11 @@ public class BoardService {
 
         assertAuthor(
                 comment.getAuthor().getId(),
-                student.getId(),
+                student,
                 "Only author can delete comment",
-                "COMMENT_OWNER_MISMATCH"
+                "COMMENT_OWNER_MISMATCH",
+                "BOARD_COMMENT",
+                commentId
         );
         traceStudentOperation(student, "BOARD_COMMENT_DELETE", "SUCCESS_CANDIDATE");
         boardCommentRepository.delete(comment);
@@ -192,14 +201,26 @@ public class BoardService {
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "User not found", "USER_NOT_FOUND"));
     }
 
-    private void assertAuthor(Long authorId, Long actorId, String message, String reasonCode) {
-        if (!authorId.equals(actorId)) {
-            throw new ApiException(HttpStatus.FORBIDDEN, message, reasonCode);
+    private void assertAuthor(
+            Long authorId,
+            User actor,
+            String message,
+            String reasonCode,
+            String resourceType,
+            Long resourceId
+    ) {
+        if (!authorId.equals(actor.getId())) {
+            traceStudentOwnershipMismatch(actor, reasonCode, resourceType, resourceId, authorId);
+            throw new ApiException(
+                    HttpStatus.FORBIDDEN,
+                    buildAuthorMismatchMessage(message, actor, authorId, resourceType, resourceId),
+                    reasonCode
+            );
         }
     }
 
     private void traceStudentOperation(User user, String action, String reasonCode) {
-        if (!"student1@campus.local".equalsIgnoreCase(user.getEmail())) {
+        if (!isTraceAccount(user)) {
             return;
         }
         log.info(
@@ -209,6 +230,51 @@ public class BoardService {
                 action,
                 reasonCode
         );
+    }
+
+    private void traceStudentOwnershipMismatch(
+            User user,
+            String reasonCode,
+            String resourceType,
+            Long resourceId,
+            Long authorId
+    ) {
+        if (!isTraceAccount(user)) {
+            return;
+        }
+        log.warn(
+                "student-trace userId={} role={} resourceType={} resourceId={} reasonCode={} actorUserId={} authorUserId={}",
+                user.getId(),
+                user.getRole().name(),
+                resourceType,
+                resourceId,
+                reasonCode,
+                user.getId(),
+                authorId
+        );
+    }
+
+    private String buildAuthorMismatchMessage(
+            String message,
+            User actor,
+            Long authorId,
+            String resourceType,
+            Long resourceId
+    ) {
+        if (!isTraceAccount(actor)) {
+            return message;
+        }
+        return message
+                + " (resourceType=" + resourceType
+                + ", resourceId=" + resourceId
+                + ", actorUserId=" + actor.getId()
+                + ", actorEmail=" + actor.getEmail()
+                + ", authorUserId=" + authorId
+                + ")";
+    }
+
+    private boolean isTraceAccount(User user) {
+        return TRACE_ACCOUNT_EMAIL.equalsIgnoreCase(user.getEmail());
     }
 
     private BoardPostSummaryResponse toSummaryResponse(BoardPost post) {

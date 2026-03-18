@@ -147,6 +147,32 @@ class BoardControllerTests {
     }
 
     @Test
+    void exposesDetailedDiagnosticsForTraceStudentWhenPostUpdateIsForbidden() throws Exception {
+        User student2 = userRepository.findByEmail("student2@campus.local").orElseThrow();
+        BoardPost post = boardPostRepository.save(new BoardPost(
+                student2,
+                "student1 진단 메시지 테스트",
+                "원본",
+                LocalDateTime.now()
+        ));
+
+        mockMvc.perform(put("/api/board/posts/{id}", post.getId())
+                        .with(user(studentPrincipal))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "title": "student1 수정 시도",
+                                  "content": "실패해야 함"
+                                }
+                                """))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.reasonCode").value("POST_OWNER_MISMATCH"))
+                .andExpect(jsonPath("$.message").value(containsString("resourceType=BOARD_POST")))
+                .andExpect(jsonPath("$.detail").value(containsString("source=APP")))
+                .andExpect(jsonPath("$.hint").value(containsString("작성자 검증")));
+    }
+
+    @Test
     void deletesBoardPostForAuthor() throws Exception {
         User student = userRepository.findByEmail("student1@campus.local").orElseThrow();
         BoardPost post = boardPostRepository.save(new BoardPost(

@@ -25,12 +25,12 @@ public class GlobalExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
     private static final String ERROR_SOURCE_APP = "APP";
+    private static final String TRACE_ACCOUNT_EMAIL = "student1@campus.local";
     private static final Set<String> TEST_ACCOUNT_EMAILS = Set.of(
             "student1@campus.local",
             "prof1@campus.local",
             "admin1@campus.local"
     );
-    private static final Set<String> TRACE_ACCOUNT_EMAILS = Set.of("student1@campus.local");
 
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<ApiErrorResponse> handleApiException(ApiException ex, HttpServletRequest request) {
@@ -40,6 +40,8 @@ public class GlobalExceptionHandler {
         logFailure(requestId, request, auth, ex.getStatus().value(), reasonCode, ex.getMessage());
 
         String message = isDetailedMessageAllowed(auth.email()) ? ex.getMessage() : toGenericMessage(ex.getStatus());
+        String detail = buildDiagnosticDetail(request, auth, ex.getStatus(), reasonCode, ERROR_SOURCE_APP);
+        String hint = buildDiagnosticHint(request, ex.getStatus(), reasonCode, ERROR_SOURCE_APP, false);
         traceStudentRequest(requestId, request, auth, ex.getStatus().value(), reasonCode);
 
         return ResponseEntity.status(ex.getStatus())
@@ -53,7 +55,9 @@ public class GlobalExceptionHandler {
                         message,
                         requestId,
                         reasonCode,
-                        ERROR_SOURCE_APP
+                        ERROR_SOURCE_APP,
+                        detail,
+                        hint
                 )
         );
     }
@@ -71,6 +75,8 @@ public class GlobalExceptionHandler {
         logFailure(requestId, request, auth, HttpStatus.BAD_REQUEST.value(), "VALIDATION_ERROR", message);
         traceStudentRequest(requestId, request, auth, HttpStatus.BAD_REQUEST.value(), "VALIDATION_ERROR");
         String responseMessage = isDetailedMessageAllowed(auth.email()) ? message : toGenericMessage(HttpStatus.BAD_REQUEST);
+        String detail = buildDiagnosticDetail(request, auth, HttpStatus.BAD_REQUEST, "VALIDATION_ERROR", ERROR_SOURCE_APP);
+        String hint = buildDiagnosticHint(request, HttpStatus.BAD_REQUEST, "VALIDATION_ERROR", ERROR_SOURCE_APP, false);
 
         return ResponseEntity.badRequest()
                 .header(RequestIdFilter.REQUEST_ID_HEADER, requestId)
@@ -83,7 +89,9 @@ public class GlobalExceptionHandler {
                         responseMessage,
                         requestId,
                         "VALIDATION_ERROR",
-                        ERROR_SOURCE_APP
+                        ERROR_SOURCE_APP,
+                        detail,
+                        hint
                 )
         );
     }
@@ -109,6 +117,20 @@ public class GlobalExceptionHandler {
         String message = isDetailedMessageAllowed(auth.email())
                 ? (ex.getMessage() == null ? "Unexpected error" : ex.getMessage())
                 : toGenericMessage(HttpStatus.INTERNAL_SERVER_ERROR);
+        String detail = buildDiagnosticDetail(
+                request,
+                auth,
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "UNEXPECTED_ERROR",
+                ERROR_SOURCE_APP
+        );
+        String hint = buildDiagnosticHint(
+                request,
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "UNEXPECTED_ERROR",
+                ERROR_SOURCE_APP,
+                false
+        );
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .header(RequestIdFilter.REQUEST_ID_HEADER, requestId)
@@ -121,7 +143,9 @@ public class GlobalExceptionHandler {
                         message,
                         requestId,
                         "UNEXPECTED_ERROR",
-                        ERROR_SOURCE_APP
+                        ERROR_SOURCE_APP,
+                        detail,
+                        hint
                 )
         );
     }
@@ -172,6 +196,72 @@ public class GlobalExceptionHandler {
                 status,
                 reasonCode
         );
+    }
+
+    private String buildDiagnosticDetail(
+            HttpServletRequest request,
+            AuthLogContext auth,
+            HttpStatus status,
+            String reasonCode,
+            String source
+    ) {
+        if (!shouldTraceAccount(auth.email())) {
+            return null;
+        }
+        String requestId = resolveRequestId(request);
+        return "status=" + status.value()
+                + " method=" + request.getMethod()
+                + " path=" + request.getRequestURI()
+                + " source=" + source
+                + " requestId=" + requestId
+                + " userId=" + auth.userId()
+                + " role=" + auth.role()
+                + " reasonCode=" + reasonCode;
+    }
+
+    private String buildDiagnosticHint(
+            HttpServletRequest request,
+            HttpStatus status,
+            String reasonCode,
+            String source,
+            boolean securityLayer
+    ) {
+        AuthLogContext auth = resolveAuthContext();
+        if (!shouldTraceAccount(auth.email())) {
+            return null;
+        }
+
+        String method = request.getMethod();
+        String path = request.getRequestURI();
+        if (status == HttpStatus.FORBIDDEN && isBoardMutation(method, path)) {
+            if ("POST_OWNER_MISMATCH".equals(reasonCode) || "COMMENT_OWNER_MISMATCH".equals(reasonCode)) {
+                return "APP 도달 후 작성자 검증에서 차단된 403입니다. WAF 차단이 아니라 작성자/계정 불일치를 확인해야 합니다.";
+            }
+            if ("ROLE_STUDENT_REQUIRED".equals(reasonCode)) {
+                return "APP 도달 후 학생 권한 검증에서 차단된 403입니다. 로그인 계정의 role 또는 토큰 principal을 확인하세요.";
+            }
+            if (securityLayer) {
+                return "APP_SECURITY 계층에서 차단된 403입니다. 컨트롤러 이전 보안 설정 또는 인증 상태를 확인하세요.";
+            }
+            return "APP 도달 후 인가 실패가 난 403입니다. WAF 차단이 아니라 애플리케이션 권한 로직을 확인해야 합니다.";
+        }
+        if (status == HttpStatus.UNAUTHORIZED) {
+            return "Authorization 헤더, access token 만료 여부, refresh cookie 전송 여부를 확인하세요.";
+        }
+        if (status == HttpStatus.BAD_REQUEST) {
+            return "요청 본문 필드값과 길이 제약을 확인하세요.";
+        }
+        return null;
+    }
+
+    private boolean isBoardMutation(String method, String path) {
+        if (method == null || path == null) {
+            return false;
+        }
+        boolean mutationMethod = "PUT".equalsIgnoreCase(method)
+                || "DELETE".equalsIgnoreCase(method)
+                || "PATCH".equalsIgnoreCase(method);
+        return mutationMethod && path.startsWith("/api/board/posts/");
     }
 
     private String resolveRequestId(HttpServletRequest request) {
@@ -229,7 +319,7 @@ public class GlobalExceptionHandler {
         if (email == null) {
             return false;
         }
-        return TRACE_ACCOUNT_EMAILS.contains(email.toLowerCase(Locale.ROOT));
+        return TRACE_ACCOUNT_EMAIL.equals(email.toLowerCase(Locale.ROOT));
     }
 
     private String toGenericMessage(HttpStatus status) {

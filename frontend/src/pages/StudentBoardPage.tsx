@@ -87,7 +87,9 @@ export function StudentBoardPage() {
       </section>
 
       {error && (
-        <p className="surface-card border-red-200 bg-red-50/80 p-4 text-sm text-red-700">{error}</p>
+        <p className="surface-card whitespace-pre-wrap border-red-200 bg-red-50/80 p-4 text-sm text-red-700">
+          {error}
+        </p>
       )}
 
       <section className="surface-card p-6 md:p-7">

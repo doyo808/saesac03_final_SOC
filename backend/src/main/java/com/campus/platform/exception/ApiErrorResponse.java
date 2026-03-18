@@ -9,6 +9,8 @@ public record ApiErrorResponse(
         String message,
         String requestId,
         String reasonCode,
-        String source
+        String source,
+        String detail,
+        String hint
 ) {
 }
