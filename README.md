@@ -1,6 +1,7 @@
 # Campus Platform (Campus Site + LMS)
 
 React 프론트엔드와 Spring Boot 백엔드를 분리한 모노레포 MVP입니다.
+Maintainer: doyo808 (mhg1070@gmail.com)
 
 ## 저장소 구조
 
