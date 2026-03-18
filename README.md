@@ -107,6 +107,31 @@ Backend (`application.yml` 기본값 있음):
 - `ADMIN_ALLOWED_IP_RANGES` (example: `10.10.30.40/32,10.10.30.0/24`)
 - `ADMIN_USE_FORWARDED_FOR` (default: `false`)
 - `ADMIN_FORWARDED_FOR_HEADER` (default: `X-Forwarded-For`)
+- `SECURITY_EGRESS_TEST_ENABLED` (default: `false`)
+- `SECURITY_EGRESS_TEST_BASE_URL` (example: `http://192.168.40.100:8081`)
+- `SECURITY_EGRESS_TEST_ALLOWED_USER_EMAILS` (example: `admin1@campus.local,security-admin@campus.local`)
+- `SECURITY_EGRESS_TEST_CONNECT_TIMEOUT_MS` (default: `2000`)
+- `SECURITY_EGRESS_TEST_READ_TIMEOUT_MS` (default: `3000`)
+
+## 보안 훈련용 서버발신
+
+이 기능은 고정된 base URL로만 outbound를 보내고, 관리자는 UI에서 시나리오 `label`, `method`, `path`, `body`를 직접 작성합니다. 관리자는 full target URL을 입력하지 않습니다.
+
+- 인증된 관리자만 실행합니다.
+- 서버는 `SECURITY_EGRESS_TEST_BASE_URL` 아래로만 요청을 보냅니다.
+- 시나리오 식별은 `label`로 하고, 실제 전송 방식은 `method`와 `path`로 작성합니다.
+- `body`는 선택 사항이며, `GET` 또는 `POST` 형태로 테스트할 수 있습니다.
+- 응답은 body 저장이 아니라 `requestId`, `statusCode`, `durationMs` 같은 실행 메타데이터만 확인합니다.
+
+예시:
+
+```text
+base URL: http://192.168.40.100:8081
+label: dmz-canary-webhook
+method: POST
+path: /webhook/test
+body: {"source":"campus-platform","channel":"training-egress"}
+```
 
 Frontend:
 

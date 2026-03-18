@@ -120,3 +120,22 @@ export interface AdminStudentOverview {
   submissionCount: number;
   gradedSubmissionCount: number;
 }
+
+export interface SecurityEgressTestResult {
+  requestId: string;
+  scenario: string;
+  targetUrl: string;
+  exerciseId: string | null;
+  method: string;
+  statusCode: number;
+  durationMs: number;
+  result: string;
+}
+
+export interface SecurityEgressTestRequest {
+  scenario: string;
+  method: "GET" | "POST";
+  path: string;
+  exerciseId?: string;
+  body?: string;
+}

@@ -15,6 +15,8 @@ import type {
   AssignmentDetail,
   AssignmentSummary,
   Course,
+  SecurityEgressTestRequest,
+  SecurityEgressTestResult,
   Submission,
 } from "../types";
 
@@ -136,5 +138,24 @@ export async function fetchAdminStudentOverviews() {
   if (!Array.isArray(data)) {
     throw new Error("Invalid admin student overview payload");
   }
+  return data;
+}
+
+export async function runSecurityEgressTest(request: SecurityEgressTestRequest) {
+  const payload: SecurityEgressTestRequest = {
+    scenario: request.scenario.trim(),
+    method: request.method,
+    path: request.path.trim(),
+  };
+  if (request.exerciseId && request.exerciseId.trim().length > 0) {
+    payload.exerciseId = request.exerciseId.trim();
+  }
+  if (request.body && request.body.trim().length > 0) {
+    payload.body = request.body;
+  }
+  const { data } = await api.post<SecurityEgressTestResult>(
+    "/api/lms/admin/security-egress-tests",
+    payload,
+  );
   return data;
 }

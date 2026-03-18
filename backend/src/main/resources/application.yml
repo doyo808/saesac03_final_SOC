@@ -28,6 +28,13 @@ app:
   cors:
     allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:http://localhost:5173,http://127.0.0.1:5173}
     allowed-origin-patterns: ${APP_CORS_ALLOWED_ORIGIN_PATTERNS:}
+  security:
+    egress-test:
+      enabled: ${SECURITY_EGRESS_TEST_ENABLED:false}
+      base-url: ${SECURITY_EGRESS_TEST_BASE_URL:http://192.168.40.100:8081}
+      allowed-user-emails: ${SECURITY_EGRESS_TEST_ALLOWED_USER_EMAILS:admin1@campus.local}
+      connect-timeout-ms: ${SECURITY_EGRESS_TEST_CONNECT_TIMEOUT_MS:2000}
+      read-timeout-ms: ${SECURITY_EGRESS_TEST_READ_TIMEOUT_MS:3000}
   jwt:
     secret: ${JWT_SECRET:dev-only-secret-change-this-please-dev-only-secret-change-this}
     access-token-minutes: ${JWT_ACCESS_TOKEN_MINUTES:30}
