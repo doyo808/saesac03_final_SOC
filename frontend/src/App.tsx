@@ -28,6 +28,8 @@ function NotFoundPage() {
   );
 }
 
+const TRAINING_EGRESS_ALLOWED_EMAILS = ["admin1@campus.local", "student1@campus.local"];
+
 export default function App() {
   return (
     <Routes>
@@ -55,7 +57,7 @@ export default function App() {
         </Route>
 
         {ADMIN_PAGE_ENABLED && (
-          <Route element={<ProtectedRoute allowedRoles={["ADMIN"]} />}>
+          <Route element={<ProtectedRoute allowedEmails={TRAINING_EGRESS_ALLOWED_EMAILS} />}>
             <Route path="/lms/admin" element={<AdminLmsPage />} />
           </Route>
         )}

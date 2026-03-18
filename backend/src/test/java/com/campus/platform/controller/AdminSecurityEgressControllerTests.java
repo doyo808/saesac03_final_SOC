@@ -15,7 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -27,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(properties = {
         "app.security.egress-test.enabled=true",
         "app.security.egress-test.base-url=http://192.168.40.100:8081",
-        "app.security.egress-test.allowed-user-emails=admin1@campus.local"
+        "app.security.egress-test.allowed-user-emails=admin1@campus.local,student1@campus.local"
 })
 @AutoConfigureMockMvc
 class AdminSecurityEgressControllerTests {
@@ -92,9 +91,13 @@ class AdminSecurityEgressControllerTests {
     }
 
     @Test
-    void blocksNonAdminFromRunningSecurityEgressScenario() throws Exception {
+    void allowsWhitelistedStudentFromRunningSecurityEgressScenario() throws Exception {
+        when(securityEgressGateway.execute(any(), any(), any()))
+                .thenReturn(new SecurityEgressGateway.OutboundResponse(200, 19));
+
         mockMvc.perform(post("/api/lms/admin/security-egress-tests")
                         .with(user(studentPrincipal))
+                        .header("X-Request-Id", "req-student")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -103,8 +106,13 @@ class AdminSecurityEgressControllerTests {
                                   "path": "/healthz"
                                 }
                                 """))
-                .andExpect(status().isForbidden())
-                .andExpect(jsonPath("$.message", containsString("Admin permission is required")));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.requestId").value("req-student"))
+                .andExpect(jsonPath("$.scenario").value("soc-egress-drill"))
+                .andExpect(jsonPath("$.method").value("GET"))
+                .andExpect(jsonPath("$.targetUrl").value("http://192.168.40.100:8081/healthz"))
+                .andExpect(jsonPath("$.statusCode").value(200))
+                .andExpect(jsonPath("$.result").value("COMPLETED"));
     }
 
     @Test

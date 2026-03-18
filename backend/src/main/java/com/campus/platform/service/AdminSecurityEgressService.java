@@ -2,7 +2,6 @@ package com.campus.platform.service;
 
 import com.campus.platform.config.RequestIdFilter;
 import com.campus.platform.config.SecurityEgressTestProperties;
-import com.campus.platform.domain.Role;
 import com.campus.platform.dto.lms.SecurityEgressTestRequest;
 import com.campus.platform.dto.lms.SecurityEgressTestResponse;
 import com.campus.platform.exception.ApiException;
@@ -44,7 +43,6 @@ public class AdminSecurityEgressService {
             UserPrincipal principal,
             String requestId
     ) {
-        requireAdmin(principal);
         requireAllowedUser(principal);
 
         if (!properties.isEnabled()) {
@@ -243,15 +241,9 @@ public class AdminSecurityEgressService {
         );
     }
 
-    private void requireAdmin(UserPrincipal principal) {
-        if (principal == null || principal.getRole() != Role.ADMIN) {
-            throw new ApiException(HttpStatus.FORBIDDEN, "Admin permission is required");
-        }
-    }
-
     private void requireAllowedUser(UserPrincipal principal) {
         if (principal == null) {
-            throw new ApiException(HttpStatus.FORBIDDEN, "Admin permission is required");
+            throw new ApiException(HttpStatus.FORBIDDEN, "Configured training account is required");
         }
 
         if (properties.allowedUserEmailList().isEmpty()) {

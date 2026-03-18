@@ -32,7 +32,7 @@ app:
     egress-test:
       enabled: ${SECURITY_EGRESS_TEST_ENABLED:false}
       base-url: ${SECURITY_EGRESS_TEST_BASE_URL:http://192.168.40.100:8081}
-      allowed-user-emails: ${SECURITY_EGRESS_TEST_ALLOWED_USER_EMAILS:admin1@campus.local}
+      allowed-user-emails: ${SECURITY_EGRESS_TEST_ALLOWED_USER_EMAILS:admin1@campus.local,student1@campus.local}
       connect-timeout-ms: ${SECURITY_EGRESS_TEST_CONNECT_TIMEOUT_MS:2000}
       read-timeout-ms: ${SECURITY_EGRESS_TEST_READ_TIMEOUT_MS:3000}
   jwt:

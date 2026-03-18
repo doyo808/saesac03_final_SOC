@@ -4,9 +4,10 @@ import type { Role } from "../types";
 
 interface ProtectedRouteProps {
   allowedRoles?: Role[];
+  allowedEmails?: string[];
 }
 
-export function ProtectedRoute({ allowedRoles }: ProtectedRouteProps) {
+export function ProtectedRoute({ allowedRoles, allowedEmails }: ProtectedRouteProps) {
   const { user, initializing } = useAuth();
   const location = useLocation();
 
@@ -23,6 +24,13 @@ export function ProtectedRoute({ allowedRoles }: ProtectedRouteProps) {
   }
 
   if (allowedRoles && !allowedRoles.includes(user.role)) {
+    return <Navigate to="/lms" replace />;
+  }
+
+  if (
+    allowedEmails &&
+    !allowedEmails.map((email) => email.toLowerCase()).includes(user.email.toLowerCase())
+  ) {
     return <Navigate to="/lms" replace />;
   }
 
