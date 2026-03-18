@@ -53,7 +53,7 @@ class AdminSecurityEgressControllerTests {
         when(securityEgressGateway.execute(any(), any(), any()))
                 .thenReturn(new SecurityEgressGateway.OutboundResponse(204, 31));
 
-        mockMvc.perform(post("/api/lms/admin/security-egress-tests")
+        mockMvc.perform(post("/api/lms/security-egress-tests")
                         .with(user(adminPrincipal))
                         .header("X-Request-Id", "req-123")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -95,7 +95,7 @@ class AdminSecurityEgressControllerTests {
         when(securityEgressGateway.execute(any(), any(), any()))
                 .thenReturn(new SecurityEgressGateway.OutboundResponse(200, 19));
 
-        mockMvc.perform(post("/api/lms/admin/security-egress-tests")
+        mockMvc.perform(post("/api/lms/security-egress-tests")
                         .with(user(studentPrincipal))
                         .header("X-Request-Id", "req-student")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -117,7 +117,7 @@ class AdminSecurityEgressControllerTests {
 
     @Test
     void blocksAdminWhoIsNotInAllowedUserList() throws Exception {
-        mockMvc.perform(post("/api/lms/admin/security-egress-tests")
+        mockMvc.perform(post("/api/lms/security-egress-tests")
                         .with(user(otherAdminPrincipal))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""

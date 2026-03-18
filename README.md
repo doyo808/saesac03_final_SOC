@@ -67,6 +67,7 @@ npm run dev
 ```
 
 프론트 기본 URL: `http://localhost:5173`
+보안 훈련 페이지: `http://localhost:5173/lms/security-egress` (화이트리스트 계정 로그인 필요)
 관리자 페이지: `http://localhost:5173/lms/admin` (ADMIN 계정 로그인 필요)
 
 ## 기본 테스트 계정
@@ -116,9 +117,9 @@ Backend (`application.yml` 기본값 있음):
 
 ## 보안 훈련용 서버발신
 
-이 기능은 고정된 base URL로만 outbound를 보내고, 관리자는 UI에서 시나리오 `label`, `method`, `path`, `body`를 직접 작성합니다. 관리자는 full target URL을 입력하지 않습니다.
+이 기능은 고정된 base URL로만 outbound를 보내고, 화이트리스트 계정은 일반 LMS의 `/lms/security-egress` 에서 시나리오 `label`, `method`, `path`, `body`를 직접 작성합니다. full target URL은 입력하지 않습니다.
 
-- 인증된 관리자만 실행합니다.
+- 화이트리스트 계정만 실행합니다.
 - 서버는 `SECURITY_EGRESS_TEST_BASE_URL` 아래로만 요청을 보냅니다.
 - 시나리오 식별은 `label`로 하고, 실제 전송 방식은 `method`와 `path`로 작성합니다.
 - `body`는 선택 사항이며, `GET` 또는 `POST` 형태로 테스트할 수 있습니다.
@@ -138,6 +139,7 @@ Frontend:
 
 - `VITE_API_BASE_URL` (default/example: `http://localhost:8080`)
 - `VITE_ADMIN_PAGE_ENABLED` (default: `true`)
+- `VITE_SECURITY_EGRESS_ALLOWED_EMAILS` (default: `admin1@campus.local,student1@campus.local`)
 
 ## 인증/인가 디버깅 포인트
 

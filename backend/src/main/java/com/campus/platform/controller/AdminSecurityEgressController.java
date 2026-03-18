@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/lms/admin/security-egress-tests")
+@RequestMapping("/api/lms/security-egress-tests")
 public class AdminSecurityEgressController {
 
     private final AdminSecurityEgressService adminSecurityEgressService;

@@ -154,7 +154,7 @@ export async function runSecurityEgressTest(request: SecurityEgressTestRequest) 
     payload.body = request.body;
   }
   const { data } = await api.post<SecurityEgressTestResult>(
-    "/api/lms/admin/security-egress-tests",
+    "/api/lms/security-egress-tests",
     payload,
   );
   return data;

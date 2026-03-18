@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import { ADMIN_PAGE_ENABLED } from "../config/features";
+import { isSecurityEgressAllowed } from "../config/securityEgress";
 
 const roleDescription: Record<string, string> = {
   STUDENT: "수강 강의와 과제 제출 현황을 확인할 수 있습니다.",
@@ -50,6 +51,17 @@ export function LmsDashboardPage() {
             수강/담당 강의를 조회하고 과제 상세 페이지로 이동합니다.
           </p>
         </Link>
+        {isSecurityEgressAllowed(user?.email) && (
+          <Link
+            to="/lms/security-egress"
+            className="surface-card p-6 transition hover:-translate-y-0.5"
+          >
+            <h2 className="font-display text-xl text-[#0d274d]">보안 훈련용 서버발신</h2>
+            <p className="mt-2 text-sm text-slate-600">
+              화이트리스트 계정으로 훈련 시나리오를 작성하고 WAS outbound 요청을 실행합니다.
+            </p>
+          </Link>
+        )}
         {ADMIN_PAGE_ENABLED && user?.role === "ADMIN" && (
           <Link
             to="/lms/admin"

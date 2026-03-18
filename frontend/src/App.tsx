@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { ProtectedRoute } from "./auth/ProtectedRoute";
 import { Layout } from "./components/Layout";
 import { ADMIN_PAGE_ENABLED } from "./config/features";
+import { SECURITY_EGRESS_ALLOWED_EMAILS } from "./config/securityEgress";
 import { AcademicGuidePage } from "./pages/AcademicGuidePage";
 import { AnnouncementDetailPage } from "./pages/AnnouncementDetailPage";
 import { AnnouncementsPage } from "./pages/AnnouncementsPage";
@@ -16,6 +17,7 @@ import { LmsDashboardPage } from "./pages/LmsDashboardPage";
 import { LoginPage } from "./pages/LoginPage";
 import { MyCoursesPage } from "./pages/MyCoursesPage";
 import { SaessakNewsPage } from "./pages/SaessakNewsPage";
+import { SecurityEgressPage } from "./pages/SecurityEgressPage";
 import { StudentBoardDetailPage } from "./pages/StudentBoardDetailPage";
 import { StudentBoardPage } from "./pages/StudentBoardPage";
 
@@ -27,8 +29,6 @@ function NotFoundPage() {
     </div>
   );
 }
-
-const TRAINING_EGRESS_ALLOWED_EMAILS = ["admin1@campus.local", "student1@campus.local"];
 
 export default function App() {
   return (
@@ -51,13 +51,17 @@ export default function App() {
           <Route path="/lms/assignments/:id" element={<AssignmentDetailPage />} />
         </Route>
 
+        <Route element={<ProtectedRoute allowedEmails={SECURITY_EGRESS_ALLOWED_EMAILS} />}>
+          <Route path="/lms/security-egress" element={<SecurityEgressPage />} />
+        </Route>
+
         <Route element={<ProtectedRoute allowedRoles={["STUDENT"]} />}>
           <Route path="/student-board" element={<StudentBoardPage />} />
           <Route path="/student-board/:id" element={<StudentBoardDetailPage />} />
         </Route>
 
         {ADMIN_PAGE_ENABLED && (
-          <Route element={<ProtectedRoute allowedEmails={TRAINING_EGRESS_ALLOWED_EMAILS} />}>
+          <Route element={<ProtectedRoute allowedRoles={["ADMIN"]} />}>
             <Route path="/lms/admin" element={<AdminLmsPage />} />
           </Route>
         )}

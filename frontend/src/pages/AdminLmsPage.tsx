@@ -7,7 +7,6 @@ import {
   fetchAdminEnrollments,
   fetchAdminStudentOverviews,
   fetchAdminUsers,
-  runSecurityEgressTest,
 } from "../api/lmsApi";
 import { useAuth } from "../auth/AuthContext";
 import type {
@@ -15,8 +14,6 @@ import type {
   AdminEnrollment,
   AdminStudentOverview,
   AdminUser,
-  SecurityEgressTestRequest,
-  SecurityEgressTestResult,
 } from "../types";
 
 function resolveApiErrorMessage(error: unknown, fallback: string) {
@@ -42,14 +39,6 @@ export function AdminLmsPage() {
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [securityProcessing, setSecurityProcessing] = useState(false);
-  const [securityScenario, setSecurityScenario] = useState("");
-  const [securityMethod, setSecurityMethod] = useState<"GET" | "POST">("GET");
-  const [securityPath, setSecurityPath] = useState("");
-  const [exerciseId, setExerciseId] = useState("");
-  const [securityBody, setSecurityBody] = useState("");
-  const [securityEgressError, setSecurityEgressError] = useState<string | null>(null);
-  const [securityEgressResult, setSecurityEgressResult] = useState<SecurityEgressTestResult | null>(null);
 
   const loadAll = async () => {
     setLoading(true);
@@ -113,44 +102,6 @@ export function AdminLmsPage() {
     }
   };
 
-  const handleRunSecurityEgress = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (!securityScenario.trim()) {
-      setSecurityEgressError("시나리오 라벨을 입력해 주세요.");
-      return;
-    }
-    if (!securityPath.trim()) {
-      setSecurityEgressError("요청 경로를 입력해 주세요.");
-      return;
-    }
-    const normalizedPath = securityPath.trim().startsWith("/")
-      ? securityPath.trim()
-      : `/${securityPath.trim()}`;
-
-    setSecurityProcessing(true);
-    setSecurityEgressError(null);
-    setSecurityEgressResult(null);
-    try {
-      const request: SecurityEgressTestRequest = {
-        scenario: securityScenario.trim(),
-        method: securityMethod,
-        path: normalizedPath,
-      };
-      if (exerciseId.trim().length > 0) {
-        request.exerciseId = exerciseId.trim();
-      }
-      if (securityMethod === "POST" && securityBody.trim().length > 0) {
-        request.body = securityBody;
-      }
-      const result = await runSecurityEgressTest(request);
-      setSecurityEgressResult(result);
-    } catch (error) {
-      setSecurityEgressError(resolveApiErrorMessage(error, "훈련용 서버 발신 실행에 실패했습니다."));
-    } finally {
-      setSecurityProcessing(false);
-    }
-  };
-
   if (loading) {
     return <div className="surface-card p-8 text-sm text-slate-600">관리자 페이지 로딩 중입니다...</div>;
   }
@@ -191,132 +142,6 @@ export function AdminLmsPage() {
       {error && (
         <p className="surface-card border-red-200 bg-red-50/80 p-4 text-sm text-red-700">{error}</p>
       )}
-
-      <section className="surface-card p-6 md:p-7">
-        <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-          <div>
-            <h2 className="font-display text-2xl text-[#0d274d]">보안 훈련용 서버발신</h2>
-            <p className="mt-2 text-sm text-slate-600">
-              관리자 요청으로 서버가 사전 설정된 내부 타깃으로 발신합니다. 여기서는 시나리오 라벨과 경로만 작성합니다.
-            </p>
-          </div>
-          <span className="inline-flex w-fit rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
-            CUSTOM FLOW
-          </span>
-        </div>
-
-        {securityEgressError && (
-          <p className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-            {securityEgressError}
-          </p>
-        )}
-
-        <form onSubmit={handleRunSecurityEgress} className="mt-5 space-y-4">
-          <div className="grid gap-3 md:grid-cols-[1.2fr_0.8fr]">
-            <input
-              value={securityScenario}
-              onChange={(event) => setSecurityScenario(event.target.value)}
-              className="rounded-xl border border-[#cfd9e9] bg-white px-3 py-2 text-sm outline-none ring-[#173f72]/30 focus:ring-2"
-              placeholder="시나리오 라벨 예: login-probe, webhook-test"
-              maxLength={64}
-              required
-            />
-
-            <select
-              value={securityMethod}
-              onChange={(event) => setSecurityMethod(event.target.value as "GET" | "POST")}
-              className="rounded-xl border border-[#cfd9e9] bg-white px-3 py-2 text-sm outline-none ring-[#173f72]/30 focus:ring-2"
-            >
-              <option value="GET">GET</option>
-              <option value="POST">POST</option>
-            </select>
-          </div>
-
-          <input
-            value={securityPath}
-            onChange={(event) => setSecurityPath(event.target.value)}
-            className="rounded-xl border border-[#cfd9e9] bg-white px-3 py-2 text-sm outline-none ring-[#173f72]/30 focus:ring-2"
-            placeholder="요청 경로 예: /healthz 또는 /webhook/test"
-            maxLength={256}
-            required
-          />
-
-          <div className="grid gap-3 md:grid-cols-[1fr_1fr]">
-            <input
-              value={exerciseId}
-              onChange={(event) => setExerciseId(event.target.value)}
-              className="rounded-xl border border-[#cfd9e9] bg-white px-3 py-2 text-sm outline-none ring-[#173f72]/30 focus:ring-2"
-              placeholder="Exercise ID (선택)"
-              maxLength={64}
-            />
-
-            <div className="rounded-xl border border-[#d8deea] bg-[#f8fbff] px-4 py-3 text-xs text-slate-600">
-              <p className="font-semibold text-[#365b89]">TARGET</p>
-              <p className="mt-1">최종 대상 URL은 백엔드 설정에 따라 고정됩니다.</p>
-            </div>
-          </div>
-
-          {securityMethod === "POST" && (
-            <textarea
-              value={securityBody}
-              onChange={(event) => setSecurityBody(event.target.value)}
-              className="min-h-32 w-full rounded-xl border border-[#cfd9e9] bg-white px-3 py-2 text-sm outline-none ring-[#173f72]/30 focus:ring-2"
-              placeholder='POST body (선택) 예: {"source":"campus-platform"}'
-              maxLength={4000}
-            />
-          )}
-
-          <button
-            type="submit"
-            disabled={securityProcessing}
-            className="btn-primary px-4 py-2 text-sm font-semibold disabled:opacity-60"
-          >
-            실행
-          </button>
-        </form>
-
-        {securityEgressResult && (
-          <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50/80 p-4">
-            <p className="text-xs font-semibold tracking-[0.08em] text-emerald-700">LAST RUN</p>
-            <div className="mt-3 grid gap-3 text-sm text-slate-700 md:grid-cols-3">
-              <div>
-                <p className="text-xs text-slate-500">시나리오</p>
-                <p className="mt-1 font-medium text-[#0d274d]">{securityEgressResult.scenario}</p>
-              </div>
-              <div>
-                <p className="text-xs text-slate-500">대상 URL</p>
-                <p className="mt-1 break-all font-medium text-[#0d274d]">{securityEgressResult.targetUrl}</p>
-              </div>
-              <div>
-                <p className="text-xs text-slate-500">응답 코드</p>
-                <p className="mt-1 font-medium text-[#0d274d]">{securityEgressResult.statusCode}</p>
-              </div>
-              <div>
-                <p className="text-xs text-slate-500">소요 시간</p>
-                <p className="mt-1 font-medium text-[#0d274d]">{securityEgressResult.durationMs} ms</p>
-              </div>
-              <div>
-                <p className="text-xs text-slate-500">메서드</p>
-                <p className="mt-1 font-medium text-[#0d274d]">{securityEgressResult.method}</p>
-              </div>
-              <div>
-                <p className="text-xs text-slate-500">Request ID</p>
-                <p className="mt-1 break-all font-medium text-[#0d274d]">{securityEgressResult.requestId}</p>
-              </div>
-              <div>
-                <p className="text-xs text-slate-500">Exercise ID</p>
-                <p className="mt-1 font-medium text-[#0d274d]">
-                  {securityEgressResult.exerciseId ?? "-"}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs text-slate-500">Result</p>
-                <p className="mt-1 font-medium text-[#0d274d]">{securityEgressResult.result}</p>
-              </div>
-            </div>
-          </div>
-        )}
-      </section>
 
       <section className="surface-card p-6 md:p-7">
         <h2 className="font-display text-2xl text-[#0d274d]">수강신청 등록/해제 관리</h2>

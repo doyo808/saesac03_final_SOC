@@ -2,7 +2,7 @@
 
 This repository supports segmented deployment:
 
-- `WEB (DMZ)`: public portal only (admin page disabled at build time)
+- `WEB (DMZ)`: public portal + LMS + security egress page (admin page disabled at build time)
 - `WEB (Admin Office)`: internal admin portal (admin page enabled)
 - `WAS (Internal)`: Spring Boot API + JWT
 - `DB (Internal)`: PostgreSQL only
@@ -16,6 +16,7 @@ Build from `frontend/`:
 ```bash
 docker build -t campus-web:latest \
   --build-arg VITE_ADMIN_PAGE_ENABLED=false \
+  --build-arg VITE_SECURITY_EGRESS_ALLOWED_EMAILS=admin1@campus.local,student1@campus.local \
   --build-arg VITE_API_BASE_URL=/ .
 ```
 
@@ -26,6 +27,7 @@ Build from `frontend/`:
 ```bash
 docker build -t campus-web-admin:latest \
   --build-arg VITE_ADMIN_PAGE_ENABLED=true \
+  --build-arg VITE_SECURITY_EGRESS_ALLOWED_EMAILS=admin1@campus.local,student1@campus.local \
   --build-arg VITE_API_BASE_URL=/ .
 ```
 
@@ -99,9 +101,9 @@ Update placeholder IP/secret values before use.
 
 ## 7) Admin Access Rule Summary
 
-- Frontend: DMZ build removes `/lms/admin` route and admin links.
+- Frontend: DMZ build removes `/lms/admin` route and admin links, but `/lms/security-egress` 는 화이트리스트 계정에 대해 유지됩니다.
 - Backend: `/api/lms/admin/**` is allowed only when request source IP matches `ADMIN_ALLOWED_IP_RANGES`.
-- Result: even if someone obtains an ADMIN account outside admin network, admin API access is blocked.
+- Result: even if someone obtains an ADMIN account outside admin network, admin API access is blocked. 보안 훈련용 egress API는 `/api/lms/security-egress-tests` 로 분리되어 일반 WEB에서도 사용할 수 있습니다.
 
 ## 8) Network/Security Checklist
 
