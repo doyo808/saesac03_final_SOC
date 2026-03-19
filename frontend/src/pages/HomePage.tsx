@@ -47,10 +47,10 @@ export function HomePage() {
       setError(null);
       try {
         const [announcementsData, eventsData] = await Promise.all([
-          fetchAnnouncements(),
+          fetchAnnouncements({ size: 6 }),
           fetchAcademicEvents(),
         ]);
-        setAnnouncements(announcementsData.slice(0, 6));
+        setAnnouncements(announcementsData.items);
         setEvents(eventsData.slice(0, 6));
       } catch {
         setError("홈 메인 데이터를 불러오지 못했습니다.");

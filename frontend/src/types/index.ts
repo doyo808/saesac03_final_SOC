@@ -13,6 +13,27 @@ export interface AnnouncementSummary {
   createdAt: string;
 }
 
+export type AnnouncementSort = "latest" | "oldest" | "title";
+
+export interface AnnouncementSearchParams {
+  keyword?: string;
+  sort?: AnnouncementSort;
+  page?: number;
+  size?: number;
+  dateFrom?: string;
+  dateTo?: string;
+}
+
+export interface AnnouncementPage {
+  items: AnnouncementSummary[];
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+  hasPrevious: boolean;
+  hasNext: boolean;
+}
+
 export interface AnnouncementDetail {
   id: number;
   title: string;

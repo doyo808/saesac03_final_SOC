@@ -8,19 +8,22 @@ import {
 import type {
   AcademicEvent,
   AnnouncementDetail,
-  AnnouncementSummary,
+  AnnouncementPage,
+  AnnouncementSearchParams,
 } from "../types";
 
-export async function fetchAnnouncements() {
+export async function fetchAnnouncements(searchParams: AnnouncementSearchParams = {}) {
   try {
-    const { data } = await api.get<AnnouncementSummary[]>("/api/public/announcements");
-    if (!Array.isArray(data)) {
+    const { data } = await api.get<AnnouncementPage>("/api/public/announcements", {
+      params: searchParams,
+    });
+    if (!Array.isArray(data.items)) {
       throw new Error("Invalid announcements payload");
     }
     return data;
   } catch (error) {
     if (shouldUseMockFallback(error)) {
-      return mockFetchAnnouncements();
+      return mockFetchAnnouncements(searchParams);
     }
     throw error;
   }

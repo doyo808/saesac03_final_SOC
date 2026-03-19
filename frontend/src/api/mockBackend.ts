@@ -11,6 +11,9 @@ import type {
   Submission,
   User,
   AnnouncementDetail,
+  AnnouncementPage,
+  AnnouncementSearchParams,
+  AnnouncementSort,
   AnnouncementSummary,
 } from "../types";
 
@@ -542,9 +545,67 @@ export async function mockMe(): Promise<User> {
   return asUser(getCurrentUser());
 }
 
-export async function mockFetchAnnouncements(): Promise<AnnouncementSummary[]> {
-  const announcements = sortByDateDesc(getState().announcements, (item) => item.createdAt);
-  return announcements.map(({ id, title, createdAt }) => ({ id, title, createdAt }));
+export async function mockFetchAnnouncements(
+  searchParams: AnnouncementSearchParams = {},
+): Promise<AnnouncementPage> {
+  const keyword = searchParams.keyword?.trim().toLowerCase();
+  const dateFrom = searchParams.dateFrom ? new Date(`${searchParams.dateFrom}T00:00:00`) : null;
+  const dateTo = searchParams.dateTo ? new Date(`${searchParams.dateTo}T23:59:59.999`) : null;
+
+  if (dateFrom && dateTo && dateTo.getTime() < dateFrom.getTime()) {
+    throw new MockApiError(400, "종료일은 시작일보다 빠를 수 없습니다.");
+  }
+
+  let announcements = [...getState().announcements];
+  if (keyword) {
+    announcements = announcements.filter((item) => {
+      const haystack = `${item.title} ${item.content}`.toLowerCase();
+      return haystack.includes(keyword);
+    });
+  }
+  if (dateFrom) {
+    announcements = announcements.filter(
+      (item) => new Date(item.createdAt).getTime() >= dateFrom.getTime(),
+    );
+  }
+  if (dateTo) {
+    announcements = announcements.filter(
+      (item) => new Date(item.createdAt).getTime() <= dateTo.getTime(),
+    );
+  }
+
+  const sort = (searchParams.sort ?? "latest") as AnnouncementSort;
+  if (sort === "oldest") {
+    announcements = sortByDateAsc(announcements, (item) => item.createdAt);
+  } else if (sort === "title") {
+    announcements = [...announcements].sort((a, b) => {
+      const titleCompare = a.title.localeCompare(b.title, "ko");
+      if (titleCompare !== 0) {
+        return titleCompare;
+      }
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    });
+  } else {
+    announcements = sortByDateDesc(announcements, (item) => item.createdAt);
+  }
+
+  const size = Math.min(Math.max(searchParams.size ?? 10, 1), 20);
+  const page = Math.max(searchParams.page ?? 0, 0);
+  const totalElements = announcements.length;
+  const totalPages = totalElements === 0 ? 0 : Math.ceil(totalElements / size);
+  const pageItems = announcements
+    .slice(page * size, page * size + size)
+    .map<AnnouncementSummary>(({ id, title, createdAt }) => ({ id, title, createdAt }));
+
+  return {
+    items: pageItems,
+    page,
+    size,
+    totalElements,
+    totalPages,
+    hasPrevious: page > 0,
+    hasNext: page + 1 < totalPages,
+  };
 }
 
 export async function mockFetchAnnouncement(id: string | number): Promise<AnnouncementDetail> {
