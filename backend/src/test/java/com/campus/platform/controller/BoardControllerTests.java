@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -57,9 +59,10 @@ class BoardControllerTests {
     void listsBoardPostsForStudent() throws Exception {
         mockMvc.perform(get("/api/board/posts").with(user(studentPrincipal)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").isNumber())
-                .andExpect(jsonPath("$[0].title").isNotEmpty())
-                .andExpect(jsonPath("$[0].authorName").isNotEmpty());
+                .andExpect(jsonPath("$.items[0].id").isNumber())
+                .andExpect(jsonPath("$.items[0].title").isNotEmpty())
+                .andExpect(jsonPath("$.items[0].authorName").isNotEmpty())
+                .andExpect(jsonPath("$.page").value(0));
     }
 
     @Test
@@ -85,7 +88,9 @@ class BoardControllerTests {
 
     @Test
     void blocksProfessorFromCreatingComment() throws Exception {
-        Long postId = boardPostRepository.findAllByOrderByCreatedAtDesc().get(0).getId();
+        Long postId = boardPostRepository.findAll(
+                PageRequest.of(0, 1, Sort.by(Sort.Order.desc("createdAt"), Sort.Order.desc("id")))
+        ).getContent().get(0).getId();
 
         mockMvc.perform(post("/api/board/posts/{id}/comments", postId)
                         .with(user(professorPrincipal))
@@ -310,7 +315,30 @@ class BoardControllerTests {
                         .param("keyword", "와이파이")
                         .with(user(studentPrincipal)))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("와이파이")));
+                .andExpect(content().string(containsString("와이파이")))
+                .andExpect(jsonPath("$.items").isArray());
+    }
+
+    @Test
+    void filtersBoardPostsByAuthorAndSortAndPageSize() throws Exception {
+        mockMvc.perform(get("/api/board/posts")
+                        .param("author", "student1")
+                        .param("sort", "title")
+                        .param("size", "5")
+                        .with(user(studentPrincipal)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size").value(5))
+                .andExpect(jsonPath("$.items[0].authorName").value("student1"));
+    }
+
+    @Test
+    void rejectsInvalidBoardDateRange() throws Exception {
+        mockMvc.perform(get("/api/board/posts")
+                        .param("dateFrom", "2026-03-10")
+                        .param("dateTo", "2026-03-01")
+                        .with(user(studentPrincipal)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.reasonCode").value("INVALID_DATE_RANGE"));
     }
 
     private UserPrincipal toPrincipal(User user) {

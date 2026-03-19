@@ -2,15 +2,16 @@ package com.campus.platform.controller;
 
 import com.campus.platform.dto.board.BoardCommentResponse;
 import com.campus.platform.dto.board.BoardPostDetailResponse;
-import com.campus.platform.dto.board.BoardPostSummaryResponse;
+import com.campus.platform.dto.board.BoardPostPageResponse;
 import com.campus.platform.dto.board.CreateBoardCommentRequest;
 import com.campus.platform.dto.board.CreateBoardPostRequest;
 import com.campus.platform.security.UserPrincipal;
 import com.campus.platform.service.BoardService;
 import jakarta.validation.Valid;
-import java.util.List;
+import java.time.LocalDate;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,11 +34,17 @@ public class BoardController {
     }
 
     @GetMapping("/posts")
-    public List<BoardPostSummaryResponse> posts(
+    public BoardPostPageResponse posts(
             @AuthenticationPrincipal UserPrincipal principal,
-            @RequestParam(required = false) String keyword
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String author,
+            @RequestParam(defaultValue = "latest") String sort,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "6") int size,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFrom,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateTo
     ) {
-        return boardService.getPosts(principal, keyword);
+        return boardService.getPosts(principal, keyword, author, sort, page, size, dateFrom, dateTo);
     }
 
     @GetMapping("/posts/{id}")

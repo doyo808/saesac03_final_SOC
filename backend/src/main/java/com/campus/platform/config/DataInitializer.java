@@ -65,14 +65,57 @@ public class DataInitializer implements CommandLineRunner {
         ensureUser("student3@campus.local", "Password123!", "student3", Role.STUDENT);
         ensureUser("student4@campus.local", "Password123!", "student4", Role.STUDENT);
         ensureUser("student5@campus.local", "Password123!", "student5", Role.STUDENT);
+        User student11 = ensureUser("student11@campus.local", "Password123!", "김민지", Role.STUDENT);
+        User student12 = ensureUser("student12@campus.local", "Password123!", "강해린", Role.STUDENT);
+        User student13 = ensureUser("student13@campus.local", "Password123!", "장원영", Role.STUDENT);
+        User student14 = ensureUser("student14@campus.local", "Password123!", "유지민", Role.STUDENT);
+        User student15 = ensureUser("student15@campus.local", "Password123!", "안유진", Role.STUDENT);
         User prof1 = ensureUser("prof1@campus.local", "Password123!", "prof1", Role.PROFESSOR);
         ensureUser("admin1@campus.local", "Password123!", "admin1", Role.ADMIN);
 
+        Course course1 = ensureCourse("CS101", "웹프로그래밍 기초", prof1);
+        Course course2 = ensureCourse("SE320", "소프트웨어공학", prof1);
+        Course course3 = ensureCourse("DB204", "데이터베이스 시스템", prof1);
+        Course course4 = ensureCourse("OS220", "운영체제", prof1);
+        Course course5 = ensureCourse("SEC210", "네트워크 보안", prof1);
+        Course course6 = ensureCourse("SEC330", "웹애플리케이션보안", prof1);
+        Course course7 = ensureCourse("IR310", "디지털 포렌식 개론", prof1);
+
+        ensureEnrollments(student1, course1);
+        ensureEnrollments(student11, course1, course2, course3, course5);
+        ensureEnrollments(student12, course1, course4, course6, course7);
+        ensureEnrollments(student13, course2, course3, course4, course5, course6);
+        ensureEnrollments(student14, course1, course2, course7);
+        ensureEnrollments(student15, course3, course4, course5, course6);
+
+        LocalDateTime now = LocalDateTime.now();
+        ensureAssignment(
+                course1,
+                "과제 1 - 자기소개 페이지",
+                "React로 간단한 자기소개 페이지를 구현하세요.",
+                now.plusDays(10)
+        );
+        ensureAssignment(
+                course1,
+                "과제 2 - REST API 연동",
+                "axios를 사용해 공지사항 API를 연동하세요.",
+                now.plusDays(20)
+        );
+        ensureAssignment(
+                course5,
+                "실습 1 - 네트워크 보안 로그 읽기",
+                "방화벽과 IDS 로그 샘플을 비교하고 관찰한 차이를 정리하세요.",
+                now.plusDays(14)
+        );
+        ensureAssignment(
+                course6,
+                "실습 1 - 웹보안 사례 조사",
+                "최근 웹보안 사고 사례 하나를 골라 공격 흐름과 방어 포인트를 요약하세요.",
+                now.plusDays(18)
+        );
+
         boolean hasSeedData = announcementRepository.count() > 0
                 || academicEventRepository.count() > 0
-                || courseRepository.count() > 0
-                || enrollmentRepository.count() > 0
-                || assignmentRepository.count() > 0
                 || boardPostRepository.count() > 0
                 || boardCommentRepository.count() > 0;
         if (hasSeedData) {
@@ -82,42 +125,23 @@ public class DataInitializer implements CommandLineRunner {
         announcementRepository.save(new Announcement(
                 "2026학년도 1학기 개강 안내",
                 "개강일은 2026-03-04이며 첫 주는 수강정정 기간입니다.",
-                LocalDateTime.now().minusDays(7)
+                now.minusDays(7)
         ));
         announcementRepository.save(new Announcement(
                 "도서관 운영시간 변경",
                 "중간고사 기간 동안 도서관이 24시간 운영됩니다.",
-                LocalDateTime.now().minusDays(4)
+                now.minusDays(4)
         ));
         announcementRepository.save(new Announcement(
                 "캠퍼스 네트워크 점검",
                 "주말 오전 2시부터 5시까지 네트워크 점검이 예정되어 있습니다.",
-                LocalDateTime.now().minusDays(2)
+                now.minusDays(2)
         ));
 
         academicEventRepository.save(new AcademicEvent("개강", LocalDate.now().plusDays(5)));
         academicEventRepository.save(new AcademicEvent("수강정정 마감", LocalDate.now().plusDays(12)));
         academicEventRepository.save(new AcademicEvent("중간고사", LocalDate.now().plusDays(45)));
 
-        Course course1 = courseRepository.save(new Course("CS101", "웹프로그래밍 기초", prof1));
-        Course course2 = courseRepository.save(new Course("SE320", "소프트웨어공학", prof1));
-
-        enrollmentRepository.save(new Enrollment(course1, student1));
-
-        assignmentRepository.save(new Assignment(
-                course1,
-                "과제 1 - 자기소개 페이지",
-                "React로 간단한 자기소개 페이지를 구현하세요.",
-                LocalDateTime.now().plusDays(10)
-        ));
-        assignmentRepository.save(new Assignment(
-                course1,
-                "과제 2 - REST API 연동",
-                "axios를 사용해 공지사항 API를 연동하세요.",
-                LocalDateTime.now().plusDays(20)
-        ));
-
-        LocalDateTime now = LocalDateTime.now();
         BoardPost post1 = boardPostRepository.save(new BoardPost(
                 student1,
                 "기숙사 와이파이 상태 어떤가요?",
@@ -149,16 +173,64 @@ public class DataInitializer implements CommandLineRunner {
                 "저는 웹기획입문 들었는데 과제 부담이 적고 팀플도 없어서 무난했습니다.",
                 now.minusHours(7)
         ));
-
     }
 
     private User ensureUser(String email, String rawPassword, String name, Role role) {
         return userRepository.findByEmail(email)
+                .map(existing -> {
+                    boolean changed = false;
+                    if (!existing.getName().equals(name)) {
+                        existing.setName(name);
+                        changed = true;
+                    }
+                    if (existing.getRole() != role) {
+                        existing.setRole(role);
+                        changed = true;
+                    }
+                    if (changed) {
+                        return userRepository.save(existing);
+                    }
+                    return existing;
+                })
                 .orElseGet(() -> userRepository.save(new User(
                         email,
                         passwordEncoder.encode(rawPassword),
                         name,
                         role
                 )));
+    }
+
+    private Course ensureCourse(String code, String title, User professor) {
+        return courseRepository.findByCode(code)
+                .map(existing -> {
+                    boolean changed = false;
+                    if (!existing.getTitle().equals(title)) {
+                        existing.setTitle(title);
+                        changed = true;
+                    }
+                    if (!existing.getProfessor().getId().equals(professor.getId())) {
+                        existing.setProfessor(professor);
+                        changed = true;
+                    }
+                    if (changed) {
+                        return courseRepository.save(existing);
+                    }
+                    return existing;
+                })
+                .orElseGet(() -> courseRepository.save(new Course(code, title, professor)));
+    }
+
+    private void ensureEnrollments(User student, Course... courses) {
+        for (Course course : courses) {
+            if (!enrollmentRepository.existsByCourseIdAndStudentId(course.getId(), student.getId())) {
+                enrollmentRepository.save(new Enrollment(course, student));
+            }
+        }
+    }
+
+    private void ensureAssignment(Course course, String title, String description, LocalDateTime dueAt) {
+        if (!assignmentRepository.existsByCourseIdAndTitle(course.getId(), title)) {
+            assignmentRepository.save(new Assignment(course, title, description, dueAt));
+        }
     }
 }

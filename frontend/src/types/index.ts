@@ -35,6 +35,28 @@ export interface BoardPostSummary {
   createdAt: string;
 }
 
+export type BoardPostSort = "latest" | "oldest" | "title";
+
+export interface BoardPostSearchParams {
+  keyword?: string;
+  author?: string;
+  sort?: BoardPostSort;
+  page?: number;
+  size?: number;
+  dateFrom?: string;
+  dateTo?: string;
+}
+
+export interface BoardPostPage {
+  items: BoardPostSummary[];
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+  hasPrevious: boolean;
+  hasNext: boolean;
+}
+
 export interface BoardComment {
   id: number;
   authorId: number;

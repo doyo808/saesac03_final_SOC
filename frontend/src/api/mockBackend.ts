@@ -79,7 +79,7 @@ class MockApiError extends Error {
   }
 }
 
-const STORAGE_KEY = "saessak-campus-mock-backend-v1";
+const STORAGE_KEY = "saessak-campus-mock-backend-v2";
 const DEFAULT_USERS: MockUser[] = [
   {
     id: 1,
@@ -127,6 +127,41 @@ const DEFAULT_USERS: MockUser[] = [
     id: 7,
     email: "student5@campus.local",
     name: "student5",
+    role: "STUDENT",
+    password: "Password123!",
+  },
+  {
+    id: 8,
+    email: "student11@campus.local",
+    name: "김민지",
+    role: "STUDENT",
+    password: "Password123!",
+  },
+  {
+    id: 9,
+    email: "student12@campus.local",
+    name: "강해린",
+    role: "STUDENT",
+    password: "Password123!",
+  },
+  {
+    id: 10,
+    email: "student13@campus.local",
+    name: "장원영",
+    role: "STUDENT",
+    password: "Password123!",
+  },
+  {
+    id: 11,
+    email: "student14@campus.local",
+    name: "유지민",
+    role: "STUDENT",
+    password: "Password123!",
+  },
+  {
+    id: 12,
+    email: "student15@campus.local",
+    name: "안유진",
     role: "STUDENT",
     password: "Password123!",
   },
@@ -185,6 +220,41 @@ function seedState(): MockState {
         professorId: 2,
         professorName: "prof1",
       },
+      {
+        id: 3,
+        code: "DB204",
+        title: "데이터베이스 시스템",
+        professorId: 2,
+        professorName: "prof1",
+      },
+      {
+        id: 4,
+        code: "OS220",
+        title: "운영체제",
+        professorId: 2,
+        professorName: "prof1",
+      },
+      {
+        id: 5,
+        code: "SEC210",
+        title: "네트워크 보안",
+        professorId: 2,
+        professorName: "prof1",
+      },
+      {
+        id: 6,
+        code: "SEC330",
+        title: "웹애플리케이션보안",
+        professorId: 2,
+        professorName: "prof1",
+      },
+      {
+        id: 7,
+        code: "IR310",
+        title: "디지털 포렌식 개론",
+        professorId: 2,
+        professorName: "prof1",
+      },
     ],
     assignments: [
       {
@@ -201,15 +271,49 @@ function seedState(): MockState {
         description: "axios를 사용해 공지사항 API를 연동하세요.",
         dueAt: toIsoDateTime(20),
       },
+      {
+        id: 3,
+        courseId: 5,
+        title: "실습 1 - 네트워크 보안 로그 읽기",
+        description: "방화벽과 IDS 로그 샘플을 비교하고 관찰한 차이를 정리하세요.",
+        dueAt: toIsoDateTime(14),
+      },
+      {
+        id: 4,
+        courseId: 6,
+        title: "실습 1 - 웹보안 사례 조사",
+        description: "최근 웹보안 사고 사례 하나를 골라 공격 흐름과 방어 포인트를 요약하세요.",
+        dueAt: toIsoDateTime(18),
+      },
     ],
     enrollments: [
       { id: 1, courseId: 1, studentId: 1 },
+      { id: 2, courseId: 1, studentId: 8 },
+      { id: 3, courseId: 2, studentId: 8 },
+      { id: 4, courseId: 3, studentId: 8 },
+      { id: 5, courseId: 5, studentId: 8 },
+      { id: 6, courseId: 1, studentId: 9 },
+      { id: 7, courseId: 4, studentId: 9 },
+      { id: 8, courseId: 6, studentId: 9 },
+      { id: 9, courseId: 7, studentId: 9 },
+      { id: 10, courseId: 2, studentId: 10 },
+      { id: 11, courseId: 3, studentId: 10 },
+      { id: 12, courseId: 4, studentId: 10 },
+      { id: 13, courseId: 5, studentId: 10 },
+      { id: 14, courseId: 6, studentId: 10 },
+      { id: 15, courseId: 1, studentId: 11 },
+      { id: 16, courseId: 2, studentId: 11 },
+      { id: 17, courseId: 7, studentId: 11 },
+      { id: 18, courseId: 3, studentId: 12 },
+      { id: 19, courseId: 4, studentId: 12 },
+      { id: 20, courseId: 5, studentId: 12 },
+      { id: 21, courseId: 6, studentId: 12 },
     ],
     submissions: [],
     sessionUserId: null,
     nextIds: {
-      user: 8,
-      enrollment: 2,
+      user: 13,
+      enrollment: 22,
       submission: 1,
     },
   };
@@ -241,11 +345,18 @@ function loadState() {
 }
 
 function ensureDefaultUsers(state: MockState) {
-  const existingEmails = new Set(state.users.map((user) => user.email.toLowerCase()));
   for (const user of DEFAULT_USERS) {
-    if (!existingEmails.has(user.email.toLowerCase())) {
+    const existing = state.users.find(
+      (item) => item.email.toLowerCase() === user.email.toLowerCase(),
+    );
+    if (!existing) {
       state.users.push({ ...user });
+      continue;
     }
+
+    existing.name = user.name;
+    existing.role = user.role;
+    existing.password = user.password;
   }
 
   const maxUserId = state.users.reduce((max, user) => Math.max(max, user.id), 0);

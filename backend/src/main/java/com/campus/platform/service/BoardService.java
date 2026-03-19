@@ -6,6 +6,7 @@ import com.campus.platform.domain.Role;
 import com.campus.platform.domain.User;
 import com.campus.platform.dto.board.BoardCommentResponse;
 import com.campus.platform.dto.board.BoardPostDetailResponse;
+import com.campus.platform.dto.board.BoardPostPageResponse;
 import com.campus.platform.dto.board.BoardPostSummaryResponse;
 import com.campus.platform.dto.board.CreateBoardCommentRequest;
 import com.campus.platform.dto.board.CreateBoardPostRequest;
@@ -14,10 +15,17 @@ import com.campus.platform.repository.BoardCommentRepository;
 import com.campus.platform.repository.BoardPostRepository;
 import com.campus.platform.repository.UserRepository;
 import com.campus.platform.security.UserPrincipal;
+import jakarta.persistence.criteria.Predicate;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,24 +51,44 @@ public class BoardService {
         this.userRepository = userRepository;
     }
 
-    public List<BoardPostSummaryResponse> getPosts(UserPrincipal principal, String keyword) {
+    public BoardPostPageResponse getPosts(
+            UserPrincipal principal,
+            String keyword,
+            String author,
+            String sort,
+            int page,
+            int size,
+            LocalDate dateFrom,
+            LocalDate dateTo
+    ) {
         getStudentUser(principal);
 
-        List<BoardPost> posts;
-        if (StringUtils.hasText(keyword)) {
-            String trimmed = keyword.trim();
-            posts = boardPostRepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCaseOrderByCreatedAtDesc(
-                    trimmed,
-                    trimmed
+        if (dateFrom != null && dateTo != null && dateTo.isBefore(dateFrom)) {
+            throw new ApiException(
+                    HttpStatus.BAD_REQUEST,
+                    "종료일은 시작일보다 빠를 수 없습니다.",
+                    "INVALID_DATE_RANGE"
             );
-        } else {
-            posts = boardPostRepository.findAllByOrderByCreatedAtDesc();
         }
 
-        return posts
-                .stream()
-                .map(this::toSummaryResponse)
-                .toList();
+        int normalizedPage = Math.max(page, 0);
+        int normalizedSize = Math.max(1, Math.min(size, 20));
+        Sort normalizedSort = resolveBoardSort(sort);
+
+        Page<BoardPost> postPage = boardPostRepository.findAll(
+                buildBoardPostSpec(keyword, author, dateFrom, dateTo),
+                PageRequest.of(normalizedPage, normalizedSize, normalizedSort)
+        );
+
+        return new BoardPostPageResponse(
+                postPage.getContent().stream().map(this::toSummaryResponse).toList(),
+                postPage.getNumber(),
+                postPage.getSize(),
+                postPage.getTotalElements(),
+                postPage.getTotalPages(),
+                postPage.hasPrevious(),
+                postPage.hasNext()
+        );
     }
 
     public BoardPostDetailResponse getPost(Long postId, UserPrincipal principal) {
@@ -321,5 +349,57 @@ public class BoardService {
             return normalized;
         }
         return normalized.substring(0, 120) + "...";
+    }
+
+    private Specification<BoardPost> buildBoardPostSpec(
+            String keyword,
+            String author,
+            LocalDate dateFrom,
+            LocalDate dateTo
+    ) {
+        return (root, query, criteriaBuilder) -> {
+            ArrayList<Predicate> predicates = new ArrayList<>();
+
+            if (StringUtils.hasText(keyword)) {
+                String pattern = "%" + keyword.trim().toLowerCase() + "%";
+                predicates.add(criteriaBuilder.or(
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), pattern),
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("content")), pattern)
+                ));
+            }
+
+            if (StringUtils.hasText(author)) {
+                String pattern = "%" + author.trim().toLowerCase() + "%";
+                predicates.add(criteriaBuilder.or(
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("author").get("name")), pattern),
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("author").get("email")), pattern)
+                ));
+            }
+
+            if (dateFrom != null) {
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(
+                        root.get("createdAt"),
+                        dateFrom.atStartOfDay()
+                ));
+            }
+
+            if (dateTo != null) {
+                predicates.add(criteriaBuilder.lessThan(
+                        root.get("createdAt"),
+                        dateTo.plusDays(1).atStartOfDay()
+                ));
+            }
+
+            return criteriaBuilder.and(predicates.toArray(Predicate[]::new));
+        };
+    }
+
+    private Sort resolveBoardSort(String sort) {
+        String normalized = sort == null ? "latest" : sort.trim().toLowerCase();
+        return switch (normalized) {
+            case "oldest" -> Sort.by(Sort.Order.asc("createdAt"), Sort.Order.asc("id"));
+            case "title" -> Sort.by(Sort.Order.asc("title"), Sort.Order.desc("createdAt"));
+            default -> Sort.by(Sort.Order.desc("createdAt"), Sort.Order.desc("id"));
+        };
     }
 }

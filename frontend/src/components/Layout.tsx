@@ -1,7 +1,6 @@
 import { Link, NavLink, Outlet } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import { ADMIN_PAGE_ENABLED } from "../config/features";
-import { isSecurityEgressAllowed } from "../config/securityEgress";
 
 function navClassName(isActive: boolean) {
   return `${isActive ? "global-nav-link global-nav-link-active" : "global-nav-link"}`;
@@ -95,11 +94,6 @@ export function Layout() {
           {user && (
             <NavLink to="/lms" className={({ isActive }) => navClassName(isActive)}>
               LMS
-            </NavLink>
-          )}
-          {user && isSecurityEgressAllowed(user.email) && (
-            <NavLink to="/lms/security-egress" className={({ isActive }) => navClassName(isActive)}>
-              보안 훈련
             </NavLink>
           )}
           {ADMIN_PAGE_ENABLED && user?.role === "ADMIN" && (
