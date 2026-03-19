@@ -312,17 +312,17 @@ class BoardControllerTests {
     @Test
     void searchesBoardPostsByKeyword() throws Exception {
         mockMvc.perform(get("/api/board/posts")
-                        .param("keyword", "와이파이")
+                        .param("keyword", "select")
                         .with(user(studentPrincipal)))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("와이파이")))
-                .andExpect(jsonPath("$.items").isArray());
+                .andExpect(jsonPath("$.items").isArray())
+                .andExpect(jsonPath("$.totalElements").value(org.hamcrest.Matchers.greaterThan(0)));
     }
 
     @Test
     void filtersBoardPostsByAuthorAndSortAndPageSize() throws Exception {
         mockMvc.perform(get("/api/board/posts")
-                        .param("author", "student1")
+                        .param("author", "student1@campus.local")
                         .param("sort", "title")
                         .param("size", "5")
                         .with(user(studentPrincipal)))

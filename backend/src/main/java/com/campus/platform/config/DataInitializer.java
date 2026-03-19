@@ -104,14 +104,44 @@ public class DataInitializer implements CommandLineRunner {
         ensureAssignment(
                 course5,
                 "실습 1 - 네트워크 보안 로그 읽기",
-                "방화벽과 IDS 로그 샘플을 비교하고 관찰한 차이를 정리하세요.",
+                "방화벽과 IDS 로그 샘플을 비교하고, nmap -sS, ping sweep, alert tcp 예시가 어떤 식으로 남는지 정리하세요.",
                 now.plusDays(14)
         );
         ensureAssignment(
                 course6,
                 "실습 1 - 웹보안 사례 조사",
-                "최근 웹보안 사고 사례 하나를 골라 공격 흐름과 방어 포인트를 요약하세요.",
+                "최근 웹보안 사고 사례 하나를 골라 union select, <script>alert(1)</script>, ../admin 같은 문자열이 어떤 맥락에서 등장했는지 요약하세요.",
                 now.plusDays(18)
+        );
+        ensureAssignment(
+                course6,
+                "실습 2 - WAF 혼동 문자열 분석",
+                "보고서에 select, union, ../uploads, <script> 같은 문자열을 정상 문맥과 공격 문맥으로 나눠 정리하세요.",
+                now.plusDays(24)
+        );
+
+        ensureAnnouncement(
+                "웹보안 실습 문자열 안내",
+                "이번 주 실습 자료에는 union select, <script>alert(1)</script>, ../admin 같은 문자열이 포함되어 있습니다. 실제 공격이 아니라 탐지와 과탐 사례 분석용 예시입니다.",
+                now.minusDays(3)
+        );
+        ensureAnnouncement(
+                "보안과목 과제 제출 유의사항",
+                "네트워크 보안 및 웹애플리케이션보안 과제에는 select 문, script 태그, ../ 경로 예시가 들어갈 수 있으니 본문 맥락을 함께 작성하세요.",
+                now.minusDays(1)
+        );
+
+        ensureBoardPost(
+                student11,
+                "웹보안 과제에서 select 문 예시는 어떻게 적나요?",
+                "실습 보고서에 union select, order by 1, ../admin 같은 문자열을 설명용으로 쓰려는데 차단되지 않게 문맥을 어떻게 적어야 할지 궁금합니다.",
+                now.minusHours(16)
+        );
+        ensureBoardPost(
+                student12,
+                "script 태그 예시를 본문에 넣어도 되나요?",
+                "웹애플리케이션보안 과제 설명에 <script>alert(1)</script> 와 ../uploads/sample 경로를 예시로 넣으려는데, 정상 보고서로 보이게 쓰는 팁이 있으면 공유 부탁드립니다.",
+                now.minusHours(14)
         );
 
         boolean hasSeedData = announcementRepository.count() > 0
@@ -229,8 +259,63 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private void ensureAssignment(Course course, String title, String description, LocalDateTime dueAt) {
-        if (!assignmentRepository.existsByCourseIdAndTitle(course.getId(), title)) {
-            assignmentRepository.save(new Assignment(course, title, description, dueAt));
-        }
+        assignmentRepository.findByCourseIdOrderByDueAtAsc(course.getId())
+                .stream()
+                .filter(item -> item.getTitle().equals(title))
+                .findFirst()
+                .ifPresentOrElse(existing -> {
+                    boolean changed = false;
+                    if (!existing.getDescription().equals(description)) {
+                        existing.setDescription(description);
+                        changed = true;
+                    }
+                    if (!existing.getDueAt().equals(dueAt)) {
+                        existing.setDueAt(dueAt);
+                        changed = true;
+                    }
+                    if (changed) {
+                        assignmentRepository.save(existing);
+                    }
+                }, () -> assignmentRepository.save(new Assignment(course, title, description, dueAt)));
+    }
+
+    private void ensureAnnouncement(String title, String content, LocalDateTime createdAt) {
+        announcementRepository.findByTitle(title)
+                .map(existing -> {
+                    boolean changed = false;
+                    if (!existing.getContent().equals(content)) {
+                        existing.setContent(content);
+                        changed = true;
+                    }
+                    if (!existing.getCreatedAt().equals(createdAt)) {
+                        existing.setCreatedAt(createdAt);
+                        changed = true;
+                    }
+                    if (changed) {
+                        return announcementRepository.save(existing);
+                    }
+                    return existing;
+                })
+                .orElseGet(() -> announcementRepository.save(new Announcement(title, content, createdAt)));
+    }
+
+    private void ensureBoardPost(User author, String title, String content, LocalDateTime createdAt) {
+        boardPostRepository.findByAuthorIdAndTitle(author.getId(), title)
+                .map(existing -> {
+                    boolean changed = false;
+                    if (!existing.getContent().equals(content)) {
+                        existing.setContent(content);
+                        changed = true;
+                    }
+                    if (!existing.getCreatedAt().equals(createdAt)) {
+                        existing.setCreatedAt(createdAt);
+                        changed = true;
+                    }
+                    if (changed) {
+                        return boardPostRepository.save(existing);
+                    }
+                    return existing;
+                })
+                .orElseGet(() -> boardPostRepository.save(new BoardPost(author, title, content, createdAt)));
     }
 }

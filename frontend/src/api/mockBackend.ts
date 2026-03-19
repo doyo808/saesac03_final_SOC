@@ -202,6 +202,20 @@ function seedState(): MockState {
         content: "주말 오전 2시부터 5시까지 네트워크 점검이 예정되어 있습니다.",
         createdAt: toIsoDateTime(-2),
       },
+      {
+        id: 4,
+        title: "웹보안 실습 문자열 안내",
+        content:
+          "이번 주 실습 자료에는 union select, <script>alert(1)</script>, ../admin 같은 문자열이 포함되어 있습니다. 실제 공격이 아니라 탐지와 과탐 사례 분석용 예시입니다.",
+        createdAt: toIsoDateTime(-3),
+      },
+      {
+        id: 5,
+        title: "보안과목 과제 제출 유의사항",
+        content:
+          "네트워크 보안 및 웹애플리케이션보안 과제에는 select 문, script 태그, ../ 경로 예시가 들어갈 수 있으니 본문 맥락을 함께 작성하세요.",
+        createdAt: toIsoDateTime(-1),
+      },
     ],
     academicEvents: [
       { id: 1, title: "개강", date: toIsoDate(5) },
@@ -278,15 +292,22 @@ function seedState(): MockState {
         id: 3,
         courseId: 5,
         title: "실습 1 - 네트워크 보안 로그 읽기",
-        description: "방화벽과 IDS 로그 샘플을 비교하고 관찰한 차이를 정리하세요.",
+        description: "방화벽과 IDS 로그 샘플을 비교하고, nmap -sS, ping sweep, alert tcp 예시가 어떤 식으로 남는지 정리하세요.",
         dueAt: toIsoDateTime(14),
       },
       {
         id: 4,
         courseId: 6,
         title: "실습 1 - 웹보안 사례 조사",
-        description: "최근 웹보안 사고 사례 하나를 골라 공격 흐름과 방어 포인트를 요약하세요.",
+        description: "최근 웹보안 사고 사례 하나를 골라 union select, <script>alert(1)</script>, ../admin 같은 문자열이 어떤 맥락에서 등장했는지 요약하세요.",
         dueAt: toIsoDateTime(18),
+      },
+      {
+        id: 5,
+        courseId: 6,
+        title: "실습 2 - WAF 혼동 문자열 분석",
+        description: "보고서에 select, union, ../uploads, <script> 같은 문자열을 정상 문맥과 공격 문맥으로 나눠 정리하세요.",
+        dueAt: toIsoDateTime(24),
       },
     ],
     enrollments: [

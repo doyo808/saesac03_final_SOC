@@ -6,9 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -32,12 +30,12 @@ class PublicControllerTests {
     @Test
     void filtersAnnouncementsByKeywordAndSort() throws Exception {
         mockMvc.perform(get("/api/public/announcements")
-                        .param("keyword", "네트워크")
+                        .param("keyword", "select")
                         .param("sort", "title")
                         .param("size", "5"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size").value(5))
-                .andExpect(content().string(containsString("네트워크")));
+                .andExpect(jsonPath("$.totalElements").value(org.hamcrest.Matchers.greaterThan(0)));
     }
 
     @Test
