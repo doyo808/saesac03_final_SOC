@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { ProtectedRoute } from "./auth/ProtectedRoute";
 import { Layout } from "./components/Layout";
 import { ADMIN_PAGE_ENABLED } from "./config/features";
+import { REQUEST_SCENARIO_ALLOWED_EMAILS } from "./config/requestScenarioLibrary";
 import { SECURITY_EGRESS_ALLOWED_EMAILS } from "./config/securityEgress";
 import { AcademicGuidePage } from "./pages/AcademicGuidePage";
 import { AnnouncementDetailPage } from "./pages/AnnouncementDetailPage";
@@ -16,6 +17,7 @@ import { InternationalExchangePage } from "./pages/InternationalExchangePage";
 import { LmsDashboardPage } from "./pages/LmsDashboardPage";
 import { LoginPage } from "./pages/LoginPage";
 import { MyCoursesPage } from "./pages/MyCoursesPage";
+import { RequestScenarioLibraryPage } from "./pages/RequestScenarioLibraryPage";
 import { SaessakNewsPage } from "./pages/SaessakNewsPage";
 import { SecurityEgressPage } from "./pages/SecurityEgressPage";
 import { StudentBoardDetailPage } from "./pages/StudentBoardDetailPage";
@@ -53,6 +55,10 @@ export default function App() {
 
         <Route element={<ProtectedRoute allowedEmails={SECURITY_EGRESS_ALLOWED_EMAILS} />}>
           <Route path="/lms/security-egress" element={<SecurityEgressPage />} />
+        </Route>
+
+        <Route element={<ProtectedRoute allowedEmails={REQUEST_SCENARIO_ALLOWED_EMAILS} />}>
+          <Route path="/lms/request-scenarios" element={<RequestScenarioLibraryPage />} />
         </Route>
 
         <Route element={<ProtectedRoute allowedRoles={["STUDENT"]} />}>

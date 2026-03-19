@@ -182,3 +182,37 @@ export interface SecurityEgressTestRequest {
   exerciseId?: string;
   body?: string;
 }
+
+export type RequestScenarioClass = "benign" | "ambiguous" | "attack-like";
+
+export type RequestScenarioMethod = "GET" | "POST" | "PUT" | "DELETE";
+
+export interface RequestScenarioTemplate {
+  id: string;
+  title: string;
+  category: string;
+  expectedClass: RequestScenarioClass;
+  expectedOutcome: "allow" | "alert" | "block";
+  method: RequestScenarioMethod;
+  rawUrl: string;
+  body?: string;
+  contentType?: string;
+  requiresAuth: boolean;
+  allowedRoles?: Role[];
+  notes?: string;
+  source: "built-in" | "custom";
+}
+
+export interface RequestScenarioRun {
+  id: string;
+  scenarioId: string;
+  title: string;
+  expectedClass: RequestScenarioClass;
+  method: RequestScenarioMethod;
+  rawUrl: string;
+  status: number;
+  durationMs: number;
+  responseSnippet: string;
+  executedAt: string;
+  userEmail: string;
+}
