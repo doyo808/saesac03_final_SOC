@@ -1,6 +1,7 @@
 import { api } from "./client";
 import { shouldUseMockFallback } from "./fallback";
 import {
+  mockCreateSupportRequest,
   mockFetchAcademicEvents,
   mockFetchAnnouncement,
   mockFetchAnnouncements,
@@ -10,6 +11,8 @@ import type {
   AnnouncementDetail,
   AnnouncementPage,
   AnnouncementSearchParams,
+  SupportRequestForm,
+  SupportRequestReceipt,
 } from "../types";
 
 export async function fetchAnnouncements(searchParams: AnnouncementSearchParams = {}) {
@@ -51,6 +54,18 @@ export async function fetchAcademicEvents() {
   } catch (error) {
     if (shouldUseMockFallback(error)) {
       return mockFetchAcademicEvents();
+    }
+    throw error;
+  }
+}
+
+export async function createSupportRequest(payload: SupportRequestForm) {
+  try {
+    const { data } = await api.post<SupportRequestReceipt>("/api/public/support-requests", payload);
+    return data;
+  } catch (error) {
+    if (shouldUseMockFallback(error)) {
+      return mockCreateSupportRequest(payload);
     }
     throw error;
   }

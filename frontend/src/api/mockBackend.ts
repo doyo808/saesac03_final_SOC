@@ -15,6 +15,8 @@ import type {
   AnnouncementSearchParams,
   AnnouncementSort,
   AnnouncementSummary,
+  SupportRequestForm,
+  SupportRequestReceipt,
 } from "../types";
 
 interface RegisterPayload {
@@ -56,6 +58,16 @@ interface MockSubmission {
   feedback: string | null;
 }
 
+interface MockSupportRequest {
+  id: number;
+  category: string;
+  subject: string;
+  message: string;
+  contactEmail: string;
+  referenceUrl: string | null;
+  submittedAt: string;
+}
+
 interface MockState {
   users: MockUser[];
   announcements: AnnouncementDetail[];
@@ -64,11 +76,13 @@ interface MockState {
   assignments: MockAssignment[];
   enrollments: MockEnrollment[];
   submissions: MockSubmission[];
+  supportRequests: MockSupportRequest[];
   sessionUserId: number | null;
   nextIds: {
     user: number;
     enrollment: number;
     submission: number;
+    supportRequest: number;
   };
 }
 
@@ -334,11 +348,13 @@ function seedState(): MockState {
       { id: 21, courseId: 6, studentId: 12 },
     ],
     submissions: [],
+    supportRequests: [],
     sessionUserId: null,
     nextIds: {
       user: 13,
       enrollment: 22,
       submission: 1,
+      supportRequest: 1,
     },
   };
 }
@@ -386,6 +402,16 @@ function ensureDefaultUsers(state: MockState) {
   const maxUserId = state.users.reduce((max, user) => Math.max(max, user.id), 0);
   if (state.nextIds.user <= maxUserId) {
     state.nextIds.user = maxUserId + 1;
+  }
+  if (!Array.isArray(state.supportRequests)) {
+    state.supportRequests = [];
+  }
+  if (typeof state.nextIds.supportRequest !== "number" || state.nextIds.supportRequest < 1) {
+    const maxSupportRequestId = state.supportRequests.reduce(
+      (max, request) => Math.max(max, request.id),
+      0,
+    );
+    state.nextIds.supportRequest = maxSupportRequestId + 1;
   }
 
   return state;
@@ -640,6 +666,33 @@ export async function mockFetchAnnouncement(id: string | number): Promise<Announ
 
 export async function mockFetchAcademicEvents(): Promise<AcademicEvent[]> {
   return sortByDateAsc(getState().academicEvents, (item) => item.date);
+}
+
+export async function mockCreateSupportRequest(
+  payload: SupportRequestForm,
+): Promise<SupportRequestReceipt> {
+  const state = getState();
+  const supportRequest: MockSupportRequest = {
+    id: state.nextIds.supportRequest++,
+    category: payload.category.trim(),
+    subject: payload.subject.trim(),
+    message: payload.message.trim(),
+    contactEmail: payload.contactEmail.trim(),
+    referenceUrl: payload.referenceUrl?.trim() || null,
+    submittedAt: nowIso(),
+  };
+
+  state.supportRequests.push(supportRequest);
+  saveState();
+
+  return {
+    id: supportRequest.id,
+    category: supportRequest.category,
+    subject: supportRequest.subject,
+    contactEmail: supportRequest.contactEmail,
+    referenceUrl: supportRequest.referenceUrl,
+    submittedAt: supportRequest.submittedAt,
+  };
 }
 
 export async function mockFetchMyCourses(): Promise<Course[]> {

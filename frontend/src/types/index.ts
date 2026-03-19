@@ -216,3 +216,20 @@ export interface RequestScenarioRun {
   executedAt: string;
   userEmail: string;
 }
+
+export interface SupportRequestForm {
+  category: string;
+  subject: string;
+  message: string;
+  contactEmail: string;
+  referenceUrl?: string;
+}
+
+export interface SupportRequestReceipt {
+  id: number;
+  category: string;
+  subject: string;
+  contactEmail: string;
+  referenceUrl: string | null;
+  submittedAt: string;
+}

@@ -20,6 +20,7 @@ import { MyCoursesPage } from "./pages/MyCoursesPage";
 import { RequestScenarioLibraryPage } from "./pages/RequestScenarioLibraryPage";
 import { SaessakNewsPage } from "./pages/SaessakNewsPage";
 import { SecurityEgressPage } from "./pages/SecurityEgressPage";
+import { SupportCenterPage } from "./pages/SupportCenterPage";
 import { StudentBoardDetailPage } from "./pages/StudentBoardDetailPage";
 import { StudentBoardPage } from "./pages/StudentBoardPage";
 
@@ -43,6 +44,7 @@ export default function App() {
         <Route path="/international-exchange" element={<InternationalExchangePage />} />
         <Route path="/campus-map" element={<CampusMapPage />} />
         <Route path="/campus-life" element={<CampusLifePage />} />
+        <Route path="/support-center" element={<SupportCenterPage />} />
         <Route path="/saessak-news" element={<SaessakNewsPage />} />
         <Route path="/login" element={<LoginPage />} />
 

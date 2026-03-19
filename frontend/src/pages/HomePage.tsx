@@ -150,9 +150,11 @@ export function HomePage() {
               <span className="text-sm font-medium text-slate-700">도서관</span>
               <span className="text-xs text-[#0f4f9b]">DETAIL</span>
             </li>
-            <li className="surface-soft flex items-center justify-between px-4 py-3">
-              <span className="text-sm font-medium text-slate-700">학생지원</span>
-              <span className="text-xs text-[#0f4f9b]">DETAIL</span>
+            <li className="surface-soft px-4 py-3">
+              <Link to="/support-center" className="flex items-center justify-between">
+                <span className="text-sm font-medium text-slate-700">문의/제보 센터</span>
+                <span className="text-xs text-[#0f4f9b]">DETAIL</span>
+              </Link>
             </li>
           </ul>
 
