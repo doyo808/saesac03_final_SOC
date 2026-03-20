@@ -9,7 +9,7 @@
         <collectionProp name="Arguments.arguments">
           <elementProp name="base_url" elementType="Argument">
             <stringProp name="Argument.name">base_url</stringProp>
-            <stringProp name="Argument.value">http://192.168.40.5</stringProp>
+            <stringProp name="Argument.value">http://www.kj.ac.kr</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="scenario_id" elementType="Argument">
