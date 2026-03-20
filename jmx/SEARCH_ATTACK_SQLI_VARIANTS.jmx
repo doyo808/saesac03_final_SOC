@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
+<hashTree>
+  <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Test Plan" enabled="true">
+    <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+      <collectionProp name="Arguments.arguments">
+        <elementProp name="waf_host" elementType="Argument">
+          <stringProp name="Argument.name">waf_host</stringProp>
+          <stringProp name="Argument.value">192.168.40.5</stringProp>
+          <stringProp name="Argument.metadata">=</stringProp>
+        </elementProp>
+        <elementProp name="waf_port" elementType="Argument">
+          <stringProp name="Argument.name">waf_port</stringProp>
+          <stringProp name="Argument.value">80</stringProp>
+          <stringProp name="Argument.metadata">=</stringProp>
+        </elementProp>
+        <elementProp name="waf_protocol" elementType="Argument">
+          <stringProp name="Argument.name">waf_protocol</stringProp>
+          <stringProp name="Argument.value">http</stringProp>
+          <stringProp name="Argument.metadata">=</stringProp>
+        </elementProp>
+      </collectionProp>
+    </elementProp>
+  </TestPlan>
+  <hashTree>
+    <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="true">
+      <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+      <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+        <boolProp name="LoopController.continue_forever">false</boolProp>
+        <stringProp name="LoopController.loops">1</stringProp>
+      </elementProp>
+      <stringProp name="ThreadGroup.num_threads">1</stringProp>
+      <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+    </ThreadGroup>
+    <hashTree>
+      <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager" enabled="true">
+        <collectionProp name="CookieManager.cookies"/>
+      </CookieManager>
+      <hashTree/>
+      <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+        <collectionProp name="HeaderManager.headers">
+          <elementProp name="" elementType="Header">
+            <stringProp name="Header.name">User-Agent</stringProp>
+            <stringProp name="Header.value">Mozilla/5.0 JMeter</stringProp>
+          </elementProp>
+          <elementProp name="" elementType="Header">
+            <stringProp name="Header.name">Accept</stringProp>
+            <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+          </elementProp>
+        </collectionProp>
+      </HeaderManager>
+      <hashTree/>
+      <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="sqliOrTrue" enabled="true">
+        <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+        <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+          <collectionProp name="Arguments.arguments">
+            <elementProp name="keyword" elementType="HTTPArgument">
+              <boolProp name="HTTPArgument.always_encode">true</boolProp>
+              <stringProp name="Argument.name">keyword</stringProp>
+              <stringProp name="Argument.value">' OR 1=1 --</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+              <boolProp name="HTTPArgument.use_equals">true</boolProp>
+            </elementProp>
+            <elementProp name="sort" elementType="HTTPArgument">
+              <boolProp name="HTTPArgument.always_encode">true</boolProp>
+              <stringProp name="Argument.name">sort</stringProp>
+              <stringProp name="Argument.value">latest</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+              <boolProp name="HTTPArgument.use_equals">true</boolProp>
+            </elementProp>
+            <elementProp name="page" elementType="HTTPArgument">
+              <boolProp name="HTTPArgument.always_encode">true</boolProp>
+              <stringProp name="Argument.name">page</stringProp>
+              <stringProp name="Argument.value">0</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+              <boolProp name="HTTPArgument.use_equals">true</boolProp>
+            </elementProp>
+            <elementProp name="size" elementType="HTTPArgument">
+              <boolProp name="HTTPArgument.always_encode">true</boolProp>
+              <stringProp name="Argument.name">size</stringProp>
+              <stringProp name="Argument.value">6</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+              <boolProp name="HTTPArgument.use_equals">true</boolProp>
+            </elementProp>
+          </collectionProp>
+        </elementProp>
+        <stringProp name="HTTPSampler.domain">${waf_host}</stringProp>
+        <stringProp name="HTTPSampler.port">${waf_port}</stringProp>
+        <stringProp name="HTTPSampler.protocol">${waf_protocol}</stringProp>
+        <stringProp name="HTTPSampler.path">/api/board/posts</stringProp>
+        <stringProp name="HTTPSampler.method">GET</stringProp>
+        <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+        <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+        <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+        <stringProp name="HTTPSampler.connect_timeout">10000</stringProp>
+        <stringProp name="HTTPSampler.response_timeout">10000</stringProp>
+      </HTTPSamplerProxy>
+      <hashTree/>
+      <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="sqliUnion" enabled="true">
+        <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+        <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+          <collectionProp name="Arguments.arguments">
+            <elementProp name="keyword" elementType="HTTPArgument">
+              <boolProp name="HTTPArgument.always_encode">true</boolProp>
+              <stringProp name="Argument.name">keyword</stringProp>
+              <stringProp name="Argument.value">' UNION SELECT 1,2,3 --</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+              <boolProp name="HTTPArgument.use_equals">true</boolProp>
+            </elementProp>
+            <elementProp name="sort" elementType="HTTPArgument">
+              <boolProp name="HTTPArgument.always_encode">true</boolProp>
+              <stringProp name="Argument.name">sort</stringProp>
+              <stringProp name="Argument.value">latest</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+              <boolProp name="HTTPArgument.use_equals">true</boolProp>
+            </elementProp>
+            <elementProp name="page" elementType="HTTPArgument">
+              <boolProp name="HTTPArgument.always_encode">true</boolProp>
+              <stringProp name="Argument.name">page</stringProp>
+              <stringProp name="Argument.value">0</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+              <boolProp name="HTTPArgument.use_equals">true</boolProp>
+            </elementProp>
+            <elementProp name="size" elementType="HTTPArgument">
+              <boolProp name="HTTPArgument.always_encode">true</boolProp>
+              <stringProp name="Argument.name">size</stringProp>
+              <stringProp name="Argument.value">6</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+              <boolProp name="HTTPArgument.use_equals">true</boolProp>
+            </elementProp>
+          </collectionProp>
+        </elementProp>
+        <stringProp name="HTTPSampler.domain">${waf_host}</stringProp>
+        <stringProp name="HTTPSampler.port">${waf_port}</stringProp>
+        <stringProp name="HTTPSampler.protocol">${waf_protocol}</stringProp>
+        <stringProp name="HTTPSampler.path">/api/board/posts</stringProp>
+        <stringProp name="HTTPSampler.method">GET</stringProp>
+        <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+        <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+        <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+        <stringProp name="HTTPSampler.connect_timeout">10000</stringProp>
+        <stringProp name="HTTPSampler.response_timeout">10000</stringProp>
+      </HTTPSamplerProxy>
+      <hashTree/>
+      <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="sqliSleep" enabled="true">
+        <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+        <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+          <collectionProp name="Arguments.arguments">
+            <elementProp name="keyword" elementType="HTTPArgument">
+              <boolProp name="HTTPArgument.always_encode">true</boolProp>
+              <stringProp name="Argument.name">keyword</stringProp>
+              <stringProp name="Argument.value">' OR SLEEP(3) --</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+              <boolProp name="HTTPArgument.use_equals">true</boolProp>
+            </elementProp>
+            <elementProp name="sort" elementType="HTTPArgument">
+              <boolProp name="HTTPArgument.always_encode">true</boolProp>
+              <stringProp name="Argument.name">sort</stringProp>
+              <stringProp name="Argument.value">latest</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+              <boolProp name="HTTPArgument.use_equals">true</boolProp>
+            </elementProp>
+            <elementProp name="page" elementType="HTTPArgument">
+              <boolProp name="HTTPArgument.always_encode">true</boolProp>
+              <stringProp name="Argument.name">page</stringProp>
+              <stringProp name="Argument.value">0</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+              <boolProp name="HTTPArgument.use_equals">true</boolProp>
+            </elementProp>
+            <elementProp name="size" elementType="HTTPArgument">
+              <boolProp name="HTTPArgument.always_encode">true</boolProp>
+              <stringProp name="Argument.name">size</stringProp>
+              <stringProp name="Argument.value">6</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+              <boolProp name="HTTPArgument.use_equals">true</boolProp>
+            </elementProp>
+          </collectionProp>
+        </elementProp>
+        <stringProp name="HTTPSampler.domain">${waf_host}</stringProp>
+        <stringProp name="HTTPSampler.port">${waf_port}</stringProp>
+        <stringProp name="HTTPSampler.protocol">${waf_protocol}</stringProp>
+        <stringProp name="HTTPSampler.path">/api/board/posts</stringProp>
+        <stringProp name="HTTPSampler.method">GET</stringProp>
+        <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+        <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+        <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+        <stringProp name="HTTPSampler.connect_timeout">10000</stringProp>
+        <stringProp name="HTTPSampler.response_timeout">10000</stringProp>
+      </HTTPSamplerProxy>
+      <hashTree/>
+      <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="sqliWaitfor" enabled="true">
+        <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+        <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+          <collectionProp name="Arguments.arguments">
+            <elementProp name="keyword" elementType="HTTPArgument">
+              <boolProp name="HTTPArgument.always_encode">true</boolProp>
+              <stringProp name="Argument.name">keyword</stringProp>
+              <stringProp name="Argument.value">'; WAITFOR DELAY '0:0:3' --</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+              <boolProp name="HTTPArgument.use_equals">true</boolProp>
+            </elementProp>
+            <elementProp name="sort" elementType="HTTPArgument">
+              <boolProp name="HTTPArgument.always_encode">true</boolProp>
+              <stringProp name="Argument.name">sort</stringProp>
+              <stringProp name="Argument.value">latest</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+              <boolProp name="HTTPArgument.use_equals">true</boolProp>
+            </elementProp>
+            <elementProp name="page" elementType="HTTPArgument">
+              <boolProp name="HTTPArgument.always_encode">true</boolProp>
+              <stringProp name="Argument.name">page</stringProp>
+              <stringProp name="Argument.value">0</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+              <boolProp name="HTTPArgument.use_equals">true</boolProp>
+            </elementProp>
+            <elementProp name="size" elementType="HTTPArgument">
+              <boolProp name="HTTPArgument.always_encode">true</boolProp>
+              <stringProp name="Argument.name">size</stringProp>
+              <stringProp name="Argument.value">6</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+              <boolProp name="HTTPArgument.use_equals">true</boolProp>
+            </elementProp>
+          </collectionProp>
+        </elementProp>
+        <stringProp name="HTTPSampler.domain">${waf_host}</stringProp>
+        <stringProp name="HTTPSampler.port">${waf_port}</stringProp>
+        <stringProp name="HTTPSampler.protocol">${waf_protocol}</stringProp>
+        <stringProp name="HTTPSampler.path">/api/board/posts</stringProp>
+        <stringProp name="HTTPSampler.method">GET</stringProp>
+        <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+        <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+        <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+        <stringProp name="HTTPSampler.connect_timeout">10000</stringProp>
+        <stringProp name="HTTPSampler.response_timeout">10000</stringProp>
+      </HTTPSamplerProxy>
+      <hashTree/>
+      <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="sqliSort" enabled="true">
+        <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+        <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+          <collectionProp name="Arguments.arguments">
+            <elementProp name="keyword" elementType="HTTPArgument">
+              <boolProp name="HTTPArgument.always_encode">true</boolProp>
+              <stringProp name="Argument.name">keyword</stringProp>
+              <stringProp name="Argument.value">marker</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+              <boolProp name="HTTPArgument.use_equals">true</boolProp>
+            </elementProp>
+            <elementProp name="sort" elementType="HTTPArgument">
+              <boolProp name="HTTPArgument.always_encode">true</boolProp>
+              <stringProp name="Argument.name">sort</stringProp>
+              <stringProp name="Argument.value">latest' OR '1'='1</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+              <boolProp name="HTTPArgument.use_equals">true</boolProp>
+            </elementProp>
+            <elementProp name="page" elementType="HTTPArgument">
+              <boolProp name="HTTPArgument.always_encode">true</boolProp>
+              <stringProp name="Argument.name">page</stringProp>
+              <stringProp name="Argument.value">0</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+              <boolProp name="HTTPArgument.use_equals">true</boolProp>
+            </elementProp>
+            <elementProp name="size" elementType="HTTPArgument">
+              <boolProp name="HTTPArgument.always_encode">true</boolProp>
+              <stringProp name="Argument.name">size</stringProp>
+              <stringProp name="Argument.value">6</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+              <boolProp name="HTTPArgument.use_equals">true</boolProp>
+            </elementProp>
+          </collectionProp>
+        </elementProp>
+        <stringProp name="HTTPSampler.domain">${waf_host}</stringProp>
+        <stringProp name="HTTPSampler.port">${waf_port}</stringProp>
+        <stringProp name="HTTPSampler.protocol">${waf_protocol}</stringProp>
+        <stringProp name="HTTPSampler.path">/api/board/posts</stringProp>
+        <stringProp name="HTTPSampler.method">GET</stringProp>
+        <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+        <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+        <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+        <stringProp name="HTTPSampler.connect_timeout">10000</stringProp>
+        <stringProp name="HTTPSampler.response_timeout">10000</stringProp>
+      </HTTPSamplerProxy>
+      <hashTree/>
+    </hashTree>
+  </hashTree>
+</hashTree>
+</jmeterTestPlan>
