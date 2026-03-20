@@ -1,0 +1,35 @@
+<HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="attack_hpp_duplicate_keyword" enabled="true">
+  <stringProp name="HTTPSampler.domain">192.168.40.5</stringProp>
+  <stringProp name="HTTPSampler.port">80</stringProp>
+  <stringProp name="HTTPSampler.protocol">http</stringProp>
+  <stringProp name="HTTPSampler.path">/api/board/posts</stringProp>
+  <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+  <stringProp name="HTTPSampler.method">GET</stringProp>
+  <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+    <collectionProp name="Arguments.arguments">
+      <!-- 첫 번째 keyword: 정상 값 -->
+      <elementProp name="keyword" elementType="HTTPArgument">
+        <stringProp name="Argument.value">wifi</stringProp>
+        <stringProp name="Argument.name">keyword</stringProp>
+      </elementProp>
+      <!-- 두 번째 keyword: 악성 값 (WAF는 첫 번째만 검사할 수 있음) -->
+      <elementProp name="keyword" elementType="HTTPArgument">
+        <stringProp name="Argument.value">' UNION SELECT * FROM users--</stringProp>
+        <stringProp name="Argument.name">keyword</stringProp>
+      </elementProp>
+      <elementProp name="sort" elementType="HTTPArgument">
+        <stringProp name="Argument.value">latest</stringProp>
+        <stringProp name="Argument.name">sort</stringProp>
+      </elementProp>
+      <elementProp name="page" elementType="HTTPArgument">
+        <stringProp name="Argument.value">0</stringProp>
+        <stringProp name="Argument.name">page</stringProp>
+      </elementProp>
+      <elementProp name="size" elementType="HTTPArgument">
+        <stringProp name="Argument.value">6</stringProp>
+        <stringProp name="Argument.name">size</stringProp>
+      </elementProp>
+    </collectionProp>
+  </elementProp>
+  <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+</HTTPSamplerProxy>
