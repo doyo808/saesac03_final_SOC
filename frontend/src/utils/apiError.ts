@@ -31,10 +31,14 @@ function isTraceAllowed(email?: string | null) {
 
 function isBoardMutation(method?: string, url?: string) {
   const normalizedMethod = method?.trim().toUpperCase();
-  if (normalizedMethod !== "PUT" && normalizedMethod !== "DELETE" && normalizedMethod !== "PATCH") {
+  const normalizedUrl = url ?? "";
+  if (!normalizedUrl.includes("/api/board/posts/")) {
     return false;
   }
-  return (url ?? "").includes("/api/board/posts/");
+  if (normalizedMethod === "POST") {
+    return normalizedUrl.endsWith("/update") || normalizedUrl.endsWith("/delete");
+  }
+  return normalizedMethod === "PUT" || normalizedMethod === "DELETE" || normalizedMethod === "PATCH";
 }
 
 export function getErrorMessage(error: unknown, fallback: string, email?: string | null) {
@@ -61,7 +65,7 @@ export function getErrorMessage(error: unknown, fallback: string, email?: string
         );
       } else if (status === 403 && isBoardMutation(method, url)) {
         lines.push(
-          "reasonCode/source/requestId가 없어 앱 미도달 403으로 보입니다. DMZ WAF 또는 리버스프록시에서 PUT/DELETE를 선차단했을 가능성이 큽니다.",
+          "reasonCode/source/requestId가 없어 앱 미도달 403으로 보입니다. DMZ WAF 또는 리버스프록시에서 게시판 변경 요청을 선차단했을 가능성이 큽니다.",
         );
       }
 

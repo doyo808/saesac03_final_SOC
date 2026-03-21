@@ -73,9 +73,27 @@ public class BoardController {
         return boardService.updatePost(id, request, principal);
     }
 
+    @PostMapping("/posts/{id}/update")
+    public BoardPostDetailResponse updatePostViaPost(
+            @PathVariable Long id,
+            @Valid @RequestBody CreateBoardPostRequest request,
+            @AuthenticationPrincipal UserPrincipal principal
+    ) {
+        return boardService.updatePost(id, request, principal);
+    }
+
     @DeleteMapping("/posts/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletePost(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserPrincipal principal
+    ) {
+        boardService.deletePost(id, principal);
+    }
+
+    @PostMapping("/posts/{id}/delete")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletePostViaPost(
             @PathVariable Long id,
             @AuthenticationPrincipal UserPrincipal principal
     ) {
@@ -102,9 +120,29 @@ public class BoardController {
         return boardService.updateComment(postId, commentId, request, principal);
     }
 
+    @PostMapping("/posts/{postId}/comments/{commentId}/update")
+    public BoardCommentResponse updateCommentViaPost(
+            @PathVariable Long postId,
+            @PathVariable Long commentId,
+            @Valid @RequestBody CreateBoardCommentRequest request,
+            @AuthenticationPrincipal UserPrincipal principal
+    ) {
+        return boardService.updateComment(postId, commentId, request, principal);
+    }
+
     @DeleteMapping("/posts/{postId}/comments/{commentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteComment(
+            @PathVariable Long postId,
+            @PathVariable Long commentId,
+            @AuthenticationPrincipal UserPrincipal principal
+    ) {
+        boardService.deleteComment(postId, commentId, principal);
+    }
+
+    @PostMapping("/posts/{postId}/comments/{commentId}/delete")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteCommentViaPost(
             @PathVariable Long postId,
             @PathVariable Long commentId,
             @AuthenticationPrincipal UserPrincipal principal

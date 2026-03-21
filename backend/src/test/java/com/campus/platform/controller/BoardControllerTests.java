@@ -129,6 +129,30 @@ class BoardControllerTests {
     }
 
     @Test
+    void updatesBoardPostViaPostFallbackForAuthor() throws Exception {
+        User student = userRepository.findByEmail("student1@campus.local").orElseThrow();
+        BoardPost post = boardPostRepository.save(new BoardPost(
+                student,
+                "POST fallback 전 제목",
+                "POST fallback 전 내용",
+                LocalDateTime.now()
+        ));
+
+        mockMvc.perform(post("/api/board/posts/{id}/update", post.getId())
+                        .with(user(studentPrincipal))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "title": "POST fallback 제목",
+                                  "content": "POST fallback 내용"
+                                }
+                                """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value("POST fallback 제목"))
+                .andExpect(jsonPath("$.content").value("POST fallback 내용"));
+    }
+
+    @Test
     void blocksBoardPostUpdateForNonAuthor() throws Exception {
         User student = userRepository.findByEmail("student1@campus.local").orElseThrow();
         BoardPost post = boardPostRepository.save(new BoardPost(
@@ -195,6 +219,23 @@ class BoardControllerTests {
     }
 
     @Test
+    void deletesBoardPostViaPostFallbackForAuthor() throws Exception {
+        User student = userRepository.findByEmail("student1@campus.local").orElseThrow();
+        BoardPost post = boardPostRepository.save(new BoardPost(
+                student,
+                "POST fallback 삭제 제목",
+                "POST fallback 삭제 내용",
+                LocalDateTime.now()
+        ));
+
+        mockMvc.perform(post("/api/board/posts/{id}/delete", post.getId())
+                        .with(user(studentPrincipal)))
+                .andExpect(status().isNoContent());
+
+        assertThat(boardPostRepository.findById(post.getId())).isEmpty();
+    }
+
+    @Test
     void returnsUnauthorizedWhenUpdatingPostWithoutAuthentication() throws Exception {
         User student = userRepository.findByEmail("student1@campus.local").orElseThrow();
         BoardPost post = boardPostRepository.save(new BoardPost(
@@ -253,6 +294,40 @@ class BoardControllerTests {
     }
 
     @Test
+    void updatesBoardCommentViaPostFallbackForAuthor() throws Exception {
+        User student = userRepository.findByEmail("student1@campus.local").orElseThrow();
+        BoardPost post = boardPostRepository.save(new BoardPost(
+                student,
+                "댓글 POST fallback 수정 테스트",
+                "본문",
+                LocalDateTime.now()
+        ));
+
+        mockMvc.perform(post("/api/board/posts/{id}/comments", post.getId())
+                        .with(user(studentPrincipal))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "content": "댓글 POST fallback 수정 전"
+                                }
+                                """))
+                .andExpect(status().isCreated());
+
+        Long commentId = boardCommentRepository.findByPostIdOrderByCreatedAtAsc(post.getId()).get(0).getId();
+
+        mockMvc.perform(post("/api/board/posts/{postId}/comments/{commentId}/update", post.getId(), commentId)
+                        .with(user(studentPrincipal))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "content": "댓글 POST fallback 수정 후"
+                                }
+                                """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").value("댓글 POST fallback 수정 후"));
+    }
+
+    @Test
     void deletesBoardCommentForAuthor() throws Exception {
         User student = userRepository.findByEmail("student1@campus.local").orElseThrow();
         BoardPost post = boardPostRepository.save(new BoardPost(
@@ -275,6 +350,35 @@ class BoardControllerTests {
         Long commentId = boardCommentRepository.findByPostIdOrderByCreatedAtAsc(post.getId()).get(0).getId();
 
         mockMvc.perform(delete("/api/board/posts/{postId}/comments/{commentId}", post.getId(), commentId)
+                        .with(user(studentPrincipal)))
+                .andExpect(status().isNoContent());
+
+        assertThat(boardCommentRepository.findById(commentId)).isEmpty();
+    }
+
+    @Test
+    void deletesBoardCommentViaPostFallbackForAuthor() throws Exception {
+        User student = userRepository.findByEmail("student1@campus.local").orElseThrow();
+        BoardPost post = boardPostRepository.save(new BoardPost(
+                student,
+                "댓글 POST fallback 삭제 테스트",
+                "본문",
+                LocalDateTime.now()
+        ));
+
+        mockMvc.perform(post("/api/board/posts/{id}/comments", post.getId())
+                        .with(user(studentPrincipal))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "content": "댓글 POST fallback 삭제 대상"
+                                }
+                                """))
+                .andExpect(status().isCreated());
+
+        Long commentId = boardCommentRepository.findByPostIdOrderByCreatedAtAsc(post.getId()).get(0).getId();
+
+        mockMvc.perform(post("/api/board/posts/{postId}/comments/{commentId}/delete", post.getId(), commentId)
                         .with(user(studentPrincipal)))
                 .andExpect(status().isNoContent());
 
