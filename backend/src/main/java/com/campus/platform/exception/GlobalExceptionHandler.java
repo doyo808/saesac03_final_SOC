@@ -19,6 +19,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -96,6 +97,42 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleNoResourceFound(
+            NoResourceFoundException ex,
+            HttpServletRequest request
+    ) {
+        AuthLogContext auth = resolveAuthContext();
+        String requestId = resolveRequestId(request);
+        String reasonCode = isBoardMutationFallbackPath(request.getMethod(), request.getRequestURI())
+                ? "BOARD_MUTATION_FALLBACK_ROUTE_MISSING"
+                : "API_PATH_NOT_FOUND";
+        String message = buildNoResourceMessage(request, auth, reasonCode);
+
+        logFailure(requestId, request, auth, HttpStatus.NOT_FOUND.value(), reasonCode, message);
+        traceStudentRequest(requestId, request, auth, HttpStatus.NOT_FOUND.value(), reasonCode);
+
+        String detail = buildDiagnosticDetail(request, auth, HttpStatus.NOT_FOUND, reasonCode, ERROR_SOURCE_APP);
+        String hint = buildNoResourceHint(request, auth, reasonCode);
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .header(RequestIdFilter.REQUEST_ID_HEADER, requestId)
+                .header("X-Error-Source", ERROR_SOURCE_APP)
+                .body(
+                        new ApiErrorResponse(
+                                LocalDateTime.now(),
+                                request.getRequestURI(),
+                                HttpStatus.NOT_FOUND.name(),
+                                message,
+                                requestId,
+                                reasonCode,
+                                ERROR_SOURCE_APP,
+                                detail,
+                                hint
+                        )
+                );
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorResponse> handleUnexpected(Exception ex, HttpServletRequest request) {
         AuthLogContext auth = resolveAuthContext();
@@ -152,6 +189,26 @@ public class GlobalExceptionHandler {
 
     private String formatFieldError(FieldError error) {
         return error.getField() + ": " + (error.getDefaultMessage() == null ? "invalid value" : error.getDefaultMessage());
+    }
+
+    private String buildNoResourceMessage(HttpServletRequest request, AuthLogContext auth, String reasonCode) {
+        if (!isDetailedMessageAllowed(auth.email())) {
+            return toGenericMessage(HttpStatus.NOT_FOUND);
+        }
+        if ("BOARD_MUTATION_FALLBACK_ROUTE_MISSING".equals(reasonCode)) {
+            return "게시판 변경 POST fallback 경로를 찾을 수 없습니다. 배포된 WAS가 최신이 아니어서 /update 또는 /delete 라우트가 없을 수 있습니다.";
+        }
+        return "No handler or static resource for " + request.getMethod() + " " + request.getRequestURI();
+    }
+
+    private String buildNoResourceHint(HttpServletRequest request, AuthLogContext auth, String reasonCode) {
+        if (!shouldTraceAccount(auth.email())) {
+            return null;
+        }
+        if ("BOARD_MUTATION_FALLBACK_ROUTE_MISSING".equals(reasonCode)) {
+            return "프런트는 WAF 우회를 위해 POST fallback을 시도했지만, 현재 WAS에는 해당 라우트가 없습니다. 최신 campus-was 이미지를 배포했는지 확인하세요.";
+        }
+        return "요청 경로와 배포된 프런트/백엔드 버전이 서로 맞는지 확인하세요.";
     }
 
     private void logFailure(
@@ -262,6 +319,16 @@ public class GlobalExceptionHandler {
                 || "DELETE".equalsIgnoreCase(method)
                 || "PATCH".equalsIgnoreCase(method);
         return mutationMethod && path.startsWith("/api/board/posts/");
+    }
+
+    private boolean isBoardMutationFallbackPath(String method, String path) {
+        if (method == null || path == null) {
+            return false;
+        }
+        if (!"POST".equalsIgnoreCase(method) || !path.startsWith("/api/board/posts/")) {
+            return false;
+        }
+        return path.endsWith("/update") || path.endsWith("/delete");
     }
 
     private String resolveRequestId(HttpServletRequest request) {

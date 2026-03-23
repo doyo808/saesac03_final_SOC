@@ -8,6 +8,7 @@ import type {
 } from "../types";
 
 interface BoardMutationErrorPayload {
+  message?: string;
   reasonCode?: string;
   requestId?: string;
   source?: string;
@@ -39,12 +40,53 @@ async function withBoardMutationPostFallback<T>(
 ) {
   try {
     return await primary();
-  } catch (error) {
-    if (!shouldRetryBoardMutationViaPost(error)) {
-      throw error;
+  } catch (primaryError) {
+    if (!shouldRetryBoardMutationViaPost(primaryError)) {
+      throw primaryError;
     }
-    return fallback();
+    try {
+      return await fallback();
+    } catch (fallbackError) {
+      if (isMissingBoardMutationFallbackRoute(fallbackError)) {
+        throw buildMissingBoardFallbackRouteError(primaryError, fallbackError);
+      }
+      throw fallbackError;
+    }
   }
+}
+
+function isMissingBoardMutationFallbackRoute(error: unknown) {
+  if (!axios.isAxiosError<BoardMutationErrorPayload>(error) || !error.response) {
+    return false;
+  }
+
+  const method = error.config?.method?.toUpperCase();
+  const url = error.config?.url ?? "";
+  if (method !== "POST" || !url.includes("/api/board/posts/")) {
+    return false;
+  }
+
+  const payload = error.response.data;
+  const message = typeof payload?.message === "string" ? payload.message.toLowerCase() : "";
+  const source = error.response.headers?.["x-error-source"] ?? payload?.source;
+  const reasonCode = payload?.reasonCode;
+
+  return source === "APP"
+    && (reasonCode === "BOARD_MUTATION_FALLBACK_ROUTE_MISSING"
+      || reasonCode === "API_PATH_NOT_FOUND"
+      || message.includes("no static resource"));
+}
+
+function buildMissingBoardFallbackRouteError(primaryError: unknown, fallbackError: unknown) {
+  const primaryMethod =
+    axios.isAxiosError(primaryError) ? primaryError.config?.method?.toUpperCase() ?? "UNKNOWN" : "UNKNOWN";
+  const primaryUrl = axios.isAxiosError(primaryError) ? primaryError.config?.url ?? "UNKNOWN" : "UNKNOWN";
+  const fallbackUrl =
+    axios.isAxiosError(fallbackError) ? fallbackError.config?.url ?? "UNKNOWN" : "UNKNOWN";
+
+  return new Error(
+    `원래 요청(${primaryMethod} ${primaryUrl})이 차단되어 POST fallback(${fallbackUrl})으로 재시도했지만, 현재 WAS에는 해당 fallback 라우트가 없습니다. 배포된 campus-was가 최신 버전인지 확인하세요.`,
+  );
 }
 
 export async function fetchBoardPosts(searchParams: BoardPostSearchParams = {}) {

@@ -445,6 +445,21 @@ class BoardControllerTests {
                 .andExpect(jsonPath("$.reasonCode").value("INVALID_DATE_RANGE"));
     }
 
+    @Test
+    void returnsNotFoundForUnknownBoardApiPath() throws Exception {
+        mockMvc.perform(post("/api/board/posts/{id}/update-typo", 146L)
+                        .with(user(studentPrincipal))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "title": "fallback typo",
+                                  "content": "missing route"
+                                }
+                                """))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.reasonCode").value("API_PATH_NOT_FOUND"));
+    }
+
     private UserPrincipal toPrincipal(User user) {
         return new UserPrincipal(
                 user.getId(),
