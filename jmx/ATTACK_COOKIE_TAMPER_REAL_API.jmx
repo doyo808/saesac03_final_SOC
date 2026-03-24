@@ -139,9 +139,10 @@
               <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
             </JSONPostProcessor>
             <hashTree/>
-            <!-- refresh_token 쿠키 추출 (CookieManager가 자동 저장하지만, 변조용으로 별도 저장) -->
+            <!-- refresh_token 쿠키 추출 (CDATA로 감싸서 XML 파싱 오류 방지) -->
             <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Extract refresh_token from cookie" enabled="true">
-              <stringProp name="script">import org.apache.jmeter.protocol.http.control.CookieManager;
+              <stringProp name="script"><![CDATA[
+import org.apache.jmeter.protocol.http.control.CookieManager;
 import org.apache.jmeter.protocol.http.control.Cookie;
 
 def cookieManager = sampler.getCookieManager();
@@ -153,13 +154,15 @@ if (cookieManager != null) {
             log.info("refresh_token found: " + cookie.getValue().substring(0, Math.min(20, cookie.getValue().length())) + "...");
         }
     }
-}</stringProp>
+}
+]]></stringProp>
               <stringProp name="scriptLanguage">groovy</stringProp>
             </JSR223PostProcessor>
             <hashTree/>
-            <!-- JWT 디코딩 -->
+            <!-- JWT 디코딩 (CDATA로 감싸서 XML 파싱 오류 방지) -->
             <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Decode JWT Payload" enabled="true">
-              <stringProp name="script">import java.util.Base64;
+              <stringProp name="script"><![CDATA[
+import java.util.Base64;
 import groovy.json.JsonSlurper;
 
 def token = vars.get("access_token");
@@ -176,7 +179,8 @@ if (token != null && token != "NOT_FOUND") {
     } catch (Exception e) {
         log.warn("JWT decode failed: " + e.getMessage());
     }
-}</stringProp>
+}
+]]></stringProp>
               <stringProp name="scriptLanguage">groovy</stringProp>
             </JSR223PostProcessor>
             <hashTree/>
