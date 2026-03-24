@@ -1,143 +1,520 @@
-<!-- JWT 변조 공격 1: 알고리즘 none으로 변경 -->
-<HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="attack_jwt_none_algorithm" enabled="true">
-  <stringProp name="HTTPSampler.domain">192.168.40.5</stringProp>
-  <stringProp name="HTTPSampler.port">80</stringProp>
-  <stringProp name="HTTPSampler.protocol">http</stringProp>
-  <stringProp name="HTTPSampler.path">/api/board/posts</stringProp>
-  <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-  <stringProp name="HTTPSampler.method">GET</stringProp>
-  <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-  <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments">
-    <collectionProp name="Arguments.arguments">
-      <elementProp name="keyword" elementType="HTTPArgument">
-        <stringProp name="Argument.value">test</stringProp>
-        <stringProp name="Argument.name">keyword</stringProp>
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="ATTACK_JWT_TOKEN_FALSIFICATION">
+      <stringProp name="TestPlan.comments">JWT token falsification attacks - alg:none, HS256 downgrade, kid injection, role escalation</stringProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="waf_host" elementType="Argument">
+            <stringProp name="Argument.name">waf_host</stringProp>
+            <stringProp name="Argument.value">www.kj.ac.kr</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="waf_port" elementType="Argument">
+            <stringProp name="Argument.name">waf_port</stringProp>
+            <stringProp name="Argument.value">80</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="waf_protocol" elementType="Argument">
+            <stringProp name="Argument.name">waf_protocol</stringProp>
+            <stringProp name="Argument.value">http</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="login_email" elementType="Argument">
+            <stringProp name="Argument.name">login_email</stringProp>
+            <stringProp name="Argument.value">student1@campus.local</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="login_password" elementType="Argument">
+            <stringProp name="Argument.name">login_password</stringProp>
+            <stringProp name="Argument.value">Password123!</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
       </elementProp>
-      <elementProp name="sort" elementType="HTTPArgument">
-        <stringProp name="Argument.value">latest</stringProp>
-        <stringProp name="Argument.name">sort</stringProp>
-      </elementProp>
-      <elementProp name="page" elementType="HTTPArgument">
-        <stringProp name="Argument.value">0</stringProp>
-        <stringProp name="Argument.name">page</stringProp>
-      </elementProp>
-      <elementProp name="size" elementType="HTTPArgument">
-        <stringProp name="Argument.value">6</stringProp>
-        <stringProp name="Argument.name">size</stringProp>
-      </elementProp>
-    </collectionProp>
-  </elementProp>
-  <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-</HTTPSamplerProxy>
-<hashTree>
-  <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="JWT None Algorithm Header" enabled="true">
-    <collectionProp name="HeaderManager.headers">
-      <!-- alg: none, role: admin으로 변조된 JWT -->
-      <elementProp name="Authorization" elementType="Header">
-        <stringProp name="Header.name">Authorization</stringProp>
-        <stringProp name="Header.value">Bearer eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJyb2xlIjoiYWRtaW4iLCJlbWFpbCI6ImFkbWluQGNhbXB1cy5sb2NhbCJ9.</stringProp>
-      </elementProp>
-      <elementProp name="X-SOC-Test" elementType="Header">
-        <stringProp name="Header.name">X-SOC-Test</stringProp>
-        <stringProp name="Header.value">true</stringProp>
-      </elementProp>
-    </collectionProp>
-  </HeaderManager>
-  <hashTree/>
-</hashTree>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+    </TestPlan>
+    <hashTree>
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>true</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <sentBytes>true</sentBytes>
+            <url>true</url>
+            <threadCounts>true</threadCounts>
+            <idleTime>true</idleTime>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename"></stringProp>
+      </ResultCollector>
+      <hashTree/>
+      
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="ATTACK_JWT-ThreadGroup">
+        <intProp name="ThreadGroup.num_threads">1</intProp>
+        <intProp name="ThreadGroup.ramp_time">1</intProp>
+        <stringProp name="ThreadGroup.duration">${__P(duration,600)}</stringProp>
+        <longProp name="ThreadGroup.delay">5</longProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <boolProp name="ThreadGroup.scheduler">true</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController">
+          <stringProp name="LoopController.loops">1</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </elementProp>
+      </ThreadGroup>
+      <hashTree>
+        <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP CookieManager" enabled="true">
+          <collectionProp name="CookieManager.cookies"/>
+          <boolProp name="CookieManager.clearEachIteration">true</boolProp>
+          <boolProp name="CookieManager.controlledByThreadGroup">false</boolProp>
+        </CookieManager>
+        <hashTree/>
 
-<!-- JWT 변조 공격 2: HS256으로 다운그레이드 (공개키를 대칭키로 사용) -->
-<HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="attack_jwt_hs256_downgrade" enabled="true">
-  <stringProp name="HTTPSampler.domain">192.168.40.5</stringProp>
-  <stringProp name="HTTPSampler.port">80</stringProp>
-  <stringProp name="HTTPSampler.protocol">http</stringProp>
-  <stringProp name="HTTPSampler.path">/api/board/posts</stringProp>
-  <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-  <stringProp name="HTTPSampler.method">GET</stringProp>
-  <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-  <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments">
-    <collectionProp name="Arguments.arguments">
-      <elementProp name="keyword" elementType="HTTPArgument">
-        <stringProp name="Argument.value">test</stringProp>
-        <stringProp name="Argument.name">keyword</stringProp>
-      </elementProp>
-      <elementProp name="sort" elementType="HTTPArgument">
-        <stringProp name="Argument.value">latest</stringProp>
-        <stringProp name="Argument.name">sort</stringProp>
-      </elementProp>
-      <elementProp name="page" elementType="HTTPArgument">
-        <stringProp name="Argument.value">0</stringProp>
-        <stringProp name="Argument.name">page</stringProp>
-      </elementProp>
-      <elementProp name="size" elementType="HTTPArgument">
-        <stringProp name="Argument.value">6</stringProp>
-        <stringProp name="Argument.name">size</stringProp>
-      </elementProp>
-    </collectionProp>
-  </elementProp>
-  <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-</HTTPSamplerProxy>
-<hashTree>
-  <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="JWT HS256 Downgrade Header" enabled="true">
-    <collectionProp name="HeaderManager.headers">
-      <!-- RS256에서 HS256으로 다운그레이드, 공개키로 서명 위조 -->
-      <elementProp name="Authorization" elementType="Header">
-        <stringProp name="Header.name">Authorization</stringProp>
-        <stringProp name="Header.value">Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iLCJlbWFpbCI6ImFkbWluQGNhbXB1cy5sb2NhbCJ9.QsVJpJLO-_8kR_v9kqQt-PIQBqZYPJmUa5mHzYdQf0U</stringProp>
-      </elementProp>
-      <elementProp name="X-SOC-Test" elementType="Header">
-        <stringProp name="Header.name">X-SOC-Test</stringProp>
-        <stringProp name="Header.value">true</stringProp>
-      </elementProp>
-    </collectionProp>
-  </HeaderManager>
-  <hashTree/>
-</hashTree>
+        <!-- OnceOnlyController: 로그인은 한 번만 실행 (정상 토큰 획득용) -->
+        <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="Once Only Controller - Get Valid Token" enabled="true"/>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login" enabled="true">
+            <stringProp name="HTTPSampler.domain">${waf_host}</stringProp>
+            <stringProp name="HTTPSampler.port">${waf_port}</stringProp>
+            <stringProp name="HTTPSampler.protocol">${waf_protocol}</stringProp>
+            <stringProp name="HTTPSampler.path">/api/auth/login</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{"email":"${login_email}","password":"${login_password}"}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Login Headers" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">application/json</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree/>
+            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract access_token" enabled="true">
+              <stringProp name="JSONPostProcessor.referenceNames">access_token</stringProp>
+              <stringProp name="JSONPostProcessor.jsonPathExprs">$.accessToken</stringProp>
+              <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+              <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
+            </JSONPostProcessor>
+            <hashTree/>
+            <!-- JWT 디코딩 (정상 토큰 정보 확인용) -->
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Decode JWT Payload" enabled="true">
+              <stringProp name="cacheKey">true</stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="script">import java.util.Base64;
+import groovy.json.JsonSlurper;
 
-<!-- JWT 변조 공격 3: KID 인젝션 (경로 조작) -->
-<HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="attack_jwt_kid_injection" enabled="true">
-  <stringProp name="HTTPSampler.domain">192.168.40.5</stringProp>
-  <stringProp name="HTTPSampler.port">80</stringProp>
-  <stringProp name="HTTPSampler.protocol">http</stringProp>
-  <stringProp name="HTTPSampler.path">/api/board/posts</stringProp>
-  <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-  <stringProp name="HTTPSampler.method">GET</stringProp>
-  <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-  <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments">
-    <collectionProp name="Arguments.arguments">
-      <elementProp name="keyword" elementType="HTTPArgument">
-        <stringProp name="Argument.value">test</stringProp>
-        <stringProp name="Argument.name">keyword</stringProp>
-      </elementProp>
-      <elementProp name="sort" elementType="HTTPArgument">
-        <stringProp name="Argument.value">latest</stringProp>
-        <stringProp name="Argument.name">sort</stringProp>
-      </elementProp>
-      <elementProp name="page" elementType="HTTPArgument">
-        <stringProp name="Argument.value">0</stringProp>
-        <stringProp name="Argument.name">page</stringProp>
-      </elementProp>
-      <elementProp name="size" elementType="HTTPArgument">
-        <stringProp name="Argument.value">6</stringProp>
-        <stringProp name="Argument.name">size</stringProp>
-      </elementProp>
-    </collectionProp>
-  </elementProp>
-  <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-</HTTPSamplerProxy>
-<hashTree>
-  <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="JWT KID Injection Header" enabled="true">
-    <collectionProp name="HeaderManager.headers">
-      <!-- KID를 /dev/null로 조작하여 빈 키 사용 유도 -->
-      <elementProp name="Authorization" elementType="Header">
-        <stringProp name="Header.name">Authorization</stringProp>
-        <stringProp name="Header.value">Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ii4uLy4uLy4uL2Rldi9udWxsIn0.eyJyb2xlIjoiYWRtaW4iLCJlbWFpbCI6ImFkbWluQGNhbXB1cy5sb2NhbCJ9.n9Jj9U9h9Q8J9J9J9J9J9J9J9J9J9J9J9J9J9J9J9J9J9J9J9A</stringProp>
-      </elementProp>
-      <elementProp name="X-SOC-Test" elementType="Header">
-        <stringProp name="Header.name">X-SOC-Test</stringProp>
-        <stringProp name="Header.value">true</stringProp>
-      </elementProp>
-    </collectionProp>
-  </HeaderManager>
-  <hashTree/>
-</hashTree>
+def token = vars.get("access_token");
+if (token != null && token != "NOT_FOUND") {
+    try {
+        String[] parts = token.split("\\.");
+        if (parts.length >= 2) {
+            String payloadJson = new String(Base64.getUrlDecoder().decode(parts[1]));
+            def payload = new JsonSlurper().parseText(payloadJson);
+            vars.put("jwt_role", payload.role != null ? payload.role : "unknown");
+            vars.put("jwt_email", payload.email != null ? payload.email : "unknown");
+            log.info("JWT Decoded - role: " + payload.role + ", email: " + payload.email);
+        }
+    } catch (Exception e) {
+        log.warn("JWT decode failed: " + e.getMessage());
+    }
+}</stringProp>
+              <stringProp name="scriptLanguage">groovy</stringProp>
+            </JSR223PostProcessor>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+
+        <!-- ==================== 테스트 1: 정상 요청 (베이스라인) ==================== -->
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="[BASELINE] Normal request with valid token" enabled="true">
+          <stringProp name="HTTPSampler.domain">${waf_host}</stringProp>
+          <stringProp name="HTTPSampler.port">${waf_port}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${waf_protocol}</stringProp>
+          <stringProp name="HTTPSampler.path">/api/board/posts</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="keyword" elementType="HTTPArgument">
+                <stringProp name="Argument.value">test</stringProp>
+                <stringProp name="Argument.name">keyword</stringProp>
+              </elementProp>
+              <elementProp name="sort" elementType="HTTPArgument">
+                <stringProp name="Argument.value">latest</stringProp>
+                <stringProp name="Argument.name">sort</stringProp>
+              </elementProp>
+              <elementProp name="page" elementType="HTTPArgument">
+                <stringProp name="Argument.value">0</stringProp>
+                <stringProp name="Argument.name">page</stringProp>
+              </elementProp>
+              <elementProp name="size" elementType="HTTPArgument">
+                <stringProp name="Argument.value">6</stringProp>
+                <stringProp name="Argument.name">size</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Normal Headers" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="Accept" elementType="Header">
+                <stringProp name="Header.name">Accept</stringProp>
+                <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+              </elementProp>
+              <elementProp name="Authorization" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${access_token}</stringProp>
+              </elementProp>
+              <elementProp name="X-SOC-Test" elementType="Header">
+                <stringProp name="Header.name">X-SOC-Test</stringProp>
+                <stringProp name="Header.value">true</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+        </hashTree>
+
+        <!-- ==================== 테스트 2: JWT alg: none 공격 ==================== -->
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="[ATTACK] JWT alg: none attack" enabled="true">
+          <stringProp name="HTTPSampler.domain">${waf_host}</stringProp>
+          <stringProp name="HTTPSampler.port">${waf_port}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${waf_protocol}</stringProp>
+          <stringProp name="HTTPSampler.path">/api/board/posts</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="keyword" elementType="HTTPArgument">
+                <stringProp name="Argument.value">test</stringProp>
+                <stringProp name="Argument.name">keyword</stringProp>
+              </elementProp>
+              <elementProp name="sort" elementType="HTTPArgument">
+                <stringProp name="Argument.value">latest</stringProp>
+                <stringProp name="Argument.name">sort</stringProp>
+              </elementProp>
+              <elementProp name="page" elementType="HTTPArgument">
+                <stringProp name="Argument.value">0</stringProp>
+                <stringProp name="Argument.name">page</stringProp>
+              </elementProp>
+              <elementProp name="size" elementType="HTTPArgument">
+                <stringProp name="Argument.value">6</stringProp>
+                <stringProp name="Argument.name">size</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="JWT None Algorithm Header" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="Accept" elementType="Header">
+                <stringProp name="Header.name">Accept</stringProp>
+                <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+              </elementProp>
+              <elementProp name="Authorization" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJyb2xlIjoiYWRtaW4iLCJlbWFpbCI6ImFkbWluQGNhbXB1cy5sb2NhbCJ9.</stringProp>
+              </elementProp>
+              <elementProp name="X-SOC-Test" elementType="Header">
+                <stringProp name="Header.name">X-SOC-Test</stringProp>
+                <stringProp name="Header.value">true</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+        </hashTree>
+
+        <!-- ==================== 테스트 3: JWT HS256 다운그레이드 공격 ==================== -->
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="[ATTACK] JWT HS256 downgrade" enabled="true">
+          <stringProp name="HTTPSampler.domain">${waf_host}</stringProp>
+          <stringProp name="HTTPSampler.port">${waf_port}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${waf_protocol}</stringProp>
+          <stringProp name="HTTPSampler.path">/api/board/posts</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="keyword" elementType="HTTPArgument">
+                <stringProp name="Argument.value">test</stringProp>
+                <stringProp name="Argument.name">keyword</stringProp>
+              </elementProp>
+              <elementProp name="sort" elementType="HTTPArgument">
+                <stringProp name="Argument.value">latest</stringProp>
+                <stringProp name="Argument.name">sort</stringProp>
+              </elementProp>
+              <elementProp name="page" elementType="HTTPArgument">
+                <stringProp name="Argument.value">0</stringProp>
+                <stringProp name="Argument.name">page</stringProp>
+              </elementProp>
+              <elementProp name="size" elementType="HTTPArgument">
+                <stringProp name="Argument.value">6</stringProp>
+                <stringProp name="Argument.name">size</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="JWT HS256 Downgrade Header" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="Accept" elementType="Header">
+                <stringProp name="Header.name">Accept</stringProp>
+                <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+              </elementProp>
+              <elementProp name="Authorization" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iLCJlbWFpbCI6ImFkbWluQGNhbXB1cy5sb2NhbCJ9.QsVJpJLO-_8kR_v9kqQt-PIQBqZYPJmUa5mHzYdQf0U</stringProp>
+              </elementProp>
+              <elementProp name="X-SOC-Test" elementType="Header">
+                <stringProp name="Header.name">X-SOC-Test</stringProp>
+                <stringProp name="Header.value">true</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+        </hashTree>
+
+        <!-- ==================== 테스트 4: JWT KID 인젝션 (경로 조작) ==================== -->
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="[ATTACK] JWT kid injection (path traversal)" enabled="true">
+          <stringProp name="HTTPSampler.domain">${waf_host}</stringProp>
+          <stringProp name="HTTPSampler.port">${waf_port}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${waf_protocol}</stringProp>
+          <stringProp name="HTTPSampler.path">/api/board/posts</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="keyword" elementType="HTTPArgument">
+                <stringProp name="Argument.value">test</stringProp>
+                <stringProp name="Argument.name">keyword</stringProp>
+              </elementProp>
+              <elementProp name="sort" elementType="HTTPArgument">
+                <stringProp name="Argument.value">latest</stringProp>
+                <stringProp name="Argument.name">sort</stringProp>
+              </elementProp>
+              <elementProp name="page" elementType="HTTPArgument">
+                <stringProp name="Argument.value">0</stringProp>
+                <stringProp name="Argument.name">page</stringProp>
+              </elementProp>
+              <elementProp name="size" elementType="HTTPArgument">
+                <stringProp name="Argument.value">6</stringProp>
+                <stringProp name="Argument.name">size</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="JWT KID Injection Header" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="Accept" elementType="Header">
+                <stringProp name="Header.name">Accept</stringProp>
+                <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+              </elementProp>
+              <elementProp name="Authorization" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ii4uLy4uLy4uL2Rldi9udWxsIn0.eyJyb2xlIjoiYWRtaW4iLCJlbWFpbCI6ImFkbWluQGNhbXB1cy5sb2NhbCJ9.n9Jj9U9h9Q8J9J9J9J9J9J9J9J9J9J9J9J9J9J9J9J9J9J9J9A</stringProp>
+              </elementProp>
+              <elementProp name="X-SOC-Test" elementType="Header">
+                <stringProp name="Header.name">X-SOC-Test</stringProp>
+                <stringProp name="Header.value">true</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+        </hashTree>
+
+        <!-- ==================== 테스트 5: JWT role 변조 (student → admin) ==================== -->
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="[ATTACK] JWT role escalation (student -> admin)" enabled="true">
+          <stringProp name="HTTPSampler.domain">${waf_host}</stringProp>
+          <stringProp name="HTTPSampler.port">${waf_port}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${waf_protocol}</stringProp>
+          <stringProp name="HTTPSampler.path">/api/lms/submissions/2/grade</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{"score":10,"feedback":"fail"}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Role Escalation Headers" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="Accept" elementType="Header">
+                <stringProp name="Header.name">Accept</stringProp>
+                <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+              </elementProp>
+              <elementProp name="Content-Type" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+              <elementProp name="Authorization" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iLCJlbWFpbCI6InN0dWRlbnQxQGNhbXB1cy5sb2NhbCJ9.fake_signature</stringProp>
+              </elementProp>
+              <elementProp name="X-SOC-Test" elementType="Header">
+                <stringProp name="Header.name">X-SOC-Test</stringProp>
+                <stringProp name="Header.value">true</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+        </hashTree>
+
+        <!-- ==================== 테스트 6: 만료된 토큰 재사용 ==================== -->
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="[ATTACK] Expired token reuse" enabled="true">
+          <stringProp name="HTTPSampler.domain">${waf_host}</stringProp>
+          <stringProp name="HTTPSampler.port">${waf_port}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${waf_protocol}</stringProp>
+          <stringProp name="HTTPSampler.path">/api/board/posts</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="keyword" elementType="HTTPArgument">
+                <stringProp name="Argument.value">test</stringProp>
+                <stringProp name="Argument.name">keyword</stringProp>
+              </elementProp>
+              <elementProp name="sort" elementType="HTTPArgument">
+                <stringProp name="Argument.value">latest</stringProp>
+                <stringProp name="Argument.name">sort</stringProp>
+              </elementProp>
+              <elementProp name="page" elementType="HTTPArgument">
+                <stringProp name="Argument.value">0</stringProp>
+                <stringProp name="Argument.name">page</stringProp>
+              </elementProp>
+              <elementProp name="size" elementType="HTTPArgument">
+                <stringProp name="Argument.value">6</stringProp>
+                <stringProp name="Argument.name">size</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Expired Token Headers" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="Accept" elementType="Header">
+                <stringProp name="Header.name">Accept</stringProp>
+                <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+              </elementProp>
+              <elementProp name="Authorization" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoidXNlciIsImVtYWlsIjoic3R1ZGVudDFAY2FtcHVzLmxvY2FsIiwiZXhwIjoxNzAwMDAwMDAwfQ.signature</stringProp>
+              </elementProp>
+              <elementProp name="X-SOC-Test" elementType="Header">
+                <stringProp name="Header.name">X-SOC-Test</stringProp>
+                <stringProp name="Header.value">true</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+        </hashTree>
+
+        <!-- ==================== 테스트 7: Authorization 헤더 누락 ==================== -->
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="[ATTACK] No Authorization header" enabled="true">
+          <stringProp name="HTTPSampler.domain">${waf_host}</stringProp>
+          <stringProp name="HTTPSampler.port">${waf_port}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${waf_protocol}</stringProp>
+          <stringProp name="HTTPSampler.path">/api/board/posts</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="keyword" elementType="HTTPArgument">
+                <stringProp name="Argument.value">test</stringProp>
+                <stringProp name="Argument.name">keyword</stringProp>
+              </elementProp>
+              <elementProp name="sort" elementType="HTTPArgument">
+                <stringProp name="Argument.value">latest</stringProp>
+                <stringProp name="Argument.name">sort</stringProp>
+              </elementProp>
+              <elementProp name="page" elementType="HTTPArgument">
+                <stringProp name="Argument.value">0</stringProp>
+                <stringProp name="Argument.name">page</stringProp>
+              </elementProp>
+              <elementProp name="size" elementType="HTTPArgument">
+                <stringProp name="Argument.value">6</stringProp>
+                <stringProp name="Argument.name">size</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="No Auth Headers" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="Accept" elementType="Header">
+                <stringProp name="Header.name">Accept</stringProp>
+                <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+              </elementProp>
+              <elementProp name="X-SOC-Test" elementType="Header">
+                <stringProp name="Header.name">X-SOC-Test</stringProp>
+                <stringProp name="Header.value">true</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+        </hashTree>
+      </hashTree>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>
