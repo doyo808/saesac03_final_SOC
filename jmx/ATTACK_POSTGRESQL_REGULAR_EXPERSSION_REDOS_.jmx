@@ -2,7 +2,7 @@
 <jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
   <hashTree>
     <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="ATTACK_POSTGRESQL_REGULAR_EXPRESSION_REDOS">
-      <stringProp name="TestPlan.comments">LIGHTWEIGHT ReDoS attacks - LOW LOAD for weak WAS (DO NOT increase threads/duration)</stringProp>
+      <stringProp name="TestPlan.comments">LIGHTWEIGHT ReDoS attacks - 실제 API 스펙 적용 (keyword, author, sort, page, size, dateFrom, dateTo)</stringProp>
       <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
         <collectionProp name="Arguments.arguments">
           <elementProp name="waf_host" elementType="Argument">
@@ -157,7 +157,7 @@
         </HeaderManager>
         <hashTree/>
 
-        <!-- ==================== ReDoS 공격 1: 짧은 중첩 패턴 (부하 최소화) ==================== -->
+        <!-- ==================== ReDoS 공격 1: 짧은 중첩 패턴 ==================== -->
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="[ATTACK] ReDoS - Short Nested Pattern" enabled="true">
           <stringProp name="HTTPSampler.domain">${waf_host}</stringProp>
           <stringProp name="HTTPSampler.port">${waf_port}</stringProp>
@@ -175,6 +175,13 @@
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 <stringProp name="Argument.name">keyword</stringProp>
               </elementProp>
+              <elementProp name="author" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                <stringProp name="Argument.value">student1</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+                <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                <stringProp name="Argument.name">author</stringProp>
+              </elementProp>
               <elementProp name="sort" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">true</boolProp>
                 <stringProp name="Argument.value">latest</stringProp>
@@ -196,6 +203,20 @@
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 <stringProp name="Argument.name">size</stringProp>
               </elementProp>
+              <elementProp name="dateFrom" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                <stringProp name="Argument.value">2026-03-22</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+                <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                <stringProp name="Argument.name">dateFrom</stringProp>
+              </elementProp>
+              <elementProp name="dateTo" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                <stringProp name="Argument.value">2026-03-24</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+                <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                <stringProp name="Argument.name">dateTo</stringProp>
+              </elementProp>
             </collectionProp>
           </elementProp>
           <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
@@ -212,7 +233,7 @@
           <hashTree/>
         </hashTree>
 
-        <!-- ==================== ReDoS 공격 2: PostgreSQL 정규식 패턴 (짧은 버전) ==================== -->
+        <!-- ==================== ReDoS 공격 2: PostgreSQL 정규식 패턴 ==================== -->
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="[ATTACK] ReDoS - PostgreSQL Regex Pattern" enabled="true">
           <stringProp name="HTTPSampler.domain">${waf_host}</stringProp>
           <stringProp name="HTTPSampler.port">${waf_port}</stringProp>
@@ -230,6 +251,13 @@
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 <stringProp name="Argument.name">keyword</stringProp>
               </elementProp>
+              <elementProp name="author" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                <stringProp name="Argument.value">student1</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+                <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                <stringProp name="Argument.name">author</stringProp>
+              </elementProp>
               <elementProp name="sort" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">true</boolProp>
                 <stringProp name="Argument.value">latest</stringProp>
@@ -250,6 +278,20 @@
                 <stringProp name="Argument.metadata">=</stringProp>
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 <stringProp name="Argument.name">size</stringProp>
+              </elementProp>
+              <elementProp name="dateFrom" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                <stringProp name="Argument.value">2026-03-22</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+                <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                <stringProp name="Argument.name">dateFrom</stringProp>
+              </elementProp>
+              <elementProp name="dateTo" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                <stringProp name="Argument.value">2026-03-24</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+                <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                <stringProp name="Argument.name">dateTo</stringProp>
               </elementProp>
             </collectionProp>
           </elementProp>
@@ -267,7 +309,7 @@
           <hashTree/>
         </hashTree>
 
-        <!-- ==================== ReDoS 공격 3: 정상 패턴 (베이스라인) ==================== -->
+        <!-- ==================== 정상 요청 (베이스라인) ==================== -->
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="[BASELINE] Normal search request" enabled="true">
           <stringProp name="HTTPSampler.domain">${waf_host}</stringProp>
           <stringProp name="HTTPSampler.port">${waf_port}</stringProp>
@@ -284,6 +326,13 @@
                 <stringProp name="Argument.metadata">=</stringProp>
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 <stringProp name="Argument.name">keyword</stringProp>
+              </elementProp>
+              <elementProp name="author" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                <stringProp name="Argument.value">student1</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+                <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                <stringProp name="Argument.name">author</stringProp>
               </elementProp>
               <elementProp name="sort" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">true</boolProp>
@@ -305,6 +354,20 @@
                 <stringProp name="Argument.metadata">=</stringProp>
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 <stringProp name="Argument.name">size</stringProp>
+              </elementProp>
+              <elementProp name="dateFrom" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                <stringProp name="Argument.value">2026-03-22</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+                <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                <stringProp name="Argument.name">dateFrom</stringProp>
+              </elementProp>
+              <elementProp name="dateTo" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                <stringProp name="Argument.value">2026-03-24</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+                <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                <stringProp name="Argument.name">dateTo</stringProp>
               </elementProp>
             </collectionProp>
           </elementProp>
