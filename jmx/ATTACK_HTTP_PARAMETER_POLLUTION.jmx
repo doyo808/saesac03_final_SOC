@@ -166,7 +166,6 @@
           <stringProp name="HTTPSampler.method">GET</stringProp>
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments">
             <collectionProp name="Arguments.arguments">
-              <!-- 첫 번째 keyword: 정상 값 (WAF가 검사할 값) -->
               <elementProp name="keyword" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">true</boolProp>
                 <stringProp name="Argument.value">wifi</stringProp>
@@ -174,7 +173,6 @@
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 <stringProp name="Argument.name">keyword</stringProp>
               </elementProp>
-              <!-- 두 번째 keyword: 악성 값 (서버가 실제로 처리할 수 있음) -->
               <elementProp name="keyword" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">true</boolProp>
                 <stringProp name="Argument.value">' UNION SELECT * FROM users--</stringProp>
