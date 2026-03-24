@@ -12,6 +12,7 @@ import com.campus.platform.repository.AnnouncementRepository;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +27,8 @@ import org.springframework.util.StringUtils;
 @Transactional(readOnly = true)
 public class PublicService {
 
+    private static final char LIKE_ESCAPE_CHAR = '\\';
+    private static final int MAX_SEARCH_TERM_LENGTH = 120;
     private final AnnouncementRepository announcementRepository;
     private final AcademicEventRepository academicEventRepository;
 
@@ -54,10 +57,10 @@ public class PublicService {
 
         Specification<Announcement> specification = (root, query, criteriaBuilder) -> criteriaBuilder.conjunction();
         if (StringUtils.hasText(keyword)) {
-            String normalizedKeyword = "%" + keyword.trim().toLowerCase() + "%";
+            String normalizedKeyword = toContainsLiteralPattern(keyword, "ANNOUNCEMENT_KEYWORD_TOO_LONG");
             specification = specification.and((root, query, criteriaBuilder) -> criteriaBuilder.or(
-                    criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), normalizedKeyword),
-                    criteriaBuilder.like(criteriaBuilder.lower(root.get("content")), normalizedKeyword)
+                    criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), normalizedKeyword, LIKE_ESCAPE_CHAR),
+                    criteriaBuilder.like(criteriaBuilder.lower(root.get("content")), normalizedKeyword, LIKE_ESCAPE_CHAR)
             ));
         }
         if (dateFrom != null) {
@@ -113,5 +116,29 @@ public class PublicService {
             return Sort.by(Sort.Order.asc("title"), Sort.Order.desc("createdAt"));
         }
         return Sort.by(Sort.Order.desc("createdAt"), Sort.Order.desc("id"));
+    }
+
+    private String toContainsLiteralPattern(String raw, String reasonCode) {
+        String normalized = normalizeSearchTerm(raw, reasonCode);
+        return "%" + escapeLikePattern(normalized) + "%";
+    }
+
+    private String normalizeSearchTerm(String raw, String reasonCode) {
+        String normalized = raw.trim().toLowerCase(Locale.ROOT);
+        if (normalized.length() > MAX_SEARCH_TERM_LENGTH) {
+            throw new ApiException(
+                    HttpStatus.BAD_REQUEST,
+                    "검색어가 너무 깁니다.",
+                    reasonCode
+            );
+        }
+        return normalized;
+    }
+
+    private String escapeLikePattern(String value) {
+        return value
+                .replace("\\", "\\\\")
+                .replace("%", "\\%")
+                .replace("_", "\\_");
     }
 }

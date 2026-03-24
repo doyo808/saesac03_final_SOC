@@ -3,6 +3,7 @@ package com.campus.platform.config;
 import com.campus.platform.security.JsonAccessDeniedHandler;
 import com.campus.platform.security.JsonAuthenticationEntryPoint;
 import com.campus.platform.security.JwtAuthenticationFilter;
+import com.campus.platform.security.SuspiciousRequestGuardFilter;
 import java.util.List;
 import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,6 +30,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final SuspiciousRequestGuardFilter suspiciousRequestGuardFilter;
     private final JsonAuthenticationEntryPoint authenticationEntryPoint;
     private final JsonAccessDeniedHandler accessDeniedHandler;
     private final UserDetailsService userDetailsService;
@@ -37,6 +39,7 @@ public class SecurityConfig {
 
     public SecurityConfig(
             JwtAuthenticationFilter jwtAuthenticationFilter,
+            SuspiciousRequestGuardFilter suspiciousRequestGuardFilter,
             JsonAuthenticationEntryPoint authenticationEntryPoint,
             JsonAccessDeniedHandler accessDeniedHandler,
             UserDetailsService userDetailsService,
@@ -44,6 +47,7 @@ public class SecurityConfig {
             @Value("${app.cors.allowed-origin-patterns:}") String corsAllowedOriginPatterns
     ) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.suspiciousRequestGuardFilter = suspiciousRequestGuardFilter;
         this.authenticationEntryPoint = authenticationEntryPoint;
         this.accessDeniedHandler = accessDeniedHandler;
         this.userDetailsService = userDetailsService;
@@ -74,6 +78,7 @@ public class SecurityConfig {
                         .anyRequest().permitAll()
                 )
                 .authenticationProvider(authenticationProvider())
+                .addFilterBefore(suspiciousRequestGuardFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

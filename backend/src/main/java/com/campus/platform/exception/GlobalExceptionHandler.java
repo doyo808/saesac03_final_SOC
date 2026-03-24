@@ -16,9 +16,13 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @RestControllerAdvice
@@ -102,6 +106,44 @@ public class GlobalExceptionHandler {
             NoResourceFoundException ex,
             HttpServletRequest request
     ) {
+        return buildNotFoundResponse(request);
+    }
+
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleNoHandlerFound(
+            NoHandlerFoundException ex,
+            HttpServletRequest request
+    ) {
+        return buildNotFoundResponse(request);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ApiErrorResponse> handleMethodArgumentTypeMismatch(
+            MethodArgumentTypeMismatchException ex,
+            HttpServletRequest request
+    ) {
+        if (isApiPath(request.getRequestURI())
+                && ex.getParameter() != null
+                && ex.getParameter().hasParameterAnnotation(PathVariable.class)) {
+            return buildNotFoundResponse(request);
+        }
+        return buildBadRequestResponse(request, "TYPE_MISMATCH", ex.getMessage());
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ApiErrorResponse> handleMethodNotSupported(
+            HttpRequestMethodNotSupportedException ex,
+            HttpServletRequest request
+    ) {
+        return buildErrorResponse(
+                request,
+                HttpStatus.METHOD_NOT_ALLOWED,
+                "METHOD_NOT_SUPPORTED",
+                ex.getMessage()
+        );
+    }
+
+    private ResponseEntity<ApiErrorResponse> buildNotFoundResponse(HttpServletRequest request) {
         AuthLogContext auth = resolveAuthContext();
         String requestId = resolveRequestId(request);
         String reasonCode = isBoardMutationFallbackPath(request.getMethod(), request.getRequestURI())
@@ -124,6 +166,48 @@ public class GlobalExceptionHandler {
                                 request.getRequestURI(),
                                 HttpStatus.NOT_FOUND.name(),
                                 message,
+                                requestId,
+                                reasonCode,
+                                ERROR_SOURCE_APP,
+                                detail,
+                                hint
+                        )
+                );
+    }
+
+    private ResponseEntity<ApiErrorResponse> buildBadRequestResponse(
+            HttpServletRequest request,
+            String reasonCode,
+            String message
+    ) {
+        return buildErrorResponse(request, HttpStatus.BAD_REQUEST, reasonCode, message);
+    }
+
+    private ResponseEntity<ApiErrorResponse> buildErrorResponse(
+            HttpServletRequest request,
+            HttpStatus status,
+            String reasonCode,
+            String message
+    ) {
+        AuthLogContext auth = resolveAuthContext();
+        String requestId = resolveRequestId(request);
+        logFailure(requestId, request, auth, status.value(), reasonCode, message);
+        traceStudentRequest(requestId, request, auth, status.value(), reasonCode);
+        String responseMessage = isDetailedMessageAllowed(auth.email())
+                ? (message == null ? toGenericMessage(status) : message)
+                : toGenericMessage(status);
+        String detail = buildDiagnosticDetail(request, auth, status, reasonCode, ERROR_SOURCE_APP);
+        String hint = buildDiagnosticHint(request, status, reasonCode, ERROR_SOURCE_APP, false);
+
+        return ResponseEntity.status(status)
+                .header(RequestIdFilter.REQUEST_ID_HEADER, requestId)
+                .header("X-Error-Source", ERROR_SOURCE_APP)
+                .body(
+                        new ApiErrorResponse(
+                                LocalDateTime.now(),
+                                request.getRequestURI(),
+                                status.name(),
+                                responseMessage,
                                 requestId,
                                 reasonCode,
                                 ERROR_SOURCE_APP,
@@ -329,6 +413,10 @@ public class GlobalExceptionHandler {
             return false;
         }
         return path.endsWith("/update") || path.endsWith("/delete");
+    }
+
+    private boolean isApiPath(String path) {
+        return path != null && path.startsWith("/api/");
     }
 
     private String resolveRequestId(HttpServletRequest request) {

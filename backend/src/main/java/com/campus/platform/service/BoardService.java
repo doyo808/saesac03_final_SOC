@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -37,6 +38,8 @@ public class BoardService {
 
     private static final Logger log = LoggerFactory.getLogger(BoardService.class);
     private static final String TRACE_ACCOUNT_EMAIL = "student1@campus.local";
+    private static final char LIKE_ESCAPE_CHAR = '\\';
+    private static final int MAX_SEARCH_TERM_LENGTH = 120;
     private final BoardPostRepository boardPostRepository;
     private final BoardCommentRepository boardCommentRepository;
     private final UserRepository userRepository;
@@ -361,18 +364,18 @@ public class BoardService {
             ArrayList<Predicate> predicates = new ArrayList<>();
 
             if (StringUtils.hasText(keyword)) {
-                String pattern = "%" + keyword.trim().toLowerCase() + "%";
+                String pattern = toContainsLiteralPattern(keyword, "BOARD_KEYWORD_TOO_LONG");
                 predicates.add(criteriaBuilder.or(
-                        criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), pattern),
-                        criteriaBuilder.like(criteriaBuilder.lower(root.get("content")), pattern)
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), pattern, LIKE_ESCAPE_CHAR),
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("content")), pattern, LIKE_ESCAPE_CHAR)
                 ));
             }
 
             if (StringUtils.hasText(author)) {
-                String pattern = "%" + author.trim().toLowerCase() + "%";
+                String pattern = toContainsLiteralPattern(author, "BOARD_AUTHOR_FILTER_TOO_LONG");
                 predicates.add(criteriaBuilder.or(
-                        criteriaBuilder.like(criteriaBuilder.lower(root.get("author").get("name")), pattern),
-                        criteriaBuilder.like(criteriaBuilder.lower(root.get("author").get("email")), pattern)
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("author").get("name")), pattern, LIKE_ESCAPE_CHAR),
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("author").get("email")), pattern, LIKE_ESCAPE_CHAR)
                 ));
             }
 
@@ -401,5 +404,29 @@ public class BoardService {
             case "title" -> Sort.by(Sort.Order.asc("title"), Sort.Order.desc("createdAt"));
             default -> Sort.by(Sort.Order.desc("createdAt"), Sort.Order.desc("id"));
         };
+    }
+
+    private String toContainsLiteralPattern(String raw, String reasonCode) {
+        String normalized = normalizeSearchTerm(raw, reasonCode);
+        return "%" + escapeLikePattern(normalized) + "%";
+    }
+
+    private String normalizeSearchTerm(String raw, String reasonCode) {
+        String normalized = raw.trim().toLowerCase(Locale.ROOT);
+        if (normalized.length() > MAX_SEARCH_TERM_LENGTH) {
+            throw new ApiException(
+                    HttpStatus.BAD_REQUEST,
+                    "검색어가 너무 깁니다.",
+                    reasonCode
+            );
+        }
+        return normalized;
+    }
+
+    private String escapeLikePattern(String value) {
+        return value
+                .replace("\\", "\\\\")
+                .replace("%", "\\%")
+                .replace("_", "\\_");
     }
 }
