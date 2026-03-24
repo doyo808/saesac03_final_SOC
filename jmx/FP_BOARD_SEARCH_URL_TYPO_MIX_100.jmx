@@ -91,7 +91,7 @@
           <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Board Search CSV Data Set" enabled="true">
             <stringProp name="delimiter">,</stringProp>
             <stringProp name="fileEncoding">UTF-8</stringProp>
-                    <stringProp name="filename">${__groovy(new File(org.apache.jmeter.services.FileServer.getFileServer().getBaseDir(), props.get('board_search_csv') ?: 'board-search-fp-mixed-100.csv').getPath())}</stringProp>
+                    <stringProp name="filename">${__groovy(org.apache.jmeter.services.FileServer.getFileServer().getBaseDir() + java.io.File.separator + (props.get('board_search_csv') ?: 'board-search-fp-mixed-100.csv'))}</stringProp>
             <boolProp name="ignoreFirstLine">true</boolProp>
             <boolProp name="quotedData">true</boolProp>
             <boolProp name="recycle">false</boolProp>
@@ -189,7 +189,7 @@ if (['200', '400', '403'].contains(code)) {
           <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="URL Typo CSV Data Set" enabled="true">
             <stringProp name="delimiter">,</stringProp>
             <stringProp name="fileEncoding">UTF-8</stringProp>
-                    <stringProp name="filename">${__groovy(new File(org.apache.jmeter.services.FileServer.getFileServer().getBaseDir(), props.get('url_typo_csv') ?: 'url-typo-fp-100.csv').getPath())}</stringProp>
+                    <stringProp name="filename">${__groovy(org.apache.jmeter.services.FileServer.getFileServer().getBaseDir() + java.io.File.separator + (props.get('url_typo_csv') ?: 'url-typo-fp-100.csv'))}</stringProp>
             <boolProp name="ignoreFirstLine">true</boolProp>
             <boolProp name="quotedData">true</boolProp>
             <boolProp name="recycle">false</boolProp>
