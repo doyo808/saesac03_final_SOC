@@ -26,8 +26,8 @@
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
             <collectionProp name="Arguments.arguments" />
           </elementProp>
-          <stringProp name="HTTPSampler.domain">${__P(host,localhost)}</stringProp>
-          <stringProp name="HTTPSampler.port">${__P(port,8080)}</stringProp>
+          <stringProp name="HTTPSampler.domain">${__P(host,www.kj.ac.kr)}</stringProp>
+          <stringProp name="HTTPSampler.port">${__P(port,80)}</stringProp>
           <stringProp name="HTTPSampler.protocol">${__P(protocol,http)}</stringProp>
           <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
           <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
@@ -217,7 +217,7 @@
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{"category":"PORTAL","subject":"JMeter Support ${__time(yyyyMMddHHmmssSSS,)}","message":"정상 문의 생성","contactEmail":"jmeter-support@example.com","referenceUrl":"http://localhost:5173/support-center"}</stringProp>
+                <stringProp name="Argument.value">{"category":"PORTAL","subject":"JMeter Support ${__time(yyyyMMddHHmmssSSS,)}","message":"정상 문의 생성","contactEmail":"jmeter-support@example.com","referenceUrl":"http://www.kj.ac.kr/support-center"}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
               </elementProp>
