@@ -73,7 +73,6 @@
         <stringProp name="filename"></stringProp>
       </ResultCollector>
       <hashTree/>
-      
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="ATTACK_COOKIE_TAMPER-ThreadGroup">
         <intProp name="ThreadGroup.num_threads">1</intProp>
         <intProp name="ThreadGroup.ramp_time">1</intProp>
@@ -94,8 +93,6 @@
           <boolProp name="CookieManager.controlledByThreadGroup">false</boolProp>
         </CookieManager>
         <hashTree/>
-
-        <!-- OnceOnlyController: 로그인은 한 번만 실행 -->
         <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="Once Only Controller - Login" enabled="true"/>
         <hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login" enabled="true">
@@ -139,7 +136,6 @@
               <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
             </JSONPostProcessor>
             <hashTree/>
-            <!-- refresh_token 쿠키 추출 (CDATA로 감싸서 XML 파싱 오류 방지) -->
             <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Extract refresh_token from cookie" enabled="true">
               <stringProp name="script"><![CDATA[
 import org.apache.jmeter.protocol.http.control.CookieManager;
@@ -159,7 +155,6 @@ if (cookieManager != null) {
               <stringProp name="scriptLanguage">groovy</stringProp>
             </JSR223PostProcessor>
             <hashTree/>
-            <!-- JWT 디코딩 (CDATA로 감싸서 XML 파싱 오류 방지) -->
             <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Decode JWT Payload" enabled="true">
               <stringProp name="script"><![CDATA[
 import java.util.Base64;
@@ -186,10 +181,6 @@ if (token != null && token != "NOT_FOUND") {
             <hashTree/>
           </hashTree>
         </hashTree>
-
-        <!-- ==================== PART 1: JWT 변조 공격 (Bearer 토큰) ==================== -->
-
-        <!-- 테스트 1: 정상 요청 (베이스라인) -->
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="[BASELINE] Normal request with valid token" enabled="true">
           <stringProp name="HTTPSampler.domain">${waf_host}</stringProp>
           <stringProp name="HTTPSampler.port">${waf_port}</stringProp>
@@ -221,8 +212,6 @@ if (token != null && token != "NOT_FOUND") {
           </HeaderManager>
           <hashTree/>
         </hashTree>
-
-        <!-- 테스트 2: 변조된 Bearer 토큰 (suffix 추가) -->
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="[ATTACK] Tampered Bearer suffix" enabled="true">
           <stringProp name="HTTPSampler.domain">${waf_host}</stringProp>
           <stringProp name="HTTPSampler.port">${waf_port}</stringProp>
@@ -254,8 +243,6 @@ if (token != null && token != "NOT_FOUND") {
           </HeaderManager>
           <hashTree/>
         </hashTree>
-
-        <!-- 테스트 3: JWT alg: none 공격 -->
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="[ATTACK] JWT alg: none attack" enabled="true">
           <stringProp name="HTTPSampler.domain">${waf_host}</stringProp>
           <stringProp name="HTTPSampler.port">${waf_port}</stringProp>
@@ -287,8 +274,6 @@ if (token != null && token != "NOT_FOUND") {
           </HeaderManager>
           <hashTree/>
         </hashTree>
-
-        <!-- 테스트 4: JWT role 변조 -->
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="[ATTACK] JWT role escalation" enabled="true">
           <stringProp name="HTTPSampler.domain">${waf_host}</stringProp>
           <stringProp name="HTTPSampler.port">${waf_port}</stringProp>
@@ -331,8 +316,6 @@ if (token != null && token != "NOT_FOUND") {
           </HeaderManager>
           <hashTree/>
         </hashTree>
-
-        <!-- 테스트 5: 만료된 토큰 재사용 -->
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="[ATTACK] Expired token reuse" enabled="true">
           <stringProp name="HTTPSampler.domain">${waf_host}</stringProp>
           <stringProp name="HTTPSampler.port">${waf_port}</stringProp>
@@ -364,10 +347,6 @@ if (token != null && token != "NOT_FOUND") {
           </HeaderManager>
           <hashTree/>
         </hashTree>
-
-        <!-- ==================== PART 2: refresh_token 쿠키 변조 공격 ==================== -->
-
-        <!-- 테스트 6: refresh_token 쿠키 변조 (잘못된 값) 후 refresh API 호출 -->
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="[ATTACK] Tampered refresh_token cookie" enabled="true">
           <stringProp name="HTTPSampler.domain">${waf_host}</stringProp>
           <stringProp name="HTTPSampler.port">${waf_port}</stringProp>
@@ -400,8 +379,6 @@ if (token != null && token != "NOT_FOUND") {
           </HeaderManager>
           <hashTree/>
         </hashTree>
-
-        <!-- 테스트 7: refresh_token 쿠키 누락 -->
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="[ATTACK] Missing refresh_token cookie" enabled="true">
           <stringProp name="HTTPSampler.domain">${waf_host}</stringProp>
           <stringProp name="HTTPSampler.port">${waf_port}</stringProp>
@@ -430,8 +407,6 @@ if (token != null && token != "NOT_FOUND") {
           </HeaderManager>
           <hashTree/>
         </hashTree>
-
-        <!-- 테스트 8: 정상 refresh_token으로 refresh API 호출 (베이스라인) -->
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="[BASELINE] Valid refresh_token" enabled="true">
           <stringProp name="HTTPSampler.domain">${waf_host}</stringProp>
           <stringProp name="HTTPSampler.port">${waf_port}</stringProp>
@@ -460,8 +435,6 @@ if (token != null && token != "NOT_FOUND") {
           </HeaderManager>
           <hashTree/>
         </hashTree>
-
-        <!-- 테스트 9: Authorization 헤더 누락 -->
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="[ATTACK] No Authorization header" enabled="true">
           <stringProp name="HTTPSampler.domain">${waf_host}</stringProp>
           <stringProp name="HTTPSampler.port">${waf_port}</stringProp>
@@ -489,8 +462,6 @@ if (token != null && token != "NOT_FOUND") {
           </HeaderManager>
           <hashTree/>
         </hashTree>
-
-        <!-- 테스트 10: Bearer 접두어 오타 -->
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="[ATTACK] Bearer typo (Basic instead of Bearer)" enabled="true">
           <stringProp name="HTTPSampler.domain">${waf_host}</stringProp>
           <stringProp name="HTTPSampler.port">${waf_port}</stringProp>
@@ -522,8 +493,6 @@ if (token != null && token != "NOT_FOUND") {
           </HeaderManager>
           <hashTree/>
         </hashTree>
-
-        <!-- 테스트 11: JWT kid path traversal -->
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="[ATTACK] JWT kid path traversal" enabled="true">
           <stringProp name="HTTPSampler.domain">${waf_host}</stringProp>
           <stringProp name="HTTPSampler.port">${waf_port}</stringProp>
