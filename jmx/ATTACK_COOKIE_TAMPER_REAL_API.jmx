@@ -161,7 +161,7 @@ import java.util.Base64;
 import groovy.json.JsonSlurper;
 
 def token = vars.get("access_token");
-if (token != null && token != "NOT_FOUND") {
+if (token != null &amp;&amp; token != "NOT_FOUND") {
     try {
         String[] parts = token.split("\\.");
         if (parts.length >= 2) {
