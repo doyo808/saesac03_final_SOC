@@ -240,7 +240,7 @@
           <stringProp name="HTTPSampler.domain">${waf_host}</stringProp>
           <stringProp name="HTTPSampler.port">${waf_port}</stringProp>
           <stringProp name="HTTPSampler.protocol">${waf_protocol}</stringProp>
-          <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id}/comments/${comment_post_id}/delete</stringProp>
+          <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id}/comments/${comment_id}/delete</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
           <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
