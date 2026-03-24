@@ -2,12 +2,12 @@
 <jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
   <hashTree>
     <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="ATTACK_CSRF_STYLE_REAL_API">
-      <stringProp name="TestPlan.comments">CSRF-style forged Origin/Referer requests with valid session (auth token required for board APIs)</stringProp>
+      <stringProp name="TestPlan.comments">CSRF-style forged Origin/Referer requests with valid session (board posts/comments API)</stringProp>
       <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
         <collectionProp name="Arguments.arguments">
           <elementProp name="waf_host" elementType="Argument">
             <stringProp name="Argument.name">waf_host</stringProp>
-            <stringProp name="Argument.value">192.168.40.5</stringProp>
+            <stringProp name="Argument.value">www.kj.ac.kr</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="waf_port" elementType="Argument">
@@ -157,7 +157,7 @@
         </HeaderManager>
         <hashTree/>
 
-        <!-- CSRF 공격 1: Forged Origin으로 게시글 생성 -->
+        <!-- CSRF 공격 1: Forged Origin으로 게시글 생성 (POST /api/board/posts) -->
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Forged Origin post create" enabled="true">
           <stringProp name="HTTPSampler.domain">${waf_host}</stringProp>
           <stringProp name="HTTPSampler.port">${waf_port}</stringProp>
@@ -209,7 +209,7 @@
           <hashTree/>
         </hashTree>
 
-        <!-- CSRF 공격 2: Forged Origin으로 댓글 생성 (생성된 게시글 ID 사용) -->
+        <!-- CSRF 공격 2: Forged Origin으로 댓글 생성 (POST /api/board/posts/{postId}/comments) -->
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Forged Origin comment create" enabled="true">
           <stringProp name="HTTPSampler.domain">${waf_host}</stringProp>
           <stringProp name="HTTPSampler.port">${waf_port}</stringProp>
@@ -252,19 +252,26 @@
             </collectionProp>
           </HeaderManager>
           <hashTree/>
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract Comment Id" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceNames">comment_id</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.id</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+            <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
+          </JSONPostProcessor>
+          <hashTree/>
         </hashTree>
 
-        <!-- CSRF 공격 3: GET 요청으로 상태 변경 시도 (GET 기반 CSRF) -->
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Forged Origin get delete" enabled="true">
+        <!-- CSRF 공격 3: Forged Origin으로 댓글 삭제 (POST /api/board/posts/{postId}/comments/{commentId}/delete) -->
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Forged Origin comment delete" enabled="true">
           <stringProp name="HTTPSampler.domain">${waf_host}</stringProp>
           <stringProp name="HTTPSampler.port">${waf_port}</stringProp>
           <stringProp name="HTTPSampler.protocol">${waf_protocol}</stringProp>
-          <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id}?action=delete</stringProp>
+          <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id}/comments/${comment_id}/delete</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
           <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
           <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
-          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments">
             <collectionProp name="Arguments.arguments"/>
           </elementProp>
           <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
