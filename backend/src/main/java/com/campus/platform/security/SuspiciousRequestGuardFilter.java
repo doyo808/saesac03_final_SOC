@@ -69,18 +69,36 @@ public class SuspiciousRequestGuardFilter extends OncePerRequestFilter {
         String query = request.getQueryString();
 
         if (requestUri != null && requestUri.length() > MAX_REQUEST_URI_LENGTH) {
-            writeBlockedResponse(request, response, "API_PATH_TOO_LONG", "요청 경로가 너무 깁니다.");
+            writeBlockedResponse(
+                    request,
+                    response,
+                    HttpStatus.BAD_REQUEST,
+                    "API_PATH_TOO_LONG",
+                    "요청 경로가 너무 깁니다."
+            );
             return;
         }
 
         if (query != null && query.length() > MAX_QUERY_LENGTH) {
-            writeBlockedResponse(request, response, "API_QUERY_TOO_LONG", "요청 쿼리가 너무 깁니다.");
+            writeBlockedResponse(
+                    request,
+                    response,
+                    HttpStatus.BAD_REQUEST,
+                    "API_QUERY_TOO_LONG",
+                    "요청 쿼리가 너무 깁니다."
+            );
             return;
         }
 
         Optional<String> matchedPattern = findBlockedPattern(requestUri, query, request.getParameterMap());
         if (matchedPattern.isPresent()) {
-            writeBlockedResponse(request, response, "SUSPICIOUS_REQUEST_BLOCKED", "이상한 요청 형식이 감지되었습니다.");
+            writeBlockedResponse(
+                    request,
+                    response,
+                    HttpStatus.BAD_REQUEST,
+                    "SUSPICIOUS_REQUEST_BLOCKED",
+                    "이상한 요청 형식이 감지되었습니다."
+            );
             return;
         }
 
@@ -154,6 +172,7 @@ public class SuspiciousRequestGuardFilter extends OncePerRequestFilter {
     private void writeBlockedResponse(
             HttpServletRequest request,
             HttpServletResponse response,
+            HttpStatus status,
             String reasonCode,
             String message
     ) throws IOException {
@@ -168,12 +187,12 @@ public class SuspiciousRequestGuardFilter extends OncePerRequestFilter {
                 "ANONYMOUS",
                 request.getRequestURI(),
                 request.getMethod(),
-                HttpStatus.BAD_REQUEST.value(),
+                status.value(),
                 reasonCode,
                 message
         );
 
-        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        response.setStatus(status.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setHeader(RequestIdFilter.REQUEST_ID_HEADER, requestId);
         response.setHeader("X-Error-Source", ERROR_SOURCE_GUARD);
@@ -184,13 +203,13 @@ public class SuspiciousRequestGuardFilter extends OncePerRequestFilter {
         ApiErrorResponse body = new ApiErrorResponse(
                 LocalDateTime.now(),
                 request.getRequestURI(),
-                HttpStatus.BAD_REQUEST.name(),
+                status.name(),
                 "요청을 처리할 수 없습니다.",
                 requestId,
                 reasonCode,
                 ERROR_SOURCE_GUARD,
                 traceAccount
-                        ? "status=400 method=" + request.getMethod()
+                        ? "status=" + status.value() + " method=" + request.getMethod()
                                 + " path=" + request.getRequestURI()
                                 + " source=" + ERROR_SOURCE_GUARD
                                 + " requestId=" + requestId

@@ -489,6 +489,15 @@ class BoardControllerTests {
     }
 
     @Test
+    void blocksAttackAdjacentBoardKeywordsBeforeDbLookup() throws Exception {
+        mockMvc.perform(get("/api/board/posts")
+                        .param("keyword", "union select 예시")
+                        .with(user(studentPrincipal)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.reasonCode").value("SUSPICIOUS_REQUEST_BLOCKED"));
+    }
+
+    @Test
     void returnsNotFoundForUnknownBoardApiPath() throws Exception {
         mockMvc.perform(post("/api/board/posts/{id}/update-typo", 146L)
                         .with(user(studentPrincipal))

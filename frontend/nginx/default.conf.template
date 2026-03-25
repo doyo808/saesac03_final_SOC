@@ -22,7 +22,25 @@ server {
         proxy_read_timeout 60s;
     }
 
+    location ~* \.(?:css|js|mjs|ico|gif|jpe?g|png|svg|webp|woff2?|ttf|map)$ {
+        try_files $uri =404;
+        access_log off;
+    }
+
+    location = / {
+        try_files /index.html =404;
+    }
+
+    location ~ ^/(home|announcements|academic-guide|international-exchange|campus-map|campus-life|support-center|saessak-news|login|lms|lms/courses|lms/security-egress|lms/request-scenarios|lms/admin|student-board)/?$ {
+        try_files /index.html =404;
+    }
+
+    location ~ ^/(announcements/[^/]+|lms/courses/[^/]+|lms/assignments/[^/]+|student-board/[^/]+)/?$ {
+        try_files /index.html =404;
+    }
+
     location / {
-        try_files $uri $uri/ /index.html;
+        error_page 404 /index.html;
+        try_files $uri $uri/ =404;
     }
 }
