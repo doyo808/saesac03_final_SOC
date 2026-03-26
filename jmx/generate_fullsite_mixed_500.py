@@ -720,7 +720,7 @@ def generic_capture_script() -> str:
 
 
 def auth_token_expr() -> str:
-    return "${__groovy(def scope = vars.get('auth_scope') ?: 'none'; def map = ['student':vars.get('student_access_token'),'student_alt':vars.get('student_alt_access_token'),'admin':vars.get('admin_access_token'),'professor':vars.get('professor_access_token'),'lms_student_a':vars.get('lms_student_a_access_token'),'lms_student_b':vars.get('lms_student_b_access_token'),'lms_student_c':vars.get('lms_student_c_access_token'),'auth_dynamic':vars.get('auth_dynamic_access_token')]; return map[scope] ?: '')}"
+    return "${__V(${auth_scope}_access_token)}"
 
 
 def header_manager_xml(with_auth: bool) -> str:
@@ -828,7 +828,7 @@ def generic_thread_group_xml(testname: str, csv_prop: str, csv_default: str, loo
           <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="{xml_escape(label)} CSV Data Set" enabled="true">
             <stringProp name="delimiter">,</stringProp>
             <stringProp name="fileEncoding">UTF-8</stringProp>
-            <stringProp name="filename">${{__groovy(org.apache.jmeter.services.FileServer.getFileServer().getBaseDir() + java.io.File.separator + (props.get('{csv_prop}') ?: '{csv_default}'))}}</stringProp>
+            <stringProp name="filename">${{__P({csv_prop},{csv_default})}}</stringProp>
             <boolProp name="ignoreFirstLine">true</boolProp>
             <boolProp name="quotedData">true</boolProp>
             <boolProp name="recycle">false</boolProp>

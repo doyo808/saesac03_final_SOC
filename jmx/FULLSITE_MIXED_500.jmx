@@ -916,7 +916,7 @@ vars.put('mixed500_run_id', props.get('mixed500_run_id'))</stringProp>
           <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Public Route Mixed CSV Data Set" enabled="true">
             <stringProp name="delimiter">,</stringProp>
             <stringProp name="fileEncoding">UTF-8</stringProp>
-            <stringProp name="filename">${__groovy(org.apache.jmeter.services.FileServer.getFileServer().getBaseDir() + java.io.File.separator + (props.get('public_route_csv') ?: 'fullsite-public-route-mixed-100.csv'))}</stringProp>
+            <stringProp name="filename">${__P(public_route_csv,fullsite-public-route-mixed-100.csv)}</stringProp>
             <boolProp name="ignoreFirstLine">true</boolProp>
             <boolProp name="quotedData">true</boolProp>
             <boolProp name="recycle">false</boolProp>
@@ -968,7 +968,7 @@ vars.put('mixed500_run_id', props.get('mixed500_run_id'))</stringProp>
                 </elementProp>
                 <elementProp name="Authorization" elementType="Header">
                   <stringProp name="Header.name">Authorization</stringProp>
-                  <stringProp name="Header.value">Bearer ${__groovy(def scope = vars.get('auth_scope') ?: 'none'; def map = ['student':vars.get('student_access_token'),'student_alt':vars.get('student_alt_access_token'),'admin':vars.get('admin_access_token'),'professor':vars.get('professor_access_token'),'lms_student_a':vars.get('lms_student_a_access_token'),'lms_student_b':vars.get('lms_student_b_access_token'),'lms_student_c':vars.get('lms_student_c_access_token'),'auth_dynamic':vars.get('auth_dynamic_access_token')]; return map[scope] ?: '')}</stringProp>
+                  <stringProp name="Header.value">Bearer ${__V(${auth_scope}_access_token)}</stringProp>
                 </elementProp>
                 <elementProp name="X-MIX-Case-ID" elementType="Header">
                   <stringProp name="Header.name">X-MIX-Case-ID</stringProp>
@@ -1210,7 +1210,7 @@ if (current != null) {
           <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Auth Mixed CSV Data Set" enabled="true">
             <stringProp name="delimiter">,</stringProp>
             <stringProp name="fileEncoding">UTF-8</stringProp>
-            <stringProp name="filename">${__groovy(org.apache.jmeter.services.FileServer.getFileServer().getBaseDir() + java.io.File.separator + (props.get('auth_mixed_csv') ?: 'fullsite-auth-mixed-100.csv'))}</stringProp>
+            <stringProp name="filename">${__P(auth_mixed_csv,fullsite-auth-mixed-100.csv)}</stringProp>
             <boolProp name="ignoreFirstLine">true</boolProp>
             <boolProp name="quotedData">true</boolProp>
             <boolProp name="recycle">false</boolProp>
@@ -1262,7 +1262,7 @@ if (current != null) {
                 </elementProp>
                 <elementProp name="Authorization" elementType="Header">
                   <stringProp name="Header.name">Authorization</stringProp>
-                  <stringProp name="Header.value">Bearer ${__groovy(def scope = vars.get('auth_scope') ?: 'none'; def map = ['student':vars.get('student_access_token'),'student_alt':vars.get('student_alt_access_token'),'admin':vars.get('admin_access_token'),'professor':vars.get('professor_access_token'),'lms_student_a':vars.get('lms_student_a_access_token'),'lms_student_b':vars.get('lms_student_b_access_token'),'lms_student_c':vars.get('lms_student_c_access_token'),'auth_dynamic':vars.get('auth_dynamic_access_token')]; return map[scope] ?: '')}</stringProp>
+                  <stringProp name="Header.value">Bearer ${__V(${auth_scope}_access_token)}</stringProp>
                 </elementProp>
                 <elementProp name="X-MIX-Case-ID" elementType="Header">
                   <stringProp name="Header.name">X-MIX-Case-ID</stringProp>
@@ -1504,7 +1504,7 @@ if (current != null) {
           <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Board Mixed CSV Data Set" enabled="true">
             <stringProp name="delimiter">,</stringProp>
             <stringProp name="fileEncoding">UTF-8</stringProp>
-            <stringProp name="filename">${__groovy(org.apache.jmeter.services.FileServer.getFileServer().getBaseDir() + java.io.File.separator + (props.get('board_mixed_csv') ?: 'fullsite-board-mixed-100.csv'))}</stringProp>
+            <stringProp name="filename">${__P(board_mixed_csv,fullsite-board-mixed-100.csv)}</stringProp>
             <boolProp name="ignoreFirstLine">true</boolProp>
             <boolProp name="quotedData">true</boolProp>
             <boolProp name="recycle">false</boolProp>
@@ -1556,7 +1556,7 @@ if (current != null) {
                 </elementProp>
                 <elementProp name="Authorization" elementType="Header">
                   <stringProp name="Header.name">Authorization</stringProp>
-                  <stringProp name="Header.value">Bearer ${__groovy(def scope = vars.get('auth_scope') ?: 'none'; def map = ['student':vars.get('student_access_token'),'student_alt':vars.get('student_alt_access_token'),'admin':vars.get('admin_access_token'),'professor':vars.get('professor_access_token'),'lms_student_a':vars.get('lms_student_a_access_token'),'lms_student_b':vars.get('lms_student_b_access_token'),'lms_student_c':vars.get('lms_student_c_access_token'),'auth_dynamic':vars.get('auth_dynamic_access_token')]; return map[scope] ?: '')}</stringProp>
+                  <stringProp name="Header.value">Bearer ${__V(${auth_scope}_access_token)}</stringProp>
                 </elementProp>
                 <elementProp name="X-MIX-Case-ID" elementType="Header">
                   <stringProp name="Header.name">X-MIX-Case-ID</stringProp>
@@ -1798,7 +1798,7 @@ if (current != null) {
           <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="LMS Mixed CSV Data Set" enabled="true">
             <stringProp name="delimiter">,</stringProp>
             <stringProp name="fileEncoding">UTF-8</stringProp>
-            <stringProp name="filename">${__groovy(org.apache.jmeter.services.FileServer.getFileServer().getBaseDir() + java.io.File.separator + (props.get('lms_mixed_csv') ?: 'fullsite-lms-mixed-100.csv'))}</stringProp>
+            <stringProp name="filename">${__P(lms_mixed_csv,fullsite-lms-mixed-100.csv)}</stringProp>
             <boolProp name="ignoreFirstLine">true</boolProp>
             <boolProp name="quotedData">true</boolProp>
             <boolProp name="recycle">false</boolProp>
@@ -1850,7 +1850,7 @@ if (current != null) {
                 </elementProp>
                 <elementProp name="Authorization" elementType="Header">
                   <stringProp name="Header.name">Authorization</stringProp>
-                  <stringProp name="Header.value">Bearer ${__groovy(def scope = vars.get('auth_scope') ?: 'none'; def map = ['student':vars.get('student_access_token'),'student_alt':vars.get('student_alt_access_token'),'admin':vars.get('admin_access_token'),'professor':vars.get('professor_access_token'),'lms_student_a':vars.get('lms_student_a_access_token'),'lms_student_b':vars.get('lms_student_b_access_token'),'lms_student_c':vars.get('lms_student_c_access_token'),'auth_dynamic':vars.get('auth_dynamic_access_token')]; return map[scope] ?: '')}</stringProp>
+                  <stringProp name="Header.value">Bearer ${__V(${auth_scope}_access_token)}</stringProp>
                 </elementProp>
                 <elementProp name="X-MIX-Case-ID" elementType="Header">
                   <stringProp name="Header.name">X-MIX-Case-ID</stringProp>
@@ -2092,7 +2092,7 @@ if (current != null) {
           <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Secure Route Mixed CSV Data Set" enabled="true">
             <stringProp name="delimiter">,</stringProp>
             <stringProp name="fileEncoding">UTF-8</stringProp>
-            <stringProp name="filename">${__groovy(org.apache.jmeter.services.FileServer.getFileServer().getBaseDir() + java.io.File.separator + (props.get('secure_route_csv') ?: 'fullsite-secure-route-mixed-100.csv'))}</stringProp>
+            <stringProp name="filename">${__P(secure_route_csv,fullsite-secure-route-mixed-100.csv)}</stringProp>
             <boolProp name="ignoreFirstLine">true</boolProp>
             <boolProp name="quotedData">true</boolProp>
             <boolProp name="recycle">false</boolProp>
@@ -2144,7 +2144,7 @@ if (current != null) {
                 </elementProp>
                 <elementProp name="Authorization" elementType="Header">
                   <stringProp name="Header.name">Authorization</stringProp>
-                  <stringProp name="Header.value">Bearer ${__groovy(def scope = vars.get('auth_scope') ?: 'none'; def map = ['student':vars.get('student_access_token'),'student_alt':vars.get('student_alt_access_token'),'admin':vars.get('admin_access_token'),'professor':vars.get('professor_access_token'),'lms_student_a':vars.get('lms_student_a_access_token'),'lms_student_b':vars.get('lms_student_b_access_token'),'lms_student_c':vars.get('lms_student_c_access_token'),'auth_dynamic':vars.get('auth_dynamic_access_token')]; return map[scope] ?: '')}</stringProp>
+                  <stringProp name="Header.value">Bearer ${__V(${auth_scope}_access_token)}</stringProp>
                 </elementProp>
                 <elementProp name="X-MIX-Case-ID" elementType="Header">
                   <stringProp name="Header.name">X-MIX-Case-ID</stringProp>
