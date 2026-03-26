@@ -931,7 +931,7 @@ vars.put('mixed500_run_id', props.get('mixed500_run_id'))</stringProp>
           </UniformRandomTimer>
           <hashTree />
           <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Public Route Mixed Requires Auth" enabled="true">
-            <stringProp name="IfController.condition">${__groovy((vars.get('auth_scope') ?: 'none') != 'none')}</stringProp>
+            <stringProp name="IfController.condition">${__jexl3(vars.get('auth_scope') != null &amp;&amp; vars.get('auth_scope') != 'none')}</stringProp>
             <boolProp name="IfController.evaluateAll">true</boolProp>
             <boolProp name="IfController.useExpression">true</boolProp>
           </IfController>
@@ -1052,7 +1052,7 @@ if (current != null) {
           </hashTree>
           </hashTree>
           <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Public Route Mixed No Auth" enabled="true">
-            <stringProp name="IfController.condition">${__groovy((vars.get('auth_scope') ?: 'none') == 'none')}</stringProp>
+            <stringProp name="IfController.condition">${__jexl3(vars.get('auth_scope') == null || vars.get('auth_scope') == 'none')}</stringProp>
             <boolProp name="IfController.evaluateAll">true</boolProp>
             <boolProp name="IfController.useExpression">true</boolProp>
           </IfController>
@@ -1225,7 +1225,7 @@ if (current != null) {
           </UniformRandomTimer>
           <hashTree />
           <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Auth Mixed Requires Auth" enabled="true">
-            <stringProp name="IfController.condition">${__groovy((vars.get('auth_scope') ?: 'none') != 'none')}</stringProp>
+            <stringProp name="IfController.condition">${__jexl3(vars.get('auth_scope') != null &amp;&amp; vars.get('auth_scope') != 'none')}</stringProp>
             <boolProp name="IfController.evaluateAll">true</boolProp>
             <boolProp name="IfController.useExpression">true</boolProp>
           </IfController>
@@ -1346,7 +1346,7 @@ if (current != null) {
           </hashTree>
           </hashTree>
           <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Auth Mixed No Auth" enabled="true">
-            <stringProp name="IfController.condition">${__groovy((vars.get('auth_scope') ?: 'none') == 'none')}</stringProp>
+            <stringProp name="IfController.condition">${__jexl3(vars.get('auth_scope') == null || vars.get('auth_scope') == 'none')}</stringProp>
             <boolProp name="IfController.evaluateAll">true</boolProp>
             <boolProp name="IfController.useExpression">true</boolProp>
           </IfController>
@@ -1519,7 +1519,7 @@ if (current != null) {
           </UniformRandomTimer>
           <hashTree />
           <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Board Mixed Requires Auth" enabled="true">
-            <stringProp name="IfController.condition">${__groovy((vars.get('auth_scope') ?: 'none') != 'none')}</stringProp>
+            <stringProp name="IfController.condition">${__jexl3(vars.get('auth_scope') != null &amp;&amp; vars.get('auth_scope') != 'none')}</stringProp>
             <boolProp name="IfController.evaluateAll">true</boolProp>
             <boolProp name="IfController.useExpression">true</boolProp>
           </IfController>
@@ -1640,7 +1640,7 @@ if (current != null) {
           </hashTree>
           </hashTree>
           <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Board Mixed No Auth" enabled="true">
-            <stringProp name="IfController.condition">${__groovy((vars.get('auth_scope') ?: 'none') == 'none')}</stringProp>
+            <stringProp name="IfController.condition">${__jexl3(vars.get('auth_scope') == null || vars.get('auth_scope') == 'none')}</stringProp>
             <boolProp name="IfController.evaluateAll">true</boolProp>
             <boolProp name="IfController.useExpression">true</boolProp>
           </IfController>
@@ -1813,7 +1813,7 @@ if (current != null) {
           </UniformRandomTimer>
           <hashTree />
           <IfController guiclass="IfControllerPanel" testclass="IfController" testname="LMS Mixed Requires Auth" enabled="true">
-            <stringProp name="IfController.condition">${__groovy((vars.get('auth_scope') ?: 'none') != 'none')}</stringProp>
+            <stringProp name="IfController.condition">${__jexl3(vars.get('auth_scope') != null &amp;&amp; vars.get('auth_scope') != 'none')}</stringProp>
             <boolProp name="IfController.evaluateAll">true</boolProp>
             <boolProp name="IfController.useExpression">true</boolProp>
           </IfController>
@@ -1934,7 +1934,7 @@ if (current != null) {
           </hashTree>
           </hashTree>
           <IfController guiclass="IfControllerPanel" testclass="IfController" testname="LMS Mixed No Auth" enabled="true">
-            <stringProp name="IfController.condition">${__groovy((vars.get('auth_scope') ?: 'none') == 'none')}</stringProp>
+            <stringProp name="IfController.condition">${__jexl3(vars.get('auth_scope') == null || vars.get('auth_scope') == 'none')}</stringProp>
             <boolProp name="IfController.evaluateAll">true</boolProp>
             <boolProp name="IfController.useExpression">true</boolProp>
           </IfController>
@@ -2107,7 +2107,7 @@ if (current != null) {
           </UniformRandomTimer>
           <hashTree />
           <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Secure Route Mixed Requires Auth" enabled="true">
-            <stringProp name="IfController.condition">${__groovy((vars.get('auth_scope') ?: 'none') != 'none')}</stringProp>
+            <stringProp name="IfController.condition">${__jexl3(vars.get('auth_scope') != null &amp;&amp; vars.get('auth_scope') != 'none')}</stringProp>
             <boolProp name="IfController.evaluateAll">true</boolProp>
             <boolProp name="IfController.useExpression">true</boolProp>
           </IfController>
@@ -2228,7 +2228,7 @@ if (current != null) {
           </hashTree>
           </hashTree>
           <IfController guiclass="IfControllerPanel" testclass="IfController" testname="Secure Route Mixed No Auth" enabled="true">
-            <stringProp name="IfController.condition">${__groovy((vars.get('auth_scope') ?: 'none') == 'none')}</stringProp>
+            <stringProp name="IfController.condition">${__jexl3(vars.get('auth_scope') == null || vars.get('auth_scope') == 'none')}</stringProp>
             <boolProp name="IfController.evaluateAll">true</boolProp>
             <boolProp name="IfController.useExpression">true</boolProp>
           </IfController>
