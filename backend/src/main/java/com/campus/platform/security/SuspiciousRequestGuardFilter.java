@@ -90,17 +90,17 @@ public class SuspiciousRequestGuardFilter extends OncePerRequestFilter {
             return;
         }
 
-        Optional<String> matchedPattern = findBlockedPattern(requestUri, query, request.getParameterMap());
-        if (matchedPattern.isPresent()) {
-            writeBlockedResponse(
-                    request,
-                    response,
-                    HttpStatus.BAD_REQUEST,
-                    "SUSPICIOUS_REQUEST_BLOCKED",
-                    "이상한 요청 형식이 감지되었습니다."
-            );
-            return;
-        }
+        # Optional<String> matchedPattern = findBlockedPattern(requestUri, query, request.getParameterMap());
+        # if (matchedPattern.isPresent()) {
+            # writeBlockedResponse(
+                    # request,
+                    # response,
+                    # HttpStatus.BAD_REQUEST,
+                    # "SUSPICIOUS_REQUEST_BLOCKED",
+                    # "이상한 요청 형식이 감지되었습니다."
+            # );
+            # return;
+        # }
 
         filterChain.doFilter(request, response);
     }
