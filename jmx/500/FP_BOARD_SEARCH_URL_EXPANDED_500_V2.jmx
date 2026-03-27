@@ -1084,8 +1084,8 @@ if (first instanceof Map &amp;&amp; first.id != null) {
             </JSR223PostProcessor>
             <hashTree />
           </hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="LMS Setup Get SEC330 Assignments Mini" enabled="true">
-            <stringProp name="HTTPSampler.path">/api/lms/courses/${lms_course_sec330_id}/assignments</stringProp>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="LMS Setup Get Additional CS101 Assignments Mini" enabled="true">
+            <stringProp name="HTTPSampler.path">/api/lms/courses/${lms_course_cs101_id}/assignments</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
             <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
@@ -1117,7 +1117,7 @@ if (first instanceof Map &amp;&amp; first.id != null) {
               </collectionProp>
             </HeaderManager>
             <hashTree />
-            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Capture LMS Security Assignment IDs Mini" enabled="true">
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Capture LMS Resubmit Assignment IDs Mini" enabled="true">
               <stringProp name="cacheKey">true</stringProp>
               <stringProp name="filename" />
               <stringProp name="parameters" />
@@ -3317,7 +3317,7 @@ if (parsed.size() &gt; 1) {
               </elementProp>
               <elementProp name="Authorization" elementType="Header">
                 <stringProp name="Header.name">Authorization</stringProp>
-                <stringProp name="Header.value">Bearer ${lms_student_access_token}</stringProp>
+                <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
               </elementProp>
               <elementProp name="X-FP-Case-ID" elementType="Header">
                 <stringProp name="Header.name">X-FP-Case-ID</stringProp>
@@ -3389,8 +3389,8 @@ if (parsed.size() &gt; 1) {
             <hashTree />
           </hashTree>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_049 [ambiguous] lms submit security terms" enabled="true">
-          <stringProp name="HTTPSampler.path">/api/lms/assignments/${lms_ambiguous_assignment_id}/submissions</stringProp>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_049 [ambiguous] lms resubmit security terms" enabled="true">
+          <stringProp name="HTTPSampler.path">/api/lms/assignments/${lms_normal_assignment_id}/submissions</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
           <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
@@ -3419,7 +3419,7 @@ if (parsed.size() &gt; 1) {
               </elementProp>
               <elementProp name="Authorization" elementType="Header">
                 <stringProp name="Header.name">Authorization</stringProp>
-                <stringProp name="Header.value">Bearer ${lms_student_access_token}</stringProp>
+                <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
               </elementProp>
               <elementProp name="X-FP-Case-ID" elementType="Header">
                 <stringProp name="Header.name">X-FP-Case-ID</stringProp>
@@ -3463,7 +3463,7 @@ if (parsed.size() &gt; 1) {
               </elementProp>
               <elementProp name="Authorization" elementType="Header">
                 <stringProp name="Header.name">Authorization</stringProp>
-                <stringProp name="Header.value">Bearer ${lms_student_access_token}</stringProp>
+                <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
               </elementProp>
               <elementProp name="X-FP-Case-ID" elementType="Header">
                 <stringProp name="Header.name">X-FP-Case-ID</stringProp>

@@ -286,7 +286,7 @@ if (sampler != null) {
               <collectionProp name="Arguments.arguments">
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.value">{"email":"student12@campus.local","password":"Password123!"}</stringProp>
+                  <stringProp name="Argument.value">{"email":"student11@campus.local","password":"Password123!"}</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                 </elementProp>
               </collectionProp>
@@ -455,8 +455,8 @@ if (first instanceof Map &amp;&amp; first.id != null) {
             </JSR223PostProcessor>
             <hashTree />
           </hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="LMS Setup Get SEC330 Assignments Mini" enabled="true">
-            <stringProp name="HTTPSampler.path">/api/lms/courses/${lms_course_sec330_id}/assignments</stringProp>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="LMS Setup Get Additional CS101 Assignments Mini" enabled="true">
+            <stringProp name="HTTPSampler.path">/api/lms/courses/${lms_course_cs101_id}/assignments</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
             <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
@@ -488,7 +488,7 @@ if (first instanceof Map &amp;&amp; first.id != null) {
               </collectionProp>
             </HeaderManager>
             <hashTree />
-            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Capture LMS Security Assignment IDs Mini" enabled="true">
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Capture LMS Resubmit Assignment IDs Mini" enabled="true">
               <stringProp name="cacheKey">true</stringProp>
               <stringProp name="filename" />
               <stringProp name="parameters" />
