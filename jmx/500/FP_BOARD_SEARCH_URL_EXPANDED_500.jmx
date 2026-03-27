@@ -1,53 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
   <hashTree>
-    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="FP_BOARD_SEARCH_URL_EXPANDED_500" enabled="true">
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="FP_BOARD_SEARCH_URL_EXPANDED_500">
       <stringProp name="TestPlan.comments">Expanded 500-request suite based on FP_BOARD_SEARCH_URL_TYPO_MIX_100. Keeps the original 100 board-search cases and 100 typo URLs, then adds board search expansion, public/auth search diversification, and POST-only feature flows with explicit attacks capped near 10%.</stringProp>
-      <boolProp name="TestPlan.functional_mode">false</boolProp>
-      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
-      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+      <boolProp name="TestPlan.serialize_threadgroups">true</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
         <collectionProp name="Arguments.arguments">
-  <elementProp name="mixed500_run_id" elementType="Argument">
-    <stringProp name="Argument.name">mixed500_run_id</stringProp>
-    <stringProp name="Argument.value">${__time(yyyyMMddHHmmssSSS)}</stringProp>
-    <stringProp name="Argument.metadata">=</stringProp>
-  </elementProp>
-</collectionProp>
+          <elementProp name="mixed500_run_id" elementType="Argument">
+            <stringProp name="Argument.name">mixed500_run_id</stringProp>
+            <stringProp name="Argument.value">${__time(yyyyMMddHHmmssSSS)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
       </elementProp>
-      <stringProp name="TestPlan.user_define_classpath"></stringProp>
     </TestPlan>
     <hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Board Search Mixed Thread Group" enabled="true">
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>true</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <sentBytes>true</sentBytes>
+            <url>true</url>
+            <threadCounts>true</threadCounts>
+            <idleTime>true</idleTime>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename"></stringProp>
+      </ResultCollector>
+      <hashTree/>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Board Search Mixed Thread Group">
         <stringProp name="TestPlan.comments">Logs in once and sends 100 board-search requests from CSV. Includes benign, ambiguous, and explicit attack-like keywords.</stringProp>
-        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Thread Group Loop Controller" enabled="true">
+        <intProp name="ThreadGroup.num_threads">1</intProp>
+        <intProp name="ThreadGroup.ramp_time">1</intProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Thread Group Loop Controller">
           <stringProp name="LoopController.loops">1</stringProp>
           <boolProp name="LoopController.continue_forever">false</boolProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">1</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
-        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
-        <boolProp name="ThreadGroup.scheduler">false</boolProp>
-        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
       </ThreadGroup>
       <hashTree>
         <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults Search" enabled="true">
-          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-            <collectionProp name="Arguments.arguments" />
-          </elementProp>
           <stringProp name="HTTPSampler.domain">${__P(host,www.kj.ac.kr)}</stringProp>
           <stringProp name="HTTPSampler.port">${__P(port,80)}</stringProp>
           <stringProp name="HTTPSampler.protocol">${__P(protocol,http)}</stringProp>
           <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
           <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
         </ConfigTestElement>
-        <hashTree />
+        <hashTree/>
         <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager Search" enabled="true">
-          <collectionProp name="CookieManager.cookies" />
+          <collectionProp name="CookieManager.cookies"/>
           <boolProp name="CookieManager.clearEachIteration">false</boolProp>
           <boolProp name="CookieManager.controlledByThreadGroup">false</boolProp>
         </CookieManager>
-        <hashTree />
-        <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="Login Once" enabled="true" />
+        <hashTree/>
+        <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="Login Once" enabled="true"/>
         <hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login Board Search User" enabled="true">
             <stringProp name="HTTPSampler.path">/api/auth/login</stringProp>
@@ -79,14 +113,14 @@
                 </elementProp>
               </collectionProp>
             </HeaderManager>
-            <hashTree />
+            <hashTree/>
             <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract Search Access Token" enabled="true">
               <stringProp name="JSONPostProcessor.referenceNames">board_search_access_token</stringProp>
               <stringProp name="JSONPostProcessor.jsonPathExprs">$.accessToken</stringProp>
               <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
               <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
             </JSONPostProcessor>
-            <hashTree />
+            <hashTree/>
           </hashTree>
         </hashTree>
         <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Board Search Loop Controller" enabled="true">
@@ -97,7 +131,7 @@
           <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Board Search CSV Data Set" enabled="true">
             <stringProp name="delimiter">,</stringProp>
             <stringProp name="fileEncoding">UTF-8</stringProp>
-                    <stringProp name="filename">${__groovy(org.apache.jmeter.services.FileServer.getFileServer().getBaseDir() + java.io.File.separator + (props.get('board_search_csv') ?: 'board-search-fp-mixed-100.csv'))}</stringProp>
+            <stringProp name="filename">${__groovy(org.apache.jmeter.services.FileServer.getFileServer().getBaseDir() + java.io.File.separator + (props.get(&apos;board_search_csv&apos;) ?: &apos;board-search-fp-mixed-100.csv&apos;))}</stringProp>
             <boolProp name="ignoreFirstLine">true</boolProp>
             <boolProp name="quotedData">true</boolProp>
             <boolProp name="recycle">false</boolProp>
@@ -105,12 +139,12 @@
             <boolProp name="stopThread">true</boolProp>
             <stringProp name="variableNames">case_id,case_class,query_suffix</stringProp>
           </CSVDataSet>
-          <hashTree />
+          <hashTree/>
           <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="Board Search Random Timer" enabled="true">
             <stringProp name="RandomTimer.range">${__P(board_search_random_delay_ms,750)}</stringProp>
             <stringProp name="ConstantTimer.delay">${__P(board_search_base_delay_ms,750)}</stringProp>
           </UniformRandomTimer>
-          <hashTree />
+          <hashTree/>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Board Search Case" enabled="true">
             <stringProp name="HTTPSampler.path">/api/board/posts${query_suffix}</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
@@ -118,7 +152,7 @@
             <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
             <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-              <collectionProp name="Arguments.arguments" />
+              <collectionProp name="Arguments.arguments"/>
             </elementProp>
             <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
           </HTTPSamplerProxy>
@@ -147,46 +181,45 @@
                 </elementProp>
               </collectionProp>
             </HeaderManager>
-            <hashTree />
+            <hashTree/>
             <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Accept Expected Search Statuses" enabled="true">
-              <stringProp name="cacheKey">accept-search-statuses</stringProp>
+              <stringProp name="cacheKey">true</stringProp>
               <stringProp name="filename"></stringProp>
               <stringProp name="parameters"></stringProp>
               <stringProp name="scriptLanguage">groovy</stringProp>
               <stringProp name="script">def code = prev.getResponseCode()
-if (['200', '400', '403'].contains(code)) {
+if ([&apos;200&apos;, &apos;400&apos;, &apos;403&apos;].contains(code)) {
     prev.setSuccessful(true)
-    prev.setResponseMessage('Accepted board search status: ' + code)
+    prev.setResponseMessage(&apos;Accepted board search status: &apos; + code)
 }</stringProp>
             </JSR223PostProcessor>
-            <hashTree />
+            <hashTree/>
           </hashTree>
         </hashTree>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="URL Typo Mixed Thread Group" enabled="true">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="URL Typo Mixed Thread Group">
         <stringProp name="TestPlan.comments">Sends 100 typo or path-confusion URLs from CSV. Public paths dominate but board typos are also included for FP-style alert tuning.</stringProp>
-        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Thread Group Loop Controller" enabled="true">
+        <intProp name="ThreadGroup.num_threads">1</intProp>
+        <intProp name="ThreadGroup.ramp_time">1</intProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Thread Group Loop Controller">
           <stringProp name="LoopController.loops">1</stringProp>
           <boolProp name="LoopController.continue_forever">false</boolProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">1</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
-        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
-        <boolProp name="ThreadGroup.scheduler">false</boolProp>
-        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
       </ThreadGroup>
       <hashTree>
         <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults Typo" enabled="true">
-          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-            <collectionProp name="Arguments.arguments" />
-          </elementProp>
           <stringProp name="HTTPSampler.domain">${__P(host,www.kj.ac.kr)}</stringProp>
           <stringProp name="HTTPSampler.port">${__P(port,80)}</stringProp>
           <stringProp name="HTTPSampler.protocol">${__P(protocol,http)}</stringProp>
           <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
           <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
         </ConfigTestElement>
-        <hashTree />
+        <hashTree/>
         <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="URL Typo Loop Controller" enabled="true">
           <stringProp name="LoopController.loops">${__P(url_typo_loops,100)}</stringProp>
           <boolProp name="LoopController.continue_forever">false</boolProp>
@@ -195,7 +228,7 @@ if (['200', '400', '403'].contains(code)) {
           <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="URL Typo CSV Data Set" enabled="true">
             <stringProp name="delimiter">,</stringProp>
             <stringProp name="fileEncoding">UTF-8</stringProp>
-                    <stringProp name="filename">${__groovy(org.apache.jmeter.services.FileServer.getFileServer().getBaseDir() + java.io.File.separator + (props.get('url_typo_csv') ?: 'url-typo-fp-100.csv'))}</stringProp>
+            <stringProp name="filename">${__groovy(org.apache.jmeter.services.FileServer.getFileServer().getBaseDir() + java.io.File.separator + (props.get(&apos;url_typo_csv&apos;) ?: &apos;url-typo-fp-100.csv&apos;))}</stringProp>
             <boolProp name="ignoreFirstLine">true</boolProp>
             <boolProp name="quotedData">true</boolProp>
             <boolProp name="recycle">false</boolProp>
@@ -203,12 +236,12 @@ if (['200', '400', '403'].contains(code)) {
             <boolProp name="stopThread">true</boolProp>
             <stringProp name="variableNames">case_id,case_class,raw_path</stringProp>
           </CSVDataSet>
-          <hashTree />
-          <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="URL Typo Random Timer" enabled="true">
+          <hashTree/>
+          <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="URL Typo Random Timer">
             <stringProp name="RandomTimer.range">${__P(url_typo_random_delay_ms,500)}</stringProp>
             <stringProp name="ConstantTimer.delay">${__P(url_typo_base_delay_ms,500)}</stringProp>
           </UniformRandomTimer>
-          <hashTree />
+          <hashTree/>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="URL Typo Case" enabled="true">
             <stringProp name="HTTPSampler.path">${raw_path}</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
@@ -216,7 +249,7 @@ if (['200', '400', '403'].contains(code)) {
             <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
             <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-              <collectionProp name="Arguments.arguments" />
+              <collectionProp name="Arguments.arguments"/>
             </elementProp>
             <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
           </HTTPSamplerProxy>
@@ -241,860 +274,855 @@ if (['200', '400', '403'].contains(code)) {
                 </elementProp>
               </collectionProp>
             </HeaderManager>
-            <hashTree />
+            <hashTree/>
             <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Accept Expected Typo Statuses" enabled="true">
-              <stringProp name="cacheKey">accept-typo-statuses</stringProp>
+              <stringProp name="cacheKey">true</stringProp>
               <stringProp name="filename"></stringProp>
               <stringProp name="parameters"></stringProp>
               <stringProp name="scriptLanguage">groovy</stringProp>
               <stringProp name="script">def code = prev.getResponseCode()
-if (['200', '301', '302', '400', '401', '403', '404', '405'].contains(code)) {
+if ([&apos;200&apos;, &apos;301&apos;, &apos;302&apos;, &apos;400&apos;, &apos;401&apos;, &apos;403&apos;, &apos;404&apos;, &apos;405&apos;].contains(code)) {
     prev.setSuccessful(true)
-    prev.setResponseMessage('Accepted typo URL status: ' + code)
+    prev.setResponseMessage(&apos;Accepted typo URL status: &apos; + code)
 }</stringProp>
             </JSR223PostProcessor>
-            <hashTree />
+            <hashTree/>
           </hashTree>
         </hashTree>
       </hashTree>
-<ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Board Search Expanded Thread Group" enabled="true">
-                <stringProp name="TestPlan.comments">Adds 100 more board-search requests using broader campus terms, date filters, author filters, and a small explicit attack slice.</stringProp>
-                <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Thread Group Loop Controller" enabled="true">
-                  <stringProp name="LoopController.loops">1</stringProp>
-                  <boolProp name="LoopController.continue_forever">false</boolProp>
-                </elementProp>
-                <stringProp name="ThreadGroup.num_threads">1</stringProp>
-                <stringProp name="ThreadGroup.ramp_time">1</stringProp>
-                <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
-                <boolProp name="ThreadGroup.scheduler">false</boolProp>
-                <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
-              </ThreadGroup>
-              <hashTree>
-                <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults Board Search Expanded Thread Group" enabled="true">
-                  <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-                    <collectionProp name="Arguments.arguments" />
-                  </elementProp>
-                  <stringProp name="HTTPSampler.domain">${__P(host,www.kj.ac.kr)}</stringProp>
-                  <stringProp name="HTTPSampler.port">${__P(port,80)}</stringProp>
-                  <stringProp name="HTTPSampler.protocol">${__P(protocol,http)}</stringProp>
-                  <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
-                  <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-                </ConfigTestElement>
-                <hashTree />
-                <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager Board Search Expanded Thread Group" enabled="true">
-                  <collectionProp name="CookieManager.cookies" />
-                  <boolProp name="CookieManager.clearEachIteration">false</boolProp>
-                  <boolProp name="CookieManager.controlledByThreadGroup">false</boolProp>
-                </CookieManager>
-                <hashTree />
-                <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="Login Once" enabled="true" />
-                <hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login Board Search User" enabled="true">
-      <stringProp name="HTTPSampler.path">/api/auth/login</stringProp>
-      <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-      <stringProp name="HTTPSampler.method">POST</stringProp>
-      <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-      <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
-      <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-        <collectionProp name="Arguments.arguments">
-          <elementProp name="" elementType="HTTPArgument">
-            <boolProp name="HTTPArgument.always_encode">false</boolProp>
-            <stringProp name="Argument.value">{&quot;email&quot;:&quot;student11@campus.local&quot;,&quot;password&quot;:&quot;Password123!&quot;}</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Board Search Expanded Thread Group">
+        <stringProp name="TestPlan.comments">Adds 100 more board-search requests using broader campus terms, date filters, author filters, and a small explicit attack slice.</stringProp>
+        <intProp name="ThreadGroup.num_threads">1</intProp>
+        <intProp name="ThreadGroup.ramp_time">1</intProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Thread Group Loop Controller">
+          <stringProp name="LoopController.loops">1</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </elementProp>
+      </ThreadGroup>
+      <hashTree>
+        <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults Board Search Expanded Thread Group" enabled="true">
+          <stringProp name="HTTPSampler.domain">${__P(host,www.kj.ac.kr)}</stringProp>
+          <stringProp name="HTTPSampler.port">${__P(port,80)}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${__P(protocol,http)}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+            <collectionProp name="Arguments.arguments"/>
           </elementProp>
-        </collectionProp>
-      </elementProp>
-      <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-    </HTTPSamplerProxy>
-    <hashTree>
-        <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Login JSON Header" enabled="true">
-  <collectionProp name="HeaderManager.headers">
-  <elementProp name="Accept" elementType="Header">
-    <stringProp name="Header.name">Accept</stringProp>
-    <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
-  </elementProp>
-  <elementProp name="Content-Type" elementType="Header">
-    <stringProp name="Header.name">Content-Type</stringProp>
-    <stringProp name="Header.value">application/json</stringProp>
-  </elementProp>
-  </collectionProp>
-</HeaderManager>
-      <hashTree />
-      <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract board_search_access_token" enabled="true">
-        <stringProp name="JSONPostProcessor.referenceNames">board_search_access_token</stringProp>
-        <stringProp name="JSONPostProcessor.jsonPathExprs">$.accessToken</stringProp>
-        <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
-        <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
-      </JSONPostProcessor>
-      <hashTree />
-    </hashTree>
-                </hashTree>
-                <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Board Search Expanded Thread Group Loop Controller" enabled="true">
-                  <stringProp name="LoopController.loops">${__P(board_search_expanded_loops,100)}</stringProp>
-                  <boolProp name="LoopController.continue_forever">false</boolProp>
-                </LoopController>
-                <hashTree>
-                  <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Board Search Expanded Thread Group CSV Data Set" enabled="true">
-                    <stringProp name="delimiter">,</stringProp>
-                    <stringProp name="fileEncoding">UTF-8</stringProp>
-                    <stringProp name="filename">${__P(board_search_expanded_csv,board-search-fp-expanded-100.csv)}</stringProp>
-                    <boolProp name="ignoreFirstLine">true</boolProp>
-                    <boolProp name="quotedData">true</boolProp>
-                    <boolProp name="recycle">false</boolProp>
-                    <stringProp name="shareMode">shareMode.currentThread</stringProp>
-                    <boolProp name="stopThread">true</boolProp>
-                    <stringProp name="variableNames">case_id,case_class,query_suffix</stringProp>
-                  </CSVDataSet>
-                  <hashTree />
-                  <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="Board Search Expanded Thread Group Random Timer" enabled="true">
-                    <stringProp name="RandomTimer.range">${__P(board_search_expanded_random_delay_ms,750)}</stringProp>
-                    <stringProp name="ConstantTimer.delay">${__P(board_search_expanded_base_delay_ms,750)}</stringProp>
-                  </UniformRandomTimer>
-                  <hashTree />
-                  <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Board Search Expanded Thread Group Case" enabled="true">
-                    <stringProp name="HTTPSampler.path">/api/board/posts${query_suffix}</stringProp>
-                    <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-                    <stringProp name="HTTPSampler.method">GET</stringProp>
-                    <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-                    <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
-                    <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-                      <collectionProp name="Arguments.arguments" />
-                    </elementProp>
-                    <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-                  </HTTPSamplerProxy>
-                  <hashTree>
-                    <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Board Search Expanded Thread Group Headers" enabled="true">
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+        </ConfigTestElement>
+        <hashTree/>
+        <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager Board Search Expanded Thread Group" enabled="true">
+          <collectionProp name="CookieManager.cookies"/>
+          <boolProp name="CookieManager.clearEachIteration">false</boolProp>
+          <boolProp name="CookieManager.controlledByThreadGroup">false</boolProp>
+        </CookieManager>
+        <hashTree/>
+        <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="Login Once" enabled="true"/>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login Board Search User" enabled="true">
+            <stringProp name="HTTPSampler.path">/api/auth/login</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&quot;email&quot;:&quot;student11@campus.local&quot;,&quot;password&quot;:&quot;Password123!&quot;}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Login JSON Header" enabled="true">
               <collectionProp name="HeaderManager.headers">
-              <elementProp name="Accept" elementType="Header">
-                <stringProp name="Header.name">Accept</stringProp>
-                <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
-              </elementProp>
-              <elementProp name="Authorization" elementType="Header">
-                <stringProp name="Header.name">Authorization</stringProp>
-                <stringProp name="Header.value">Bearer ${board_search_access_token}</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-ID" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-ID</stringProp>
-                <stringProp name="Header.value">${case_id}</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-Class" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-Class</stringProp>
-                <stringProp name="Header.value">${case_class}</stringProp>
-              </elementProp>
-              <elementProp name="X-Request-ID" elementType="Header">
-                <stringProp name="Header.name">X-Request-ID</stringProp>
-                <stringProp name="Header.value">${__UUID()}</stringProp>
-              </elementProp>
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">application/json</stringProp>
+                </elementProp>
               </collectionProp>
             </HeaderManager>
-                    <hashTree />
-                    <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Accept Expanded Search Statuses" enabled="true">
-              <stringProp name="cacheKey">accept-expanded-search-statuses</stringProp>
+            <hashTree/>
+            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract board_search_access_token" enabled="true">
+              <stringProp name="JSONPostProcessor.referenceNames">board_search_access_token</stringProp>
+              <stringProp name="JSONPostProcessor.jsonPathExprs">$.accessToken</stringProp>
+              <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+              <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
+            </JSONPostProcessor>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Board Search Expanded Thread Group Loop Controller" enabled="true">
+          <stringProp name="LoopController.loops">${__P(board_search_expanded_loops,100)}</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </LoopController>
+        <hashTree>
+          <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Board Search Expanded Thread Group CSV Data Set" enabled="true">
+            <stringProp name="delimiter">,</stringProp>
+            <stringProp name="fileEncoding">UTF-8</stringProp>
+            <stringProp name="filename">${__P(board_search_expanded_csv,board-search-fp-expanded-100.csv)}</stringProp>
+            <boolProp name="ignoreFirstLine">true</boolProp>
+            <boolProp name="quotedData">true</boolProp>
+            <boolProp name="recycle">false</boolProp>
+            <stringProp name="shareMode">shareMode.currentThread</stringProp>
+            <boolProp name="stopThread">true</boolProp>
+            <stringProp name="variableNames">case_id,case_class,query_suffix</stringProp>
+          </CSVDataSet>
+          <hashTree/>
+          <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="Board Search Expanded Thread Group Random Timer">
+            <stringProp name="RandomTimer.range">${__P(board_search_expanded_random_delay_ms,750)}</stringProp>
+            <stringProp name="ConstantTimer.delay">${__P(board_search_expanded_base_delay_ms,750)}</stringProp>
+          </UniformRandomTimer>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Board Search Expanded Thread Group Case" enabled="true">
+            <stringProp name="HTTPSampler.path">/api/board/posts${query_suffix}</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Board Search Expanded Thread Group Headers" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Authorization" elementType="Header">
+                  <stringProp name="Header.name">Authorization</stringProp>
+                  <stringProp name="Header.value">Bearer ${board_search_access_token}</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-ID</stringProp>
+                  <stringProp name="Header.value">${case_id}</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-Class</stringProp>
+                  <stringProp name="Header.value">${case_class}</stringProp>
+                </elementProp>
+                <elementProp name="X-Request-ID" elementType="Header">
+                  <stringProp name="Header.name">X-Request-ID</stringProp>
+                  <stringProp name="Header.value">${__UUID()}</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree/>
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Accept Expanded Search Statuses" enabled="true">
+              <stringProp name="cacheKey">true</stringProp>
               <stringProp name="filename"></stringProp>
               <stringProp name="parameters"></stringProp>
               <stringProp name="scriptLanguage">groovy</stringProp>
               <stringProp name="script">def code = prev.getResponseCode()
-def allowed = ['200','201','204','400','401','403','404','409']
+def allowed = [&apos;200&apos;,&apos;201&apos;,&apos;204&apos;,&apos;400&apos;,&apos;401&apos;,&apos;403&apos;,&apos;404&apos;,&apos;409&apos;]
 if (!allowed.contains(code)) {
   prev.setSuccessful(false)
-  prev.setResponseMessage((prev.getResponseMessage() ?: '') + ' | unexpected-status')
+  prev.setResponseMessage((prev.getResponseMessage() ?: &apos;&apos;) + &apos; | unexpected-status&apos;)
 }</stringProp>
             </JSR223PostProcessor>
-                    <hashTree />
-                  </hashTree>
-                </hashTree>
-              </hashTree>
-<ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Public Search Location Thread Group" enabled="true">
-                <stringProp name="TestPlan.comments">Adds 50 public GET requests across announcement search variants, public routes, and typo-style paths.</stringProp>
-                <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Thread Group Loop Controller" enabled="true">
-                  <stringProp name="LoopController.loops">1</stringProp>
-                  <boolProp name="LoopController.continue_forever">false</boolProp>
-                </elementProp>
-                <stringProp name="ThreadGroup.num_threads">1</stringProp>
-                <stringProp name="ThreadGroup.ramp_time">1</stringProp>
-                <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
-                <boolProp name="ThreadGroup.scheduler">false</boolProp>
-                <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
-              </ThreadGroup>
-              <hashTree>
-                <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults Public Search Location Thread Group" enabled="true">
-                  <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-                    <collectionProp name="Arguments.arguments" />
-                  </elementProp>
-                  <stringProp name="HTTPSampler.domain">${__P(host,www.kj.ac.kr)}</stringProp>
-                  <stringProp name="HTTPSampler.port">${__P(port,80)}</stringProp>
-                  <stringProp name="HTTPSampler.protocol">${__P(protocol,http)}</stringProp>
-                  <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
-                  <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-                </ConfigTestElement>
-                <hashTree />
-                <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Public Search Location Thread Group Loop Controller" enabled="true">
-                  <stringProp name="LoopController.loops">${__P(public_search_loops,50)}</stringProp>
-                  <boolProp name="LoopController.continue_forever">false</boolProp>
-                </LoopController>
-                <hashTree>
-                  <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Public Search Location Thread Group CSV Data Set" enabled="true">
-                    <stringProp name="delimiter">,</stringProp>
-                    <stringProp name="fileEncoding">UTF-8</stringProp>
-                    <stringProp name="filename">${__P(public_search_location_csv,public-search-location-mixed-50.csv)}</stringProp>
-                    <boolProp name="ignoreFirstLine">true</boolProp>
-                    <boolProp name="quotedData">true</boolProp>
-                    <boolProp name="recycle">false</boolProp>
-                    <stringProp name="shareMode">shareMode.currentThread</stringProp>
-                    <boolProp name="stopThread">true</boolProp>
-                    <stringProp name="variableNames">case_id,case_class,raw_path</stringProp>
-                  </CSVDataSet>
-                  <hashTree />
-                  <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="Public Search Location Thread Group Random Timer" enabled="true">
-                    <stringProp name="RandomTimer.range">${__P(public_search_loops_random_delay_ms,600)}</stringProp>
-                    <stringProp name="ConstantTimer.delay">${__P(public_search_loops_base_delay_ms,600)}</stringProp>
-                  </UniformRandomTimer>
-                  <hashTree />
-                  <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Public Search Location Thread Group Case" enabled="true">
-                    <stringProp name="HTTPSampler.path">${raw_path}</stringProp>
-                    <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-                    <stringProp name="HTTPSampler.method">GET</stringProp>
-                    <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-                    <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
-                    <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-                      <collectionProp name="Arguments.arguments" />
-                    </elementProp>
-                    <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-                  </HTTPSamplerProxy>
-                  <hashTree>
-                    <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Public Search Location Thread Group Headers" enabled="true">
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Public Search Location Thread Group" enabled="true">
+        <stringProp name="TestPlan.comments">Adds 50 public GET requests across announcement search variants, public routes, and typo-style paths.</stringProp>
+        <intProp name="ThreadGroup.num_threads">1</intProp>
+        <intProp name="ThreadGroup.ramp_time">1</intProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Thread Group Loop Controller">
+          <stringProp name="LoopController.loops">1</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </elementProp>
+      </ThreadGroup>
+      <hashTree>
+        <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults Public Search Location Thread Group" enabled="true">
+          <stringProp name="HTTPSampler.domain">${__P(host,www.kj.ac.kr)}</stringProp>
+          <stringProp name="HTTPSampler.port">${__P(port,80)}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${__P(protocol,http)}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+        </ConfigTestElement>
+        <hashTree/>
+        <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Public Search Location Thread Group Loop Controller" enabled="true">
+          <stringProp name="LoopController.loops">${__P(public_search_loops,50)}</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </LoopController>
+        <hashTree>
+          <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Public Search Location Thread Group CSV Data Set" enabled="true">
+            <stringProp name="delimiter">,</stringProp>
+            <stringProp name="fileEncoding">UTF-8</stringProp>
+            <stringProp name="filename">${__P(public_search_location_csv,public-search-location-mixed-50.csv)}</stringProp>
+            <boolProp name="ignoreFirstLine">true</boolProp>
+            <boolProp name="quotedData">true</boolProp>
+            <boolProp name="recycle">false</boolProp>
+            <stringProp name="shareMode">shareMode.currentThread</stringProp>
+            <boolProp name="stopThread">true</boolProp>
+            <stringProp name="variableNames">case_id,case_class,raw_path</stringProp>
+          </CSVDataSet>
+          <hashTree/>
+          <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="Public Search Location Thread Group Random Timer" enabled="true">
+            <stringProp name="RandomTimer.range">${__P(public_search_loops_random_delay_ms,600)}</stringProp>
+            <stringProp name="ConstantTimer.delay">${__P(public_search_loops_base_delay_ms,600)}</stringProp>
+          </UniformRandomTimer>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Public Search Location Thread Group Case" enabled="true">
+            <stringProp name="HTTPSampler.path">${raw_path}</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Public Search Location Thread Group Headers" enabled="true">
               <collectionProp name="HeaderManager.headers">
-              <elementProp name="Accept" elementType="Header">
-                <stringProp name="Header.name">Accept</stringProp>
-                <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-ID" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-ID</stringProp>
-                <stringProp name="Header.value">${case_id}</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-Class" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-Class</stringProp>
-                <stringProp name="Header.value">${case_class}</stringProp>
-              </elementProp>
-              <elementProp name="X-Request-ID" elementType="Header">
-                <stringProp name="Header.name">X-Request-ID</stringProp>
-                <stringProp name="Header.value">${__UUID()}</stringProp>
-              </elementProp>
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-ID</stringProp>
+                  <stringProp name="Header.value">${case_id}</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-Class</stringProp>
+                  <stringProp name="Header.value">${case_class}</stringProp>
+                </elementProp>
+                <elementProp name="X-Request-ID" elementType="Header">
+                  <stringProp name="Header.name">X-Request-ID</stringProp>
+                  <stringProp name="Header.value">${__UUID()}</stringProp>
+                </elementProp>
               </collectionProp>
             </HeaderManager>
-                    <hashTree />
-                    <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Accept Public Search Location Thread Group Statuses" enabled="true">
-              <stringProp name="cacheKey">accept-public-search-location-thread-group-statuses</stringProp>
+            <hashTree/>
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Accept Public Search Location Thread Group Statuses" enabled="true">
+              <stringProp name="cacheKey">true</stringProp>
               <stringProp name="filename"></stringProp>
               <stringProp name="parameters"></stringProp>
               <stringProp name="scriptLanguage">groovy</stringProp>
               <stringProp name="script">def code = prev.getResponseCode()
-def allowed = ['200','201','204','400','401','403','404','409']
+def allowed = [&apos;200&apos;,&apos;201&apos;,&apos;204&apos;,&apos;400&apos;,&apos;401&apos;,&apos;403&apos;,&apos;404&apos;,&apos;409&apos;]
 if (!allowed.contains(code)) {
   prev.setSuccessful(false)
-  prev.setResponseMessage((prev.getResponseMessage() ?: '') + ' | unexpected-status')
+  prev.setResponseMessage((prev.getResponseMessage() ?: &apos;&apos;) + &apos; | unexpected-status&apos;)
 }</stringProp>
             </JSR223PostProcessor>
-                    <hashTree />
-                  </hashTree>
-                </hashTree>
-              </hashTree>
-<ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Auth Search Location Thread Group" enabled="true">
-                <stringProp name="TestPlan.comments">Adds 50 authenticated GET requests across board, LMS, and admin views with route variations and low-volume explicit attacks.</stringProp>
-                <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Thread Group Loop Controller" enabled="true">
-                  <stringProp name="LoopController.loops">1</stringProp>
-                  <boolProp name="LoopController.continue_forever">false</boolProp>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Auth Search Location Thread Group" enabled="true">
+        <stringProp name="TestPlan.comments">Adds 50 authenticated GET requests across board, LMS, and admin views with route variations and low-volume explicit attacks.</stringProp>
+        <intProp name="ThreadGroup.num_threads">1</intProp>
+        <intProp name="ThreadGroup.ramp_time">1</intProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Thread Group Loop Controller">
+          <stringProp name="LoopController.loops">1</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </elementProp>
+      </ThreadGroup>
+      <hashTree>
+        <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults Auth Search Location Thread Group" enabled="true">
+          <stringProp name="HTTPSampler.domain">${__P(host,www.kj.ac.kr)}</stringProp>
+          <stringProp name="HTTPSampler.port">${__P(port,80)}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${__P(protocol,http)}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+        </ConfigTestElement>
+        <hashTree/>
+        <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager Auth Search" enabled="true">
+          <collectionProp name="CookieManager.cookies"/>
+          <boolProp name="CookieManager.clearEachIteration">false</boolProp>
+          <boolProp name="CookieManager.controlledByThreadGroup">false</boolProp>
+        </CookieManager>
+        <hashTree/>
+        <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="Login Once" enabled="true"/>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login Student Search User" enabled="true">
+            <stringProp name="HTTPSampler.path">/api/auth/login</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&quot;email&quot;:&quot;student11@campus.local&quot;,&quot;password&quot;:&quot;Password123!&quot;}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
                 </elementProp>
-                <stringProp name="ThreadGroup.num_threads">1</stringProp>
-                <stringProp name="ThreadGroup.ramp_time">1</stringProp>
-                <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
-                <boolProp name="ThreadGroup.scheduler">false</boolProp>
-                <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
-              </ThreadGroup>
-              <hashTree>
-                <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults Auth Search Location Thread Group" enabled="true">
-                  <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-                    <collectionProp name="Arguments.arguments" />
-                  </elementProp>
-                  <stringProp name="HTTPSampler.domain">${__P(host,www.kj.ac.kr)}</stringProp>
-                  <stringProp name="HTTPSampler.port">${__P(port,80)}</stringProp>
-                  <stringProp name="HTTPSampler.protocol">${__P(protocol,http)}</stringProp>
-                  <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
-                  <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-                </ConfigTestElement>
-                <hashTree />
-                        <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager Auth Search" enabled="true">
-                  <collectionProp name="CookieManager.cookies" />
-                  <boolProp name="CookieManager.clearEachIteration">false</boolProp>
-                  <boolProp name="CookieManager.controlledByThreadGroup">false</boolProp>
-                </CookieManager>
-                <hashTree />
-                <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="Login Once" enabled="true" />
-                <hashTree>
-<HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login Student Search User" enabled="true">
-      <stringProp name="HTTPSampler.path">/api/auth/login</stringProp>
-      <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-      <stringProp name="HTTPSampler.method">POST</stringProp>
-      <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-      <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
-      <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-        <collectionProp name="Arguments.arguments">
-          <elementProp name="" elementType="HTTPArgument">
-            <boolProp name="HTTPArgument.always_encode">false</boolProp>
-            <stringProp name="Argument.value">{&quot;email&quot;:&quot;student11@campus.local&quot;,&quot;password&quot;:&quot;Password123!&quot;}</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
-        </collectionProp>
-      </elementProp>
-      <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-    </HTTPSamplerProxy>
-    <hashTree>
-        <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Login JSON Header" enabled="true">
-  <collectionProp name="HeaderManager.headers">
-  <elementProp name="Accept" elementType="Header">
-    <stringProp name="Header.name">Accept</stringProp>
-    <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
-  </elementProp>
-  <elementProp name="Content-Type" elementType="Header">
-    <stringProp name="Header.name">Content-Type</stringProp>
-    <stringProp name="Header.value">application/json</stringProp>
-  </elementProp>
-  </collectionProp>
-</HeaderManager>
-      <hashTree />
-      <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract student_access_token" enabled="true">
-        <stringProp name="JSONPostProcessor.referenceNames">student_access_token</stringProp>
-        <stringProp name="JSONPostProcessor.jsonPathExprs">$.accessToken</stringProp>
-        <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
-        <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
-      </JSONPostProcessor>
-      <hashTree />
-    </hashTree>
-<HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login Professor Search User" enabled="true">
-      <stringProp name="HTTPSampler.path">/api/auth/login</stringProp>
-      <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-      <stringProp name="HTTPSampler.method">POST</stringProp>
-      <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-      <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
-      <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-        <collectionProp name="Arguments.arguments">
-          <elementProp name="" elementType="HTTPArgument">
-            <boolProp name="HTTPArgument.always_encode">false</boolProp>
-            <stringProp name="Argument.value">{&quot;email&quot;:&quot;prof1@campus.local&quot;,&quot;password&quot;:&quot;Password123!&quot;}</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
-        </collectionProp>
-      </elementProp>
-      <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-    </HTTPSamplerProxy>
-    <hashTree>
-        <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Login JSON Header" enabled="true">
-  <collectionProp name="HeaderManager.headers">
-  <elementProp name="Accept" elementType="Header">
-    <stringProp name="Header.name">Accept</stringProp>
-    <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
-  </elementProp>
-  <elementProp name="Content-Type" elementType="Header">
-    <stringProp name="Header.name">Content-Type</stringProp>
-    <stringProp name="Header.value">application/json</stringProp>
-  </elementProp>
-  </collectionProp>
-</HeaderManager>
-      <hashTree />
-      <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract professor_access_token" enabled="true">
-        <stringProp name="JSONPostProcessor.referenceNames">professor_access_token</stringProp>
-        <stringProp name="JSONPostProcessor.jsonPathExprs">$.accessToken</stringProp>
-        <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
-        <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
-      </JSONPostProcessor>
-      <hashTree />
-    </hashTree>
-<HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login Admin Search User" enabled="true">
-      <stringProp name="HTTPSampler.path">/api/auth/login</stringProp>
-      <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-      <stringProp name="HTTPSampler.method">POST</stringProp>
-      <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-      <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
-      <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-        <collectionProp name="Arguments.arguments">
-          <elementProp name="" elementType="HTTPArgument">
-            <boolProp name="HTTPArgument.always_encode">false</boolProp>
-            <stringProp name="Argument.value">{&quot;email&quot;:&quot;admin1@campus.local&quot;,&quot;password&quot;:&quot;Password123!&quot;}</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
-        </collectionProp>
-      </elementProp>
-      <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-    </HTTPSamplerProxy>
-    <hashTree>
-        <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Login JSON Header" enabled="true">
-  <collectionProp name="HeaderManager.headers">
-  <elementProp name="Accept" elementType="Header">
-    <stringProp name="Header.name">Accept</stringProp>
-    <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
-  </elementProp>
-  <elementProp name="Content-Type" elementType="Header">
-    <stringProp name="Header.name">Content-Type</stringProp>
-    <stringProp name="Header.value">application/json</stringProp>
-  </elementProp>
-  </collectionProp>
-</HeaderManager>
-      <hashTree />
-      <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract admin_access_token" enabled="true">
-        <stringProp name="JSONPostProcessor.referenceNames">admin_access_token</stringProp>
-        <stringProp name="JSONPostProcessor.jsonPathExprs">$.accessToken</stringProp>
-        <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
-        <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
-      </JSONPostProcessor>
-      <hashTree />
-    </hashTree>
-                </hashTree>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Login JSON Header" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">application/json</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree/>
+            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract student_access_token" enabled="true">
+              <stringProp name="JSONPostProcessor.referenceNames">student_access_token</stringProp>
+              <stringProp name="JSONPostProcessor.jsonPathExprs">$.accessToken</stringProp>
+              <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+              <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
+            </JSONPostProcessor>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login Professor Search User" enabled="true">
+            <stringProp name="HTTPSampler.path">/api/auth/login</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&quot;email&quot;:&quot;prof1@campus.local&quot;,&quot;password&quot;:&quot;Password123!&quot;}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Login JSON Header" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">application/json</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree/>
+            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract professor_access_token" enabled="true">
+              <stringProp name="JSONPostProcessor.referenceNames">professor_access_token</stringProp>
+              <stringProp name="JSONPostProcessor.jsonPathExprs">$.accessToken</stringProp>
+              <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+              <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
+            </JSONPostProcessor>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login Admin Search User" enabled="true">
+            <stringProp name="HTTPSampler.path">/api/auth/login</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&quot;email&quot;:&quot;admin1@campus.local&quot;,&quot;password&quot;:&quot;Password123!&quot;}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Login JSON Header" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">application/json</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree/>
+            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract admin_access_token" enabled="true">
+              <stringProp name="JSONPostProcessor.referenceNames">admin_access_token</stringProp>
+              <stringProp name="JSONPostProcessor.jsonPathExprs">$.accessToken</stringProp>
+              <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+              <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
+            </JSONPostProcessor>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
         <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Auth Search Location Thread Group Loop Controller" enabled="true">
-                  <stringProp name="LoopController.loops">${__P(auth_search_loops,50)}</stringProp>
-                  <boolProp name="LoopController.continue_forever">false</boolProp>
-                </LoopController>
-                <hashTree>
-                  <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Auth Search Location Thread Group CSV Data Set" enabled="true">
-                    <stringProp name="delimiter">,</stringProp>
-                    <stringProp name="fileEncoding">UTF-8</stringProp>
-                    <stringProp name="filename">${__P(auth_search_location_csv,auth-search-location-mixed-50.csv)}</stringProp>
-                    <boolProp name="ignoreFirstLine">true</boolProp>
-                    <boolProp name="quotedData">true</boolProp>
-                    <boolProp name="recycle">false</boolProp>
-                    <stringProp name="shareMode">shareMode.currentThread</stringProp>
-                    <boolProp name="stopThread">true</boolProp>
-                    <stringProp name="variableNames">case_id,case_class,auth_scope,raw_path</stringProp>
-                  </CSVDataSet>
-                  <hashTree />
-                  <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="Auth Search Location Thread Group Random Timer" enabled="true">
-                    <stringProp name="RandomTimer.range">${__P(auth_search_loops_random_delay_ms,600)}</stringProp>
-                    <stringProp name="ConstantTimer.delay">${__P(auth_search_loops_base_delay_ms,600)}</stringProp>
-                  </UniformRandomTimer>
-                  <hashTree />
-                  <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Auth Search Location Thread Group Case" enabled="true">
-                    <stringProp name="HTTPSampler.path">${raw_path}</stringProp>
-                    <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-                    <stringProp name="HTTPSampler.method">GET</stringProp>
-                    <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-                    <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
-                    <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-                      <collectionProp name="Arguments.arguments" />
-                    </elementProp>
-                    <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-                  </HTTPSamplerProxy>
-                  <hashTree>
-                    <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Resolve Auth Scope Token" enabled="true">
-              <stringProp name="cacheKey">resolve-auth-scope-token</stringProp>
+          <stringProp name="LoopController.loops">${__P(auth_search_loops,50)}</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </LoopController>
+        <hashTree>
+          <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Auth Search Location Thread Group CSV Data Set" enabled="true">
+            <stringProp name="delimiter">,</stringProp>
+            <stringProp name="fileEncoding">UTF-8</stringProp>
+            <stringProp name="filename">${__P(auth_search_location_csv,auth-search-location-mixed-50.csv)}</stringProp>
+            <boolProp name="ignoreFirstLine">true</boolProp>
+            <boolProp name="quotedData">true</boolProp>
+            <boolProp name="recycle">false</boolProp>
+            <stringProp name="shareMode">shareMode.currentThread</stringProp>
+            <boolProp name="stopThread">true</boolProp>
+            <stringProp name="variableNames">case_id,case_class,auth_scope,raw_path</stringProp>
+          </CSVDataSet>
+          <hashTree/>
+          <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="Auth Search Location Thread Group Random Timer" enabled="true">
+            <stringProp name="RandomTimer.range">${__P(auth_search_loops_random_delay_ms,600)}</stringProp>
+            <stringProp name="ConstantTimer.delay">${__P(auth_search_loops_base_delay_ms,600)}</stringProp>
+          </UniformRandomTimer>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Auth Search Location Thread Group Case" enabled="true">
+            <stringProp name="HTTPSampler.path">${raw_path}</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Resolve Auth Scope Token" enabled="true">
+              <stringProp name="cacheKey">true</stringProp>
               <stringProp name="filename"></stringProp>
               <stringProp name="parameters"></stringProp>
               <stringProp name="scriptLanguage">groovy</stringProp>
-              <stringProp name="script">def scope = vars.get('auth_scope')
-def token = scope ? vars.get(scope + '_access_token') : null
-vars.put('current_access_token', token ?: 'NOT_FOUND')</stringProp>
+              <stringProp name="script">def scope = vars.get(&apos;auth_scope&apos;)
+def token = scope ? vars.get(scope + &apos;_access_token&apos;) : null
+vars.put(&apos;current_access_token&apos;, token ?: &apos;NOT_FOUND&apos;)</stringProp>
             </JSR223PreProcessor>
-                    <hashTree />
+            <hashTree/>
             <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Auth Search Location Thread Group Headers" enabled="true">
               <collectionProp name="HeaderManager.headers">
-              <elementProp name="Accept" elementType="Header">
-                <stringProp name="Header.name">Accept</stringProp>
-                <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
-              </elementProp>
-              <elementProp name="Authorization" elementType="Header">
-                <stringProp name="Header.name">Authorization</stringProp>
-                <stringProp name="Header.value">Bearer ${current_access_token}</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-ID" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-ID</stringProp>
-                <stringProp name="Header.value">${case_id}</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-Class" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-Class</stringProp>
-                <stringProp name="Header.value">${case_class}</stringProp>
-              </elementProp>
-              <elementProp name="X-Request-ID" elementType="Header">
-                <stringProp name="Header.name">X-Request-ID</stringProp>
-                <stringProp name="Header.value">${__UUID()}</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Auth-Scope" elementType="Header">
-                <stringProp name="Header.name">X-FP-Auth-Scope</stringProp>
-                <stringProp name="Header.value">${auth_scope}</stringProp>
-              </elementProp>
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Authorization" elementType="Header">
+                  <stringProp name="Header.name">Authorization</stringProp>
+                  <stringProp name="Header.value">Bearer ${current_access_token}</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-ID</stringProp>
+                  <stringProp name="Header.value">${case_id}</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-Class</stringProp>
+                  <stringProp name="Header.value">${case_class}</stringProp>
+                </elementProp>
+                <elementProp name="X-Request-ID" elementType="Header">
+                  <stringProp name="Header.name">X-Request-ID</stringProp>
+                  <stringProp name="Header.value">${__UUID()}</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Auth-Scope" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Auth-Scope</stringProp>
+                  <stringProp name="Header.value">${auth_scope}</stringProp>
+                </elementProp>
               </collectionProp>
             </HeaderManager>
-                    <hashTree />
-                    <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Accept Auth Search Location Thread Group Statuses" enabled="true">
-              <stringProp name="cacheKey">accept-auth-search-location-thread-group-statuses</stringProp>
+            <hashTree/>
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Accept Auth Search Location Thread Group Statuses" enabled="true">
+              <stringProp name="cacheKey">true</stringProp>
               <stringProp name="filename"></stringProp>
               <stringProp name="parameters"></stringProp>
               <stringProp name="scriptLanguage">groovy</stringProp>
               <stringProp name="script">def code = prev.getResponseCode()
-def allowed = ['200','201','204','400','401','403','404','409']
+def allowed = [&apos;200&apos;,&apos;201&apos;,&apos;204&apos;,&apos;400&apos;,&apos;401&apos;,&apos;403&apos;,&apos;404&apos;,&apos;409&apos;]
 if (!allowed.contains(code)) {
   prev.setSuccessful(false)
-  prev.setResponseMessage((prev.getResponseMessage() ?: '') + ' | unexpected-status')
+  prev.setResponseMessage((prev.getResponseMessage() ?: &apos;&apos;) + &apos; | unexpected-status&apos;)
 }</stringProp>
             </JSR223PostProcessor>
-                    <hashTree />
-                  </hashTree>
-                </hashTree>
-              </hashTree>
-<ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Public Post Feature Thread Group" enabled="true">
-                <stringProp name="TestPlan.comments">Adds 50 POST-only public feature requests across support requests, register, and login without PUT or DELETE.</stringProp>
-                <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Thread Group Loop Controller" enabled="true">
-                  <stringProp name="LoopController.loops">1</stringProp>
-                  <boolProp name="LoopController.continue_forever">false</boolProp>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Public Post Feature Thread Group" enabled="true">
+        <stringProp name="TestPlan.comments">Adds 50 POST-only public feature requests across support requests, register, and login without PUT or DELETE.</stringProp>
+        <intProp name="ThreadGroup.num_threads">1</intProp>
+        <intProp name="ThreadGroup.ramp_time">1</intProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Thread Group Loop Controller">
+          <stringProp name="LoopController.loops">1</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </elementProp>
+      </ThreadGroup>
+      <hashTree>
+        <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults Public Post Feature Thread Group" enabled="true">
+          <stringProp name="HTTPSampler.domain">${__P(host,www.kj.ac.kr)}</stringProp>
+          <stringProp name="HTTPSampler.port">${__P(port,80)}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${__P(protocol,http)}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+        </ConfigTestElement>
+        <hashTree/>
+        <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Public Post Feature Thread Group Loop Controller" enabled="true">
+          <stringProp name="LoopController.loops">${__P(public_post_loops,50)}</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </LoopController>
+        <hashTree>
+          <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Public Post Feature Thread Group CSV Data Set" enabled="true">
+            <stringProp name="delimiter">,</stringProp>
+            <stringProp name="fileEncoding">UTF-8</stringProp>
+            <stringProp name="filename">${__P(public_post_mixed_csv,public-post-mixed-50.csv)}</stringProp>
+            <boolProp name="ignoreFirstLine">true</boolProp>
+            <boolProp name="quotedData">true</boolProp>
+            <boolProp name="recycle">false</boolProp>
+            <stringProp name="shareMode">shareMode.currentThread</stringProp>
+            <boolProp name="stopThread">true</boolProp>
+            <stringProp name="variableNames">case_id,case_class,request_path,request_body</stringProp>
+          </CSVDataSet>
+          <hashTree/>
+          <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="Public Post Feature Thread Group Random Timer" enabled="true">
+            <stringProp name="RandomTimer.range">${__P(public_post_loops_random_delay_ms,700)}</stringProp>
+            <stringProp name="ConstantTimer.delay">${__P(public_post_loops_base_delay_ms,700)}</stringProp>
+          </UniformRandomTimer>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Public Post Feature Thread Group Case" enabled="true">
+            <stringProp name="HTTPSampler.path">${request_path}</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">${request_body}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
                 </elementProp>
-                <stringProp name="ThreadGroup.num_threads">1</stringProp>
-                <stringProp name="ThreadGroup.ramp_time">1</stringProp>
-                <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
-                <boolProp name="ThreadGroup.scheduler">false</boolProp>
-                <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
-              </ThreadGroup>
-              <hashTree>
-                <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults Public Post Feature Thread Group" enabled="true">
-                  <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-                    <collectionProp name="Arguments.arguments" />
-                  </elementProp>
-                  <stringProp name="HTTPSampler.domain">${__P(host,www.kj.ac.kr)}</stringProp>
-                  <stringProp name="HTTPSampler.port">${__P(port,80)}</stringProp>
-                  <stringProp name="HTTPSampler.protocol">${__P(protocol,http)}</stringProp>
-                  <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
-                  <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-                </ConfigTestElement>
-                <hashTree />
-                <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Public Post Feature Thread Group Loop Controller" enabled="true">
-                  <stringProp name="LoopController.loops">${__P(public_post_loops,50)}</stringProp>
-                  <boolProp name="LoopController.continue_forever">false</boolProp>
-                </LoopController>
-                <hashTree>
-                  <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Public Post Feature Thread Group CSV Data Set" enabled="true">
-                    <stringProp name="delimiter">,</stringProp>
-                    <stringProp name="fileEncoding">UTF-8</stringProp>
-                    <stringProp name="filename">${__P(public_post_mixed_csv,public-post-mixed-50.csv)}</stringProp>
-                    <boolProp name="ignoreFirstLine">true</boolProp>
-                    <boolProp name="quotedData">true</boolProp>
-                    <boolProp name="recycle">false</boolProp>
-                    <stringProp name="shareMode">shareMode.currentThread</stringProp>
-                    <boolProp name="stopThread">true</boolProp>
-                    <stringProp name="variableNames">case_id,case_class,request_path,request_body</stringProp>
-                  </CSVDataSet>
-                  <hashTree />
-                  <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="Public Post Feature Thread Group Random Timer" enabled="true">
-                    <stringProp name="RandomTimer.range">${__P(public_post_loops_random_delay_ms,700)}</stringProp>
-                    <stringProp name="ConstantTimer.delay">${__P(public_post_loops_base_delay_ms,700)}</stringProp>
-                  </UniformRandomTimer>
-                  <hashTree />
-                  <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Public Post Feature Thread Group Case" enabled="true">
-                    <stringProp name="HTTPSampler.path">${request_path}</stringProp>
-                    <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-                    <stringProp name="HTTPSampler.method">POST</stringProp>
-                    <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-                    <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
-                    <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-                      <collectionProp name="Arguments.arguments">
-                        <elementProp name="" elementType="HTTPArgument">
-                          <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                          <stringProp name="Argument.value">${request_body}</stringProp>
-                          <stringProp name="Argument.metadata">=</stringProp>
-                        </elementProp>
-                      </collectionProp>
-                    </elementProp>
-                    <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-                  </HTTPSamplerProxy>
-                  <hashTree>
-                    <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Public Post Feature Thread Group Headers" enabled="true">
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Public Post Feature Thread Group Headers" enabled="true">
               <collectionProp name="HeaderManager.headers">
-              <elementProp name="Accept" elementType="Header">
-                <stringProp name="Header.name">Accept</stringProp>
-                <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
-              </elementProp>
-              <elementProp name="Content-Type" elementType="Header">
-                <stringProp name="Header.name">Content-Type</stringProp>
-                <stringProp name="Header.value">application/json</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-ID" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-ID</stringProp>
-                <stringProp name="Header.value">${case_id}</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-Class" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-Class</stringProp>
-                <stringProp name="Header.value">${case_class}</stringProp>
-              </elementProp>
-              <elementProp name="X-Request-ID" elementType="Header">
-                <stringProp name="Header.name">X-Request-ID</stringProp>
-                <stringProp name="Header.value">${__UUID()}</stringProp>
-              </elementProp>
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">application/json</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-ID</stringProp>
+                  <stringProp name="Header.value">${case_id}</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-Class</stringProp>
+                  <stringProp name="Header.value">${case_class}</stringProp>
+                </elementProp>
+                <elementProp name="X-Request-ID" elementType="Header">
+                  <stringProp name="Header.name">X-Request-ID</stringProp>
+                  <stringProp name="Header.value">${__UUID()}</stringProp>
+                </elementProp>
               </collectionProp>
             </HeaderManager>
-                    <hashTree />
-                    <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Accept Public Post Feature Thread Group Statuses" enabled="true">
-              <stringProp name="cacheKey">accept-public-post-feature-thread-group-statuses</stringProp>
+            <hashTree/>
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Accept Public Post Feature Thread Group Statuses" enabled="true">
+              <stringProp name="cacheKey">true</stringProp>
               <stringProp name="filename"></stringProp>
               <stringProp name="parameters"></stringProp>
               <stringProp name="scriptLanguage">groovy</stringProp>
               <stringProp name="script">def code = prev.getResponseCode()
-def allowed = ['200','201','204','400','401','403','404','409']
+def allowed = [&apos;200&apos;,&apos;201&apos;,&apos;204&apos;,&apos;400&apos;,&apos;401&apos;,&apos;403&apos;,&apos;404&apos;,&apos;409&apos;]
 if (!allowed.contains(code)) {
   prev.setSuccessful(false)
-  prev.setResponseMessage((prev.getResponseMessage() ?: '') + ' | unexpected-status')
+  prev.setResponseMessage((prev.getResponseMessage() ?: &apos;&apos;) + &apos; | unexpected-status&apos;)
 }</stringProp>
             </JSR223PostProcessor>
-                    <hashTree />
-                          </hashTree>
-                </hashTree>
-              </hashTree>
-<ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Auth Post Feature Thread Group" enabled="true">
-                <stringProp name="TestPlan.comments">Adds 50 authenticated POST-only feature requests across board CRUD-by-POST and LMS submit/grade flows.</stringProp>
-                <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Thread Group Loop Controller" enabled="true">
-                  <stringProp name="LoopController.loops">1</stringProp>
-                  <boolProp name="LoopController.continue_forever">false</boolProp>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Auth Post Feature Thread Group">
+        <stringProp name="TestPlan.comments">Adds 50 authenticated POST-only feature requests across board CRUD-by-POST and LMS submit/grade flows.</stringProp>
+        <intProp name="ThreadGroup.num_threads">1</intProp>
+        <intProp name="ThreadGroup.ramp_time">1</intProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Thread Group Loop Controller">
+          <stringProp name="LoopController.loops">1</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </elementProp>
+      </ThreadGroup>
+      <hashTree>
+        <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults Auth Post Feature Thread Group" enabled="true">
+          <stringProp name="HTTPSampler.domain">${__P(host,www.kj.ac.kr)}</stringProp>
+          <stringProp name="HTTPSampler.port">${__P(port,80)}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${__P(protocol,http)}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+        </ConfigTestElement>
+        <hashTree/>
+        <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager Auth Post" enabled="true">
+          <collectionProp name="CookieManager.cookies"/>
+          <boolProp name="CookieManager.clearEachIteration">false</boolProp>
+          <boolProp name="CookieManager.controlledByThreadGroup">false</boolProp>
+        </CookieManager>
+        <hashTree/>
+        <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="Login Once" enabled="true"/>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login Student Post User" enabled="true">
+            <stringProp name="HTTPSampler.path">/api/auth/login</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&quot;email&quot;:&quot;student11@campus.local&quot;,&quot;password&quot;:&quot;Password123!&quot;}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
                 </elementProp>
-                <stringProp name="ThreadGroup.num_threads">1</stringProp>
-                <stringProp name="ThreadGroup.ramp_time">1</stringProp>
-                <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
-                <boolProp name="ThreadGroup.scheduler">false</boolProp>
-                <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
-              </ThreadGroup>
-              <hashTree>
-                <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults Auth Post Feature Thread Group" enabled="true">
-                  <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-                    <collectionProp name="Arguments.arguments" />
-                  </elementProp>
-                  <stringProp name="HTTPSampler.domain">${__P(host,www.kj.ac.kr)}</stringProp>
-                  <stringProp name="HTTPSampler.port">${__P(port,80)}</stringProp>
-                  <stringProp name="HTTPSampler.protocol">${__P(protocol,http)}</stringProp>
-                  <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
-                  <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-                </ConfigTestElement>
-                <hashTree />
-                        <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager Auth Post" enabled="true">
-                  <collectionProp name="CookieManager.cookies" />
-                  <boolProp name="CookieManager.clearEachIteration">false</boolProp>
-                  <boolProp name="CookieManager.controlledByThreadGroup">false</boolProp>
-                </CookieManager>
-                <hashTree />
-                <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="Login Once" enabled="true" />
-                <hashTree>
-<HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login Student Post User" enabled="true">
-      <stringProp name="HTTPSampler.path">/api/auth/login</stringProp>
-      <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-      <stringProp name="HTTPSampler.method">POST</stringProp>
-      <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-      <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
-      <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-        <collectionProp name="Arguments.arguments">
-          <elementProp name="" elementType="HTTPArgument">
-            <boolProp name="HTTPArgument.always_encode">false</boolProp>
-            <stringProp name="Argument.value">{&quot;email&quot;:&quot;student11@campus.local&quot;,&quot;password&quot;:&quot;Password123!&quot;}</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
-        </collectionProp>
-      </elementProp>
-      <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-    </HTTPSamplerProxy>
-    <hashTree>
-        <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Login JSON Header" enabled="true">
-  <collectionProp name="HeaderManager.headers">
-  <elementProp name="Accept" elementType="Header">
-    <stringProp name="Header.name">Accept</stringProp>
-    <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
-  </elementProp>
-  <elementProp name="Content-Type" elementType="Header">
-    <stringProp name="Header.name">Content-Type</stringProp>
-    <stringProp name="Header.value">application/json</stringProp>
-  </elementProp>
-  </collectionProp>
-</HeaderManager>
-      <hashTree />
-      <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract student_access_token" enabled="true">
-        <stringProp name="JSONPostProcessor.referenceNames">student_access_token</stringProp>
-        <stringProp name="JSONPostProcessor.jsonPathExprs">$.accessToken</stringProp>
-        <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
-        <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
-      </JSONPostProcessor>
-      <hashTree />
-    </hashTree>
-<HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login Professor Post User" enabled="true">
-      <stringProp name="HTTPSampler.path">/api/auth/login</stringProp>
-      <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-      <stringProp name="HTTPSampler.method">POST</stringProp>
-      <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-      <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
-      <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-        <collectionProp name="Arguments.arguments">
-          <elementProp name="" elementType="HTTPArgument">
-            <boolProp name="HTTPArgument.always_encode">false</boolProp>
-            <stringProp name="Argument.value">{&quot;email&quot;:&quot;prof1@campus.local&quot;,&quot;password&quot;:&quot;Password123!&quot;}</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
-        </collectionProp>
-      </elementProp>
-      <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-    </HTTPSamplerProxy>
-    <hashTree>
-        <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Login JSON Header" enabled="true">
-  <collectionProp name="HeaderManager.headers">
-  <elementProp name="Accept" elementType="Header">
-    <stringProp name="Header.name">Accept</stringProp>
-    <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
-  </elementProp>
-  <elementProp name="Content-Type" elementType="Header">
-    <stringProp name="Header.name">Content-Type</stringProp>
-    <stringProp name="Header.value">application/json</stringProp>
-  </elementProp>
-  </collectionProp>
-</HeaderManager>
-      <hashTree />
-      <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract professor_access_token" enabled="true">
-        <stringProp name="JSONPostProcessor.referenceNames">professor_access_token</stringProp>
-        <stringProp name="JSONPostProcessor.jsonPathExprs">$.accessToken</stringProp>
-        <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
-        <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
-      </JSONPostProcessor>
-      <hashTree />
-    </hashTree>
-<HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login Admin Post User" enabled="true">
-      <stringProp name="HTTPSampler.path">/api/auth/login</stringProp>
-      <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-      <stringProp name="HTTPSampler.method">POST</stringProp>
-      <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-      <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
-      <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-        <collectionProp name="Arguments.arguments">
-          <elementProp name="" elementType="HTTPArgument">
-            <boolProp name="HTTPArgument.always_encode">false</boolProp>
-            <stringProp name="Argument.value">{&quot;email&quot;:&quot;admin1@campus.local&quot;,&quot;password&quot;:&quot;Password123!&quot;}</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
-        </collectionProp>
-      </elementProp>
-      <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-    </HTTPSamplerProxy>
-    <hashTree>
-        <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Login JSON Header" enabled="true">
-  <collectionProp name="HeaderManager.headers">
-  <elementProp name="Accept" elementType="Header">
-    <stringProp name="Header.name">Accept</stringProp>
-    <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
-  </elementProp>
-  <elementProp name="Content-Type" elementType="Header">
-    <stringProp name="Header.name">Content-Type</stringProp>
-    <stringProp name="Header.value">application/json</stringProp>
-  </elementProp>
-  </collectionProp>
-</HeaderManager>
-      <hashTree />
-      <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract admin_access_token" enabled="true">
-        <stringProp name="JSONPostProcessor.referenceNames">admin_access_token</stringProp>
-        <stringProp name="JSONPostProcessor.jsonPathExprs">$.accessToken</stringProp>
-        <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
-        <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
-      </JSONPostProcessor>
-      <hashTree />
-    </hashTree>
-                </hashTree>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Login JSON Header" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">application/json</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree/>
+            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract student_access_token" enabled="true">
+              <stringProp name="JSONPostProcessor.referenceNames">student_access_token</stringProp>
+              <stringProp name="JSONPostProcessor.jsonPathExprs">$.accessToken</stringProp>
+              <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+              <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
+            </JSONPostProcessor>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login Professor Post User" enabled="true">
+            <stringProp name="HTTPSampler.path">/api/auth/login</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&quot;email&quot;:&quot;prof1@campus.local&quot;,&quot;password&quot;:&quot;Password123!&quot;}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Login JSON Header" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">application/json</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree/>
+            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract professor_access_token" enabled="true">
+              <stringProp name="JSONPostProcessor.referenceNames">professor_access_token</stringProp>
+              <stringProp name="JSONPostProcessor.jsonPathExprs">$.accessToken</stringProp>
+              <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+              <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
+            </JSONPostProcessor>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login Admin Post User" enabled="true">
+            <stringProp name="HTTPSampler.path">/api/auth/login</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&quot;email&quot;:&quot;admin1@campus.local&quot;,&quot;password&quot;:&quot;Password123!&quot;}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Login JSON Header" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">application/json</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree/>
+            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract admin_access_token" enabled="true">
+              <stringProp name="JSONPostProcessor.referenceNames">admin_access_token</stringProp>
+              <stringProp name="JSONPostProcessor.jsonPathExprs">$.accessToken</stringProp>
+              <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+              <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
+            </JSONPostProcessor>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
         <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Auth Post Feature Thread Group Loop Controller" enabled="true">
-                  <stringProp name="LoopController.loops">${__P(auth_post_loops,50)}</stringProp>
-                  <boolProp name="LoopController.continue_forever">false</boolProp>
-                </LoopController>
-                <hashTree>
-                  <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Auth Post Feature Thread Group CSV Data Set" enabled="true">
-                    <stringProp name="delimiter">,</stringProp>
-                    <stringProp name="fileEncoding">UTF-8</stringProp>
-                    <stringProp name="filename">${__P(auth_post_mixed_csv,auth-post-mixed-50.csv)}</stringProp>
-                    <boolProp name="ignoreFirstLine">true</boolProp>
-                    <boolProp name="quotedData">true</boolProp>
-                    <boolProp name="recycle">false</boolProp>
-                    <stringProp name="shareMode">shareMode.currentThread</stringProp>
-                    <boolProp name="stopThread">true</boolProp>
-                    <stringProp name="variableNames">case_id,case_class,auth_scope,request_path,request_body,capture_var</stringProp>
-                  </CSVDataSet>
-                  <hashTree />
-                  <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="Auth Post Feature Thread Group Random Timer" enabled="true">
-                    <stringProp name="RandomTimer.range">${__P(auth_post_loops_random_delay_ms,700)}</stringProp>
-                    <stringProp name="ConstantTimer.delay">${__P(auth_post_loops_base_delay_ms,700)}</stringProp>
-                  </UniformRandomTimer>
-                  <hashTree />
-                  <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Auth Post Feature Thread Group Case" enabled="true">
-                    <stringProp name="HTTPSampler.path">${request_path}</stringProp>
-                    <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-                    <stringProp name="HTTPSampler.method">POST</stringProp>
-                    <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-                    <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
-                    <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-                      <collectionProp name="Arguments.arguments">
-                        <elementProp name="" elementType="HTTPArgument">
-                          <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                          <stringProp name="Argument.value">${request_body}</stringProp>
-                          <stringProp name="Argument.metadata">=</stringProp>
-                        </elementProp>
-                      </collectionProp>
-                    </elementProp>
-                    <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-                  </HTTPSamplerProxy>
-                  <hashTree>
-                    <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Resolve Auth Scope Token" enabled="true">
-              <stringProp name="cacheKey">resolve-auth-scope-token</stringProp>
+          <stringProp name="LoopController.loops">${__P(auth_post_loops,50)}</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </LoopController>
+        <hashTree>
+          <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Auth Post Feature Thread Group CSV Data Set" enabled="true">
+            <stringProp name="delimiter">,</stringProp>
+            <stringProp name="fileEncoding">UTF-8</stringProp>
+            <stringProp name="filename">${__P(auth_post_mixed_csv,auth-post-mixed-50.csv)}</stringProp>
+            <boolProp name="ignoreFirstLine">true</boolProp>
+            <boolProp name="quotedData">true</boolProp>
+            <boolProp name="recycle">false</boolProp>
+            <stringProp name="shareMode">shareMode.currentThread</stringProp>
+            <boolProp name="stopThread">true</boolProp>
+            <stringProp name="variableNames">case_id,case_class,auth_scope,request_path,request_body,capture_var</stringProp>
+          </CSVDataSet>
+          <hashTree/>
+          <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="Auth Post Feature Thread Group Random Timer" enabled="true">
+            <stringProp name="RandomTimer.range">${__P(auth_post_loops_random_delay_ms,700)}</stringProp>
+            <stringProp name="ConstantTimer.delay">${__P(auth_post_loops_base_delay_ms,700)}</stringProp>
+          </UniformRandomTimer>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Auth Post Feature Thread Group Case" enabled="true">
+            <stringProp name="HTTPSampler.path">${request_path}</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">${request_body}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Resolve Auth Scope Token" enabled="true">
+              <stringProp name="cacheKey">true</stringProp>
               <stringProp name="filename"></stringProp>
               <stringProp name="parameters"></stringProp>
               <stringProp name="scriptLanguage">groovy</stringProp>
-              <stringProp name="script">def scope = vars.get('auth_scope')
-def token = scope ? vars.get(scope + '_access_token') : null
-vars.put('current_access_token', token ?: 'NOT_FOUND')</stringProp>
+              <stringProp name="script">def scope = vars.get(&apos;auth_scope&apos;)
+def token = scope ? vars.get(scope + &apos;_access_token&apos;) : null
+vars.put(&apos;current_access_token&apos;, token ?: &apos;NOT_FOUND&apos;)</stringProp>
             </JSR223PreProcessor>
-                    <hashTree />
+            <hashTree/>
             <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Auth Post Feature Thread Group Headers" enabled="true">
               <collectionProp name="HeaderManager.headers">
-              <elementProp name="Accept" elementType="Header">
-                <stringProp name="Header.name">Accept</stringProp>
-                <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
-              </elementProp>
-              <elementProp name="Content-Type" elementType="Header">
-                <stringProp name="Header.name">Content-Type</stringProp>
-                <stringProp name="Header.value">application/json</stringProp>
-              </elementProp>
-              <elementProp name="Authorization" elementType="Header">
-                <stringProp name="Header.name">Authorization</stringProp>
-                <stringProp name="Header.value">Bearer ${current_access_token}</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-ID" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-ID</stringProp>
-                <stringProp name="Header.value">${case_id}</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-Class" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-Class</stringProp>
-                <stringProp name="Header.value">${case_class}</stringProp>
-              </elementProp>
-              <elementProp name="X-Request-ID" elementType="Header">
-                <stringProp name="Header.name">X-Request-ID</stringProp>
-                <stringProp name="Header.value">${__UUID()}</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Auth-Scope" elementType="Header">
-                <stringProp name="Header.name">X-FP-Auth-Scope</stringProp>
-                <stringProp name="Header.value">${auth_scope}</stringProp>
-              </elementProp>
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">application/json</stringProp>
+                </elementProp>
+                <elementProp name="Authorization" elementType="Header">
+                  <stringProp name="Header.name">Authorization</stringProp>
+                  <stringProp name="Header.value">Bearer ${current_access_token}</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-ID</stringProp>
+                  <stringProp name="Header.value">${case_id}</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-Class</stringProp>
+                  <stringProp name="Header.value">${case_class}</stringProp>
+                </elementProp>
+                <elementProp name="X-Request-ID" elementType="Header">
+                  <stringProp name="Header.name">X-Request-ID</stringProp>
+                  <stringProp name="Header.value">${__UUID()}</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Auth-Scope" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Auth-Scope</stringProp>
+                  <stringProp name="Header.value">${auth_scope}</stringProp>
+                </elementProp>
               </collectionProp>
             </HeaderManager>
-                    <hashTree />
-                    <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Accept Auth Post Feature Thread Group Statuses" enabled="true">
-              <stringProp name="cacheKey">accept-auth-post-feature-thread-group-statuses</stringProp>
+            <hashTree/>
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Accept Auth Post Feature Thread Group Statuses" enabled="true">
+              <stringProp name="cacheKey">true</stringProp>
               <stringProp name="filename"></stringProp>
               <stringProp name="parameters"></stringProp>
               <stringProp name="scriptLanguage">groovy</stringProp>
               <stringProp name="script">def code = prev.getResponseCode()
-def allowed = ['200','201','204','400','401','403','404','409']
+def allowed = [&apos;200&apos;,&apos;201&apos;,&apos;204&apos;,&apos;400&apos;,&apos;401&apos;,&apos;403&apos;,&apos;404&apos;,&apos;409&apos;]
 if (!allowed.contains(code)) {
   prev.setSuccessful(false)
-  prev.setResponseMessage((prev.getResponseMessage() ?: '') + ' | unexpected-status')
+  prev.setResponseMessage((prev.getResponseMessage() ?: &apos;&apos;) + &apos; | unexpected-status&apos;)
 }</stringProp>
             </JSR223PostProcessor>
-                    <hashTree />
-                    <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Capture Created ID" enabled="true">
-              <stringProp name="cacheKey">capture-created-id</stringProp>
+            <hashTree/>
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Capture Created ID" enabled="true">
+              <stringProp name="cacheKey">true</stringProp>
               <stringProp name="filename"></stringProp>
               <stringProp name="parameters"></stringProp>
               <stringProp name="scriptLanguage">groovy</stringProp>
-              <stringProp name="script">def capture = vars.get('capture_var')
+              <stringProp name="script">def capture = vars.get(&apos;capture_var&apos;)
 if (capture != null &amp;&amp; !capture.trim().isEmpty()) {
   def body = prev.getResponseDataAsString()
   def matcher = body =~ /&quot;id&quot;\s*:\s*(\d+)/
@@ -1103,11 +1131,11 @@ if (capture != null &amp;&amp; !capture.trim().isEmpty()) {
   }
 }</stringProp>
             </JSR223PostProcessor>
-                    <hashTree />
-                  </hashTree>
-                </hashTree>
-              </hashTree>
-      <ResultCollector guiclass="SimpleDataWriter" testclass="ResultCollector" testname="JTL Writer" enabled="true">
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+      </hashTree>
+      <ResultCollector guiclass="SimpleDataWriter" testclass="ResultCollector" testname="JTL Writer">
         <boolProp name="ResultCollector.error_logging">false</boolProp>
         <objProp>
           <name>saveConfig</name>
@@ -1143,7 +1171,7 @@ if (capture != null &amp;&amp; !capture.trim().isEmpty()) {
         </objProp>
         <stringProp name="filename">${__P(result_file,FP_BOARD_SEARCH_URL_EXPANDED_500-results.jtl)}</stringProp>
       </ResultCollector>
-      <hashTree />
+      <hashTree/>
     </hashTree>
   </hashTree>
 </jmeterTestPlan>
