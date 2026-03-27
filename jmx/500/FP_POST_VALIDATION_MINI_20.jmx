@@ -171,7 +171,7 @@ if (sampler != null) {
         </hashTree>
       </hashTree>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Auth POST Validation Mini Thread Group" enabled="true">
-        <stringProp name="TestPlan.comments">Authenticated POST mini cases for board and LMS flows. Captured IDs default to zero so dependent steps still produce HTTP responses instead of URISyntax failures.</stringProp>
+        <stringProp name="TestPlan.comments">Authenticated POST mini cases for board and LMS flows. Board IDs are captured directly, and LMS course and assignment IDs are discovered at runtime from seeded data instead of using hardcoded fixture numbers.</stringProp>
         <intProp name="ThreadGroup.num_threads">1</intProp>
         <intProp name="ThreadGroup.ramp_time">1</intProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
@@ -277,6 +277,221 @@ if (sampler != null) {
               <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
               <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
             </JSONPostProcessor>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="LMS Setup Get My Courses Mini" enabled="true">
+            <stringProp name="HTTPSampler.path">/api/lms/courses/my</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header LMS Setup Courses Mini" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Authorization" elementType="Header">
+                  <stringProp name="Header.name">Authorization</stringProp>
+                  <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-ID</stringProp>
+                  <stringProp name="Header.value">auth_setup_lms_001</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-Class</stringProp>
+                  <stringProp name="Header.value">setup</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree/>
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Capture LMS Course IDs Mini" enabled="true">
+              <stringProp name="cacheKey">true</stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="scriptLanguage">groovy</stringProp>
+              <stringProp name="script">import groovy.json.JsonSlurper
+
+vars.put(&apos;lms_course_cs101_id&apos;, &apos;0&apos;)
+vars.put(&apos;lms_course_sec330_id&apos;, &apos;0&apos;)
+
+def raw = prev.getResponseDataAsString()
+if (!raw) {
+    return
+}
+
+def parsed
+try {
+    parsed = new JsonSlurper().parseText(raw)
+} catch (Exception ignored) {
+    return
+}
+
+if (!(parsed instanceof List)) {
+    return
+}
+
+parsed.findAll { it instanceof Map }.each { course ->
+    def code = course.code?.toString()
+    def id = course.id?.toString()
+    if (!id) {
+        return
+    }
+    if (code == &apos;CS101&apos;) {
+        vars.put(&apos;lms_course_cs101_id&apos;, id)
+    }
+    if (code == &apos;SEC330&apos;) {
+        vars.put(&apos;lms_course_sec330_id&apos;, id)
+    }
+}</stringProp>
+            </JSR223PostProcessor>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="LMS Setup Get CS101 Assignments Mini" enabled="true">
+            <stringProp name="HTTPSampler.path">/api/lms/courses/${lms_course_cs101_id}/assignments</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header LMS Setup CS101 Mini" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Authorization" elementType="Header">
+                  <stringProp name="Header.name">Authorization</stringProp>
+                  <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-ID</stringProp>
+                  <stringProp name="Header.value">auth_setup_lms_002</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-Class</stringProp>
+                  <stringProp name="Header.value">setup</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree/>
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Capture LMS Normal Assignment ID Mini" enabled="true">
+              <stringProp name="cacheKey">true</stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="scriptLanguage">groovy</stringProp>
+              <stringProp name="script">import groovy.json.JsonSlurper
+
+vars.put(&apos;lms_normal_assignment_id&apos;, &apos;0&apos;)
+
+def raw = prev.getResponseDataAsString()
+if (!raw) {
+    return
+}
+
+def parsed
+try {
+    parsed = new JsonSlurper().parseText(raw)
+} catch (Exception ignored) {
+    return
+}
+
+if (!(parsed instanceof List) || parsed.isEmpty()) {
+    return
+}
+
+def first = parsed[0]
+if (first instanceof Map &amp;&amp; first.id != null) {
+    vars.put(&apos;lms_normal_assignment_id&apos;, first.id.toString())
+}</stringProp>
+            </JSR223PostProcessor>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="LMS Setup Get SEC330 Assignments Mini" enabled="true">
+            <stringProp name="HTTPSampler.path">/api/lms/courses/${lms_course_sec330_id}/assignments</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header LMS Setup SEC330 Mini" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Authorization" elementType="Header">
+                  <stringProp name="Header.name">Authorization</stringProp>
+                  <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-ID</stringProp>
+                  <stringProp name="Header.value">auth_setup_lms_003</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-Class</stringProp>
+                  <stringProp name="Header.value">setup</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree/>
+            <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Capture LMS Security Assignment IDs Mini" enabled="true">
+              <stringProp name="cacheKey">true</stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="scriptLanguage">groovy</stringProp>
+              <stringProp name="script">import groovy.json.JsonSlurper
+
+vars.put(&apos;lms_ambiguous_assignment_id&apos;, &apos;0&apos;)
+vars.put(&apos;lms_attack_assignment_id&apos;, &apos;0&apos;)
+
+def raw = prev.getResponseDataAsString()
+if (!raw) {
+    return
+}
+
+def parsed
+try {
+    parsed = new JsonSlurper().parseText(raw)
+} catch (Exception ignored) {
+    return
+}
+
+if (!(parsed instanceof List)) {
+    return
+}
+
+if (parsed.size() &gt; 0) {
+    def first = parsed[0]
+    if (first instanceof Map &amp;&amp; first.id != null) {
+        vars.put(&apos;lms_ambiguous_assignment_id&apos;, first.id.toString())
+    }
+}
+
+if (parsed.size() &gt; 1) {
+    def second = parsed[1]
+    if (second instanceof Map &amp;&amp; second.id != null) {
+        vars.put(&apos;lms_attack_assignment_id&apos;, second.id.toString())
+    }
+}</stringProp>
+            </JSR223PostProcessor>
             <hashTree/>
           </hashTree>
         </hashTree>
@@ -596,7 +811,7 @@ if (sampler != null) {
           <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_008 [normal] lms submit assignment" enabled="true">
-          <stringProp name="HTTPSampler.path">/api/lms/assignments/1/submissions</stringProp>
+          <stringProp name="HTTPSampler.path">/api/lms/assignments/${lms_normal_assignment_id}/submissions</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
           <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
@@ -612,8 +827,8 @@ if (sampler != null) {
           </elementProp>
           <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
         </HTTPSamplerProxy>
-        <hashTree>
-          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header LMS Submit Mini" enabled="true">
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header LMS Submit Mini" enabled="true">
             <collectionProp name="HeaderManager.headers">
               <elementProp name="Accept" elementType="Header">
                 <stringProp name="Header.name">Accept</stringProp>
@@ -623,10 +838,10 @@ if (sampler != null) {
                 <stringProp name="Header.name">Content-Type</stringProp>
                 <stringProp name="Header.value">application/json</stringProp>
               </elementProp>
-              <elementProp name="Authorization" elementType="Header">
-                <stringProp name="Header.name">Authorization</stringProp>
-                <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
-              </elementProp>
+                <elementProp name="Authorization" elementType="Header">
+                  <stringProp name="Header.name">Authorization</stringProp>
+                  <stringProp name="Header.value">Bearer ${lms_student_access_token}</stringProp>
+                </elementProp>
               <elementProp name="X-FP-Case-ID" elementType="Header">
                 <stringProp name="Header.name">X-FP-Case-ID</stringProp>
                 <stringProp name="Header.value">auth_post_008</stringProp>
@@ -646,52 +861,59 @@ if (sampler != null) {
           </JSONPostProcessor>
           <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_009 [normal] lms grade submission" enabled="true">
-          <stringProp name="HTTPSampler.path">/api/lms/submissions/${submission_id_01}/grade</stringProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-          <stringProp name="HTTPSampler.method">POST</stringProp>
-          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
-          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-            <collectionProp name="Arguments.arguments">
-              <elementProp name="" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{&quot;score&quot;:88,&quot;feedback&quot;:&quot;Mini validation grade path&quot;}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-            </collectionProp>
-          </elementProp>
-          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-        </HTTPSamplerProxy>
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If LMS Submission Captured Mini" enabled="true">
+          <stringProp name="IfController.condition">${__jexl3('${submission_id_01}' != '0')}</stringProp>
+          <boolProp name="IfController.useExpression">true</boolProp>
+          <boolProp name="IfController.evaluateAll">false</boolProp>
+        </IfController>
         <hashTree>
-          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Professor JSON Header LMS Grade Mini" enabled="true">
-            <collectionProp name="HeaderManager.headers">
-              <elementProp name="Accept" elementType="Header">
-                <stringProp name="Header.name">Accept</stringProp>
-                <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
-              </elementProp>
-              <elementProp name="Content-Type" elementType="Header">
-                <stringProp name="Header.name">Content-Type</stringProp>
-                <stringProp name="Header.value">application/json</stringProp>
-              </elementProp>
-              <elementProp name="Authorization" elementType="Header">
-                <stringProp name="Header.name">Authorization</stringProp>
-                <stringProp name="Header.value">Bearer ${professor_access_token}</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-ID" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-ID</stringProp>
-                <stringProp name="Header.value">auth_post_009</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-Class" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-Class</stringProp>
-                <stringProp name="Header.value">normal</stringProp>
-              </elementProp>
-            </collectionProp>
-          </HeaderManager>
-          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_009 [normal] lms grade submission" enabled="true">
+            <stringProp name="HTTPSampler.path">/api/lms/submissions/${submission_id_01}/grade</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&quot;score&quot;:88,&quot;feedback&quot;:&quot;Mini validation grade path&quot;}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Professor JSON Header LMS Grade Mini" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">application/json</stringProp>
+                </elementProp>
+                <elementProp name="Authorization" elementType="Header">
+                  <stringProp name="Header.name">Authorization</stringProp>
+                  <stringProp name="Header.value">Bearer ${professor_access_token}</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-ID</stringProp>
+                  <stringProp name="Header.value">auth_post_009</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-Class</stringProp>
+                  <stringProp name="Header.value">normal</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree/>
+          </hashTree>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_010 [ambiguous] lms submit security terms" enabled="true">
-          <stringProp name="HTTPSampler.path">/api/lms/assignments/6/submissions</stringProp>
+          <stringProp name="HTTPSampler.path">/api/lms/assignments/${lms_ambiguous_assignment_id}/submissions</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
           <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
@@ -707,8 +929,8 @@ if (sampler != null) {
           </elementProp>
           <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
         </HTTPSamplerProxy>
-        <hashTree>
-          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header LMS Ambiguous Submit Mini" enabled="true">
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header LMS Ambiguous Submit Mini" enabled="true">
             <collectionProp name="HeaderManager.headers">
               <elementProp name="Accept" elementType="Header">
                 <stringProp name="Header.name">Accept</stringProp>
@@ -718,10 +940,10 @@ if (sampler != null) {
                 <stringProp name="Header.name">Content-Type</stringProp>
                 <stringProp name="Header.value">application/json</stringProp>
               </elementProp>
-              <elementProp name="Authorization" elementType="Header">
-                <stringProp name="Header.name">Authorization</stringProp>
-                <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
-              </elementProp>
+                <elementProp name="Authorization" elementType="Header">
+                  <stringProp name="Header.name">Authorization</stringProp>
+                  <stringProp name="Header.value">Bearer ${lms_student_access_token}</stringProp>
+                </elementProp>
               <elementProp name="X-FP-Case-ID" elementType="Header">
                 <stringProp name="Header.name">X-FP-Case-ID</stringProp>
                 <stringProp name="Header.value">auth_post_010</stringProp>
@@ -735,7 +957,7 @@ if (sampler != null) {
           <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_011 [attack] lms submit explicit xss" enabled="true">
-          <stringProp name="HTTPSampler.path">/api/lms/assignments/6/submissions</stringProp>
+          <stringProp name="HTTPSampler.path">/api/lms/assignments/${lms_attack_assignment_id}/submissions</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
           <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
@@ -751,8 +973,8 @@ if (sampler != null) {
           </elementProp>
           <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
         </HTTPSamplerProxy>
-        <hashTree>
-          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header LMS Attack Submit Mini" enabled="true">
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header LMS Attack Submit Mini" enabled="true">
             <collectionProp name="HeaderManager.headers">
               <elementProp name="Accept" elementType="Header">
                 <stringProp name="Header.name">Accept</stringProp>
@@ -762,10 +984,10 @@ if (sampler != null) {
                 <stringProp name="Header.name">Content-Type</stringProp>
                 <stringProp name="Header.value">application/json</stringProp>
               </elementProp>
-              <elementProp name="Authorization" elementType="Header">
-                <stringProp name="Header.name">Authorization</stringProp>
-                <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
-              </elementProp>
+                <elementProp name="Authorization" elementType="Header">
+                  <stringProp name="Header.name">Authorization</stringProp>
+                  <stringProp name="Header.value">Bearer ${lms_student_access_token}</stringProp>
+                </elementProp>
               <elementProp name="X-FP-Case-ID" elementType="Header">
                 <stringProp name="Header.name">X-FP-Case-ID</stringProp>
                 <stringProp name="Header.value">auth_post_011</stringProp>
