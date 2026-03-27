@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
   <hashTree>
     <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="FP_POST_VALIDATION_MINI_20">
@@ -12,6 +12,8 @@
           </elementProp>
         </collectionProp>
       </elementProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
     </TestPlan>
     <hashTree>
       <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree">
@@ -48,9 +50,9 @@
             <connectTime>true</connectTime>
           </value>
         </objProp>
-        <stringProp name="filename" />
+        <stringProp name="filename"></stringProp>
       </ResultCollector>
-      <hashTree />
+      <hashTree/>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Public POST Validation Mini Thread Group" enabled="true">
         <stringProp name="TestPlan.comments">Eight public POST cases covering normal, ambiguous, and explicit attack traffic for support requests, register, and login.</stringProp>
         <intProp name="ThreadGroup.num_threads">1</intProp>
@@ -69,17 +71,17 @@
           <stringProp name="HTTPSampler.protocol">${__P(protocol,http)}</stringProp>
           <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-            <collectionProp name="Arguments.arguments" />
+            <collectionProp name="Arguments.arguments"/>
           </elementProp>
           <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
         </ConfigTestElement>
-        <hashTree />
+        <hashTree/>
         <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager Public POST Mini" enabled="true">
-          <collectionProp name="CookieManager.cookies" />
+          <collectionProp name="CookieManager.cookies"/>
           <boolProp name="CookieManager.clearEachIteration">false</boolProp>
           <boolProp name="CookieManager.controlledByThreadGroup">false</boolProp>
         </CookieManager>
-        <hashTree />
+        <hashTree/>
         <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Public POST Mini Loop Controller" enabled="true">
           <stringProp name="LoopController.loops">${__P(public_post_mini_loops,8)}</stringProp>
           <boolProp name="LoopController.continue_forever">false</boolProp>
@@ -96,12 +98,12 @@
             <boolProp name="stopThread">true</boolProp>
             <stringProp name="variableNames">case_id,case_class,request_path,request_body</stringProp>
           </CSVDataSet>
-          <hashTree />
+          <hashTree/>
           <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="Public POST Mini Random Timer" enabled="true">
             <stringProp name="RandomTimer.range">${__P(public_post_mini_random_delay_ms,250)}</stringProp>
             <stringProp name="ConstantTimer.delay">${__P(public_post_mini_base_delay_ms,250)}</stringProp>
           </UniformRandomTimer>
-          <hashTree />
+          <hashTree/>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Public POST Mini Case" enabled="true">
             <stringProp name="HTTPSampler.path">${resolved_request_path}</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
@@ -122,23 +124,23 @@
           <hashTree>
             <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Resolve Public POST Mini Request" enabled="true">
               <stringProp name="cacheKey">true</stringProp>
-              <stringProp name="filename" />
-              <stringProp name="parameters" />
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
               <stringProp name="scriptLanguage">groovy</stringProp>
               <stringProp name="script">import org.apache.jmeter.engine.util.CompoundVariable
 
 def resolve = { raw -&gt;
-    raw == null ? '' : new CompoundVariable(raw).execute()
+    raw == null ? &apos;&apos; : new CompoundVariable(raw).execute()
 }
 
-vars.put('resolved_request_path', resolve(vars.get('request_path')))
-vars.put('resolved_request_body', resolve(vars.get('request_body')))
+vars.put(&apos;resolved_request_path&apos;, resolve(vars.get(&apos;request_path&apos;)))
+vars.put(&apos;resolved_request_body&apos;, resolve(vars.get(&apos;request_body&apos;)))
 
 if (sampler != null) {
-    sampler.setName('Public POST ' + (vars.get('case_id') ?: 'unknown') + ' [' + (vars.get('case_class') ?: 'unknown') + ']')
+    sampler.setName(&apos;Public POST &apos; + (vars.get(&apos;case_id&apos;) ?: &apos;unknown&apos;) + &apos; [&apos; + (vars.get(&apos;case_class&apos;) ?: &apos;unknown&apos;) + &apos;]&apos;)
 }</stringProp>
             </JSR223PreProcessor>
-            <hashTree />
+            <hashTree/>
             <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Public POST Mini Headers" enabled="true">
               <collectionProp name="HeaderManager.headers">
                 <elementProp name="Accept" elementType="Header">
@@ -163,7 +165,7 @@ if (sampler != null) {
                 </elementProp>
               </collectionProp>
             </HeaderManager>
-            <hashTree />
+            <hashTree/>
           </hashTree>
         </hashTree>
       </hashTree>
@@ -185,18 +187,18 @@ if (sampler != null) {
           <stringProp name="HTTPSampler.protocol">${__P(protocol,http)}</stringProp>
           <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-            <collectionProp name="Arguments.arguments" />
+            <collectionProp name="Arguments.arguments"/>
           </elementProp>
           <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
         </ConfigTestElement>
-        <hashTree />
+        <hashTree/>
         <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager Auth POST Mini" enabled="true">
-          <collectionProp name="CookieManager.cookies" />
+          <collectionProp name="CookieManager.cookies"/>
           <boolProp name="CookieManager.clearEachIteration">false</boolProp>
           <boolProp name="CookieManager.controlledByThreadGroup">false</boolProp>
         </CookieManager>
-        <hashTree />
-        <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="Login Once" enabled="true" />
+        <hashTree/>
+        <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="Login Once" enabled="true"/>
         <hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login Student Mini User" enabled="true">
             <stringProp name="HTTPSampler.path">/api/auth/login</stringProp>
@@ -208,7 +210,7 @@ if (sampler != null) {
               <collectionProp name="Arguments.arguments">
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.value">{"email":"student11@campus.local","password":"Password123!"}</stringProp>
+                  <stringProp name="Argument.value">{&quot;email&quot;:&quot;student11@campus.local&quot;,&quot;password&quot;:&quot;Password123!&quot;}</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                 </elementProp>
               </collectionProp>
@@ -228,14 +230,14 @@ if (sampler != null) {
                 </elementProp>
               </collectionProp>
             </HeaderManager>
-            <hashTree />
+            <hashTree/>
             <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract Student Access Token Mini" enabled="true">
               <stringProp name="JSONPostProcessor.referenceNames">student_access_token</stringProp>
               <stringProp name="JSONPostProcessor.jsonPathExprs">$.accessToken</stringProp>
-              <stringProp name="JSONPostProcessor.match_numbers" />
+              <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
               <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
             </JSONPostProcessor>
-            <hashTree />
+            <hashTree/>
           </hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login Professor Mini User" enabled="true">
             <stringProp name="HTTPSampler.path">/api/auth/login</stringProp>
@@ -247,7 +249,7 @@ if (sampler != null) {
               <collectionProp name="Arguments.arguments">
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.value">{"email":"prof1@campus.local","password":"Password123!"}</stringProp>
+                  <stringProp name="Argument.value">{&quot;email&quot;:&quot;prof1@campus.local&quot;,&quot;password&quot;:&quot;Password123!&quot;}</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                 </elementProp>
               </collectionProp>
@@ -267,14 +269,14 @@ if (sampler != null) {
                 </elementProp>
               </collectionProp>
             </HeaderManager>
-            <hashTree />
+            <hashTree/>
             <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract Professor Access Token Mini" enabled="true">
               <stringProp name="JSONPostProcessor.referenceNames">professor_access_token</stringProp>
               <stringProp name="JSONPostProcessor.jsonPathExprs">$.accessToken</stringProp>
-              <stringProp name="JSONPostProcessor.match_numbers" />
+              <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
               <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
             </JSONPostProcessor>
-            <hashTree />
+            <hashTree/>
           </hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login LMS Student Mini User" enabled="true">
             <stringProp name="HTTPSampler.path">/api/auth/login</stringProp>
@@ -286,7 +288,7 @@ if (sampler != null) {
               <collectionProp name="Arguments.arguments">
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.value">{"email":"student11@campus.local","password":"Password123!"}</stringProp>
+                  <stringProp name="Argument.value">{&quot;email&quot;:&quot;student11@campus.local&quot;,&quot;password&quot;:&quot;Password123!&quot;}</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                 </elementProp>
               </collectionProp>
@@ -306,14 +308,14 @@ if (sampler != null) {
                 </elementProp>
               </collectionProp>
             </HeaderManager>
-            <hashTree />
+            <hashTree/>
             <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract LMS Student Access Token Mini" enabled="true">
               <stringProp name="JSONPostProcessor.referenceNames">lms_student_access_token</stringProp>
               <stringProp name="JSONPostProcessor.jsonPathExprs">$.accessToken</stringProp>
-              <stringProp name="JSONPostProcessor.match_numbers" />
+              <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
               <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
             </JSONPostProcessor>
-            <hashTree />
+            <hashTree/>
           </hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="LMS Setup Get My Courses Mini" enabled="true">
             <stringProp name="HTTPSampler.path">/api/lms/courses/my</stringProp>
@@ -322,7 +324,7 @@ if (sampler != null) {
             <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
             <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-              <collectionProp name="Arguments.arguments" />
+              <collectionProp name="Arguments.arguments"/>
             </elementProp>
             <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
           </HTTPSamplerProxy>
@@ -347,16 +349,16 @@ if (sampler != null) {
                 </elementProp>
               </collectionProp>
             </HeaderManager>
-            <hashTree />
+            <hashTree/>
             <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Capture LMS Course IDs Mini" enabled="true">
               <stringProp name="cacheKey">true</stringProp>
-              <stringProp name="filename" />
-              <stringProp name="parameters" />
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
               <stringProp name="scriptLanguage">groovy</stringProp>
               <stringProp name="script">import groovy.json.JsonSlurper
 
-vars.put('lms_course_cs101_id', '0')
-vars.put('lms_course_sec330_id', '0')
+vars.put(&apos;lms_course_cs101_id&apos;, &apos;0&apos;)
+vars.put(&apos;lms_course_sec330_id&apos;, &apos;0&apos;)
 
 def raw = prev.getResponseDataAsString()
 if (!raw) {
@@ -380,15 +382,15 @@ parsed.findAll { it instanceof Map }.each { course -&gt;
     if (!id) {
         return
     }
-    if (code == 'CS101') {
-        vars.put('lms_course_cs101_id', id)
+    if (code == &apos;CS101&apos;) {
+        vars.put(&apos;lms_course_cs101_id&apos;, id)
     }
-    if (code == 'SEC330') {
-        vars.put('lms_course_sec330_id', id)
+    if (code == &apos;SEC330&apos;) {
+        vars.put(&apos;lms_course_sec330_id&apos;, id)
     }
 }</stringProp>
             </JSR223PostProcessor>
-            <hashTree />
+            <hashTree/>
           </hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="LMS Setup Get CS101 Assignments Mini" enabled="true">
             <stringProp name="HTTPSampler.path">/api/lms/courses/${lms_course_cs101_id}/assignments</stringProp>
@@ -397,7 +399,7 @@ parsed.findAll { it instanceof Map }.each { course -&gt;
             <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
             <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-              <collectionProp name="Arguments.arguments" />
+              <collectionProp name="Arguments.arguments"/>
             </elementProp>
             <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
           </HTTPSamplerProxy>
@@ -422,15 +424,15 @@ parsed.findAll { it instanceof Map }.each { course -&gt;
                 </elementProp>
               </collectionProp>
             </HeaderManager>
-            <hashTree />
+            <hashTree/>
             <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Capture LMS Normal Assignment ID Mini" enabled="true">
               <stringProp name="cacheKey">true</stringProp>
-              <stringProp name="filename" />
-              <stringProp name="parameters" />
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
               <stringProp name="scriptLanguage">groovy</stringProp>
               <stringProp name="script">import groovy.json.JsonSlurper
 
-vars.put('lms_normal_assignment_id', '0')
+vars.put(&apos;lms_normal_assignment_id&apos;, &apos;0&apos;)
 
 def raw = prev.getResponseDataAsString()
 if (!raw) {
@@ -450,10 +452,10 @@ if (!(parsed instanceof List) || parsed.isEmpty()) {
 
 def first = parsed[0]
 if (first instanceof Map &amp;&amp; first.id != null) {
-    vars.put('lms_normal_assignment_id', first.id.toString())
+    vars.put(&apos;lms_normal_assignment_id&apos;, first.id.toString())
 }</stringProp>
             </JSR223PostProcessor>
-            <hashTree />
+            <hashTree/>
           </hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="LMS Setup Get Additional CS101 Assignments Mini" enabled="true">
             <stringProp name="HTTPSampler.path">/api/lms/courses/${lms_course_cs101_id}/assignments</stringProp>
@@ -462,7 +464,7 @@ if (first instanceof Map &amp;&amp; first.id != null) {
             <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
             <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-              <collectionProp name="Arguments.arguments" />
+              <collectionProp name="Arguments.arguments"/>
             </elementProp>
             <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
           </HTTPSamplerProxy>
@@ -487,16 +489,16 @@ if (first instanceof Map &amp;&amp; first.id != null) {
                 </elementProp>
               </collectionProp>
             </HeaderManager>
-            <hashTree />
+            <hashTree/>
             <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Capture LMS Resubmit Assignment IDs Mini" enabled="true">
               <stringProp name="cacheKey">true</stringProp>
-              <stringProp name="filename" />
-              <stringProp name="parameters" />
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
               <stringProp name="scriptLanguage">groovy</stringProp>
               <stringProp name="script">import groovy.json.JsonSlurper
 
-vars.put('lms_ambiguous_assignment_id', '0')
-vars.put('lms_attack_assignment_id', '0')
+vars.put(&apos;lms_ambiguous_assignment_id&apos;, &apos;0&apos;)
+vars.put(&apos;lms_attack_assignment_id&apos;, &apos;0&apos;)
 
 def raw = prev.getResponseDataAsString()
 if (!raw) {
@@ -516,25 +518,25 @@ if (!(parsed instanceof List) || parsed.isEmpty()) {
 
 def first = parsed[0]
 if (first instanceof Map &amp;&amp; first.id != null) {
-    vars.put('lms_ambiguous_assignment_id', first.id.toString())
-    vars.put('lms_attack_assignment_id', first.id.toString())
+    vars.put(&apos;lms_ambiguous_assignment_id&apos;, first.id.toString())
+    vars.put(&apos;lms_attack_assignment_id&apos;, first.id.toString())
 }
 
 if (parsed.size() &gt; 1) {
     def second = parsed[1]
     if (second instanceof Map &amp;&amp; second.id != null) {
-        vars.put('lms_attack_assignment_id', second.id.toString())
+        vars.put(&apos;lms_attack_assignment_id&apos;, second.id.toString())
     }
 }</stringProp>
             </JSR223PostProcessor>
-            <hashTree />
+            <hashTree/>
           </hashTree>
         </hashTree>
         <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="Auth POST Mini Random Timer" enabled="true">
           <stringProp name="RandomTimer.range">${__P(auth_post_mini_random_delay_ms,250)}</stringProp>
           <stringProp name="ConstantTimer.delay">${__P(auth_post_mini_base_delay_ms,250)}</stringProp>
         </UniformRandomTimer>
-        <hashTree />
+        <hashTree/>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_001 [normal] board create post" enabled="true">
           <stringProp name="HTTPSampler.path">/api/board/posts</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
@@ -545,7 +547,7 @@ if (parsed.size() &gt; 1) {
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{"title":"Mini board post ${post_mini_run_id}","content":"This is a normal board post used to validate the create-comment-update-delete chain."}</stringProp>
+                <stringProp name="Argument.value">{&quot;title&quot;:&quot;Mini board post ${post_mini_run_id}&quot;,&quot;content&quot;:&quot;This is a normal board post used to validate the create-comment-update-delete chain.&quot;}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
             </collectionProp>
@@ -577,14 +579,14 @@ if (parsed.size() &gt; 1) {
               </elementProp>
             </collectionProp>
           </HeaderManager>
-          <hashTree />
+          <hashTree/>
           <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Capture Board Post ID Mini" enabled="true">
             <stringProp name="JSONPostProcessor.referenceNames">board_post_id_01</stringProp>
             <stringProp name="JSONPostProcessor.jsonPathExprs">$.id</stringProp>
-            <stringProp name="JSONPostProcessor.match_numbers" />
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
             <stringProp name="JSONPostProcessor.defaultValues">0</stringProp>
           </JSONPostProcessor>
-          <hashTree />
+          <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_002 [normal] board create comment" enabled="true">
           <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_01}/comments</stringProp>
@@ -596,7 +598,7 @@ if (parsed.size() &gt; 1) {
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{"content":"This comment keeps the dependent ID chain on a normal path first."}</stringProp>
+                <stringProp name="Argument.value">{&quot;content&quot;:&quot;This comment keeps the dependent ID chain on a normal path first.&quot;}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
             </collectionProp>
@@ -628,14 +630,14 @@ if (parsed.size() &gt; 1) {
               </elementProp>
             </collectionProp>
           </HeaderManager>
-          <hashTree />
+          <hashTree/>
           <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Capture Board Comment ID Mini" enabled="true">
             <stringProp name="JSONPostProcessor.referenceNames">board_comment_id_01</stringProp>
             <stringProp name="JSONPostProcessor.jsonPathExprs">$.id</stringProp>
-            <stringProp name="JSONPostProcessor.match_numbers" />
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
             <stringProp name="JSONPostProcessor.defaultValues">0</stringProp>
           </JSONPostProcessor>
-          <hashTree />
+          <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_003 [ambiguous] board update post" enabled="true">
           <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_01}/update</stringProp>
@@ -647,7 +649,7 @@ if (parsed.size() &gt; 1) {
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{"title":"Security terms review ${post_mini_run_id}","content":"This text discusses script tag examples, ../admin route notes, and whoami output as harmless study material."}</stringProp>
+                <stringProp name="Argument.value">{&quot;title&quot;:&quot;Security terms review ${post_mini_run_id}&quot;,&quot;content&quot;:&quot;This text discusses script tag examples, ../admin route notes, and whoami output as harmless study material.&quot;}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
             </collectionProp>
@@ -679,7 +681,7 @@ if (parsed.size() &gt; 1) {
               </elementProp>
             </collectionProp>
           </HeaderManager>
-          <hashTree />
+          <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_004 [normal] board update comment" enabled="true">
           <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_01}/comments/${board_comment_id_01}/update</stringProp>
@@ -691,7 +693,7 @@ if (parsed.size() &gt; 1) {
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{"content":"This is the updated comment text for the mini validation chain."}</stringProp>
+                <stringProp name="Argument.value">{&quot;content&quot;:&quot;This is the updated comment text for the mini validation chain.&quot;}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
             </collectionProp>
@@ -723,7 +725,7 @@ if (parsed.size() &gt; 1) {
               </elementProp>
             </collectionProp>
           </HeaderManager>
-          <hashTree />
+          <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_005 [normal] board delete comment" enabled="true">
           <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_01}/comments/${board_comment_id_01}/delete</stringProp>
@@ -732,7 +734,7 @@ if (parsed.size() &gt; 1) {
           <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
           <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-            <collectionProp name="Arguments.arguments" />
+            <collectionProp name="Arguments.arguments"/>
           </elementProp>
           <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
         </HTTPSamplerProxy>
@@ -761,7 +763,7 @@ if (parsed.size() &gt; 1) {
               </elementProp>
             </collectionProp>
           </HeaderManager>
-          <hashTree />
+          <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_006 [normal] board delete post" enabled="true">
           <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_01}/delete</stringProp>
@@ -770,7 +772,7 @@ if (parsed.size() &gt; 1) {
           <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
           <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-            <collectionProp name="Arguments.arguments" />
+            <collectionProp name="Arguments.arguments"/>
           </elementProp>
           <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
         </HTTPSamplerProxy>
@@ -799,7 +801,7 @@ if (parsed.size() &gt; 1) {
               </elementProp>
             </collectionProp>
           </HeaderManager>
-          <hashTree />
+          <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_007 [attack] board create explicit xss" enabled="true">
           <stringProp name="HTTPSampler.path">/api/board/posts</stringProp>
@@ -811,7 +813,7 @@ if (parsed.size() &gt; 1) {
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{"title":"&lt;script&gt;alert(1)&lt;/script&gt;","content":"cmd.exe &amp;&amp; whoami"}</stringProp>
+                <stringProp name="Argument.value">{&quot;title&quot;:&quot;&lt;script&gt;alert(1)&lt;/script&gt;&quot;,&quot;content&quot;:&quot;cmd.exe &amp;&amp; whoami&quot;}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
             </collectionProp>
@@ -843,7 +845,7 @@ if (parsed.size() &gt; 1) {
               </elementProp>
             </collectionProp>
           </HeaderManager>
-          <hashTree />
+          <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_008 [normal] lms submit assignment" enabled="true">
           <stringProp name="HTTPSampler.path">/api/lms/assignments/${lms_normal_assignment_id}/submissions</stringProp>
@@ -855,7 +857,7 @@ if (parsed.size() &gt; 1) {
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{"contentText":"This is a normal assignment submission used by the mini validation suite."}</stringProp>
+                <stringProp name="Argument.value">{&quot;contentText&quot;:&quot;This is a normal assignment submission used by the mini validation suite.&quot;}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
             </collectionProp>
@@ -887,17 +889,17 @@ if (parsed.size() &gt; 1) {
               </elementProp>
             </collectionProp>
           </HeaderManager>
-          <hashTree />
+          <hashTree/>
           <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Capture Submission ID Mini" enabled="true">
             <stringProp name="JSONPostProcessor.referenceNames">submission_id_01</stringProp>
             <stringProp name="JSONPostProcessor.jsonPathExprs">$.id</stringProp>
-            <stringProp name="JSONPostProcessor.match_numbers" />
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
             <stringProp name="JSONPostProcessor.defaultValues">0</stringProp>
           </JSONPostProcessor>
-          <hashTree />
+          <hashTree/>
         </hashTree>
         <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If LMS Submission Captured Mini" enabled="true">
-          <stringProp name="IfController.condition">${__jexl3('${submission_id_01}' != '0')}</stringProp>
+          <stringProp name="IfController.condition">${__jexl3(&apos;${submission_id_01}&apos; != &apos;0&apos;)}</stringProp>
           <boolProp name="IfController.useExpression">true</boolProp>
           <boolProp name="IfController.evaluateAll">false</boolProp>
         </IfController>
@@ -912,7 +914,7 @@ if (parsed.size() &gt; 1) {
               <collectionProp name="Arguments.arguments">
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.value">{"score":88,"feedback":"Mini validation grade path"}</stringProp>
+                  <stringProp name="Argument.value">{&quot;score&quot;:88,&quot;feedback&quot;:&quot;Mini validation grade path&quot;}</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                 </elementProp>
               </collectionProp>
@@ -944,7 +946,7 @@ if (parsed.size() &gt; 1) {
                 </elementProp>
               </collectionProp>
             </HeaderManager>
-            <hashTree />
+            <hashTree/>
           </hashTree>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_010 [ambiguous] lms resubmit security terms" enabled="true">
@@ -957,7 +959,7 @@ if (parsed.size() &gt; 1) {
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{"contentText":"This report explains cmd.exe, whoami, and ../admin examples as part of a defensive security assignment."}</stringProp>
+                <stringProp name="Argument.value">{&quot;contentText&quot;:&quot;This report explains cmd.exe, whoami, and ../admin examples as part of a defensive security assignment.&quot;}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
             </collectionProp>
@@ -989,7 +991,7 @@ if (parsed.size() &gt; 1) {
               </elementProp>
             </collectionProp>
           </HeaderManager>
-          <hashTree />
+          <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_011 [attack] lms submit explicit xss" enabled="true">
           <stringProp name="HTTPSampler.path">/api/lms/assignments/${lms_attack_assignment_id}/submissions</stringProp>
@@ -1001,7 +1003,7 @@ if (parsed.size() &gt; 1) {
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{"contentText":"&lt;img src=x onerror=alert(1)&gt;"}</stringProp>
+                <stringProp name="Argument.value">{&quot;contentText&quot;:&quot;&lt;img src=x onerror=alert(1)&gt;&quot;}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
             </collectionProp>
@@ -1033,10 +1035,10 @@ if (parsed.size() &gt; 1) {
               </elementProp>
             </collectionProp>
           </HeaderManager>
-          <hashTree />
+          <hashTree/>
         </hashTree>
       </hashTree>
-      <ResultCollector guiclass="SimpleDataWriter" testclass="ResultCollector" testname="JTL Writer">
+      <ResultCollector guiclass="SimpleDataWriter" testclass="ResultCollector" testname="JTL Writer" enabled="true">
         <boolProp name="ResultCollector.error_logging">false</boolProp>
         <objProp>
           <name>saveConfig</name>
@@ -1072,7 +1074,7 @@ if (parsed.size() &gt; 1) {
         </objProp>
         <stringProp name="filename">${__P(result_file,FP_POST_VALIDATION_MINI_20-results.jtl)}</stringProp>
       </ResultCollector>
-      <hashTree />
+      <hashTree/>
     </hashTree>
   </hashTree>
 </jmeterTestPlan>

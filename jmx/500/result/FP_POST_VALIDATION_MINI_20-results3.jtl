@@ -1,0 +1,26 @@
+timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success,bytes,sentBytes,grpThreads,allThreads,URL,Latency,IdleTime,Connect
+1774590097581,75,Public POST public_post_001 [normal],201,,Public POST Validation Mini Thread Group 1-1,text,true,766,633,1,2,http://www.kj.ac.kr/api/public/support-requests,75,0,4
+1774590097664,57,Login Student Mini User,200,,Auth POST Validation Mini Thread Group 2-1,text,true,1153,285,1,2,http://www.kj.ac.kr/api/auth/login,57,0,2
+1774590097998,13,Public POST public_post_002 [ambiguous],201,,Public POST Validation Mini Thread Group 1-1,text,true,777,687,1,2,http://www.kj.ac.kr/api/public/support-requests,13,0,0
+1774590098129,60,Login Professor Mini User,200,,Auth POST Validation Mini Thread Group 2-1,text,true,1148,281,1,2,http://www.kj.ac.kr/api/auth/login,60,0,0
+1774590098286,6,Public POST public_post_003 [attack],403,Forbidden,Public POST Validation Mini Thread Group 1-1,text,false,452,618,1,2,http://www.kj.ac.kr/api/public/support-requests,6,0,0
+1774590098604,66,Public POST public_post_004 [normal],201,,Public POST Validation Mini Thread Group 1-1,text,true,632,479,1,2,http://www.kj.ac.kr/api/auth/register,66,0,0
+1774590098673,53,Login LMS Student Mini User,200,,Auth POST Validation Mini Thread Group 2-1,text,true,1153,285,1,2,http://www.kj.ac.kr/api/auth/login,53,0,0
+1774590099024,61,Public POST public_post_005 [ambiguous],201,,Public POST Validation Mini Thread Group 1-1,text,true,637,487,1,2,http://www.kj.ac.kr/api/auth/register,61,0,0
+1774590099148,15,LMS Setup Get My Courses Mini,200,,Auth POST Validation Mini Thread Group 2-1,text,true,904,509,1,2,http://www.kj.ac.kr/api/lms/courses/my,15,0,0
+1774590099386,55,Public POST public_post_006 [normal],200,,Public POST Validation Mini Thread Group 1-1,text,true,1153,393,1,2,http://www.kj.ac.kr/api/auth/login,55,0,0
+1774590099672,13,LMS Setup Get CS101 Assignments Mini,200,,Auth POST Validation Mini Thread Group 2-1,text,true,682,520,1,2,http://www.kj.ac.kr/api/lms/courses/1/assignments,13,0,0
+1774590099868,53,Public POST public_post_007 [ambiguous],401,,Public POST Validation Mini Thread Group 1-1,text,false,841,397,1,2,http://www.kj.ac.kr/api/auth/login,53,0,0
+1774590100199,16,LMS Setup Get Additional CS101 Assignments Mini,200,,Auth POST Validation Mini Thread Group 2-1,text,true,682,520,1,2,http://www.kj.ac.kr/api/lms/courses/1/assignments,16,0,0
+1774590100327,4,Public POST public_post_008 [attack],403,Forbidden,Public POST Validation Mini Thread Group 1-1,text,false,452,394,1,2,http://www.kj.ac.kr/api/auth/login,4,0,0
+1774590100563,27,auth_post_001 [normal] board create post,201,,Auth POST Validation Mini Thread Group 2-1,text,true,755,698,1,1,http://www.kj.ac.kr/api/board/posts,27,0,0
+1774590100911,22,auth_post_002 [normal] board create comment,201,,Auth POST Validation Mini Thread Group 2-1,text,true,676,647,1,1,http://www.kj.ac.kr/api/board/posts/165/comments,21,0,0
+1774590101400,18,auth_post_003 [ambiguous] board update post,200,,Auth POST Validation Mini Thread Group 2-1,text,true,949,742,1,1,http://www.kj.ac.kr/api/board/posts/165/update,16,0,0
+1774590101756,15,auth_post_004 [normal] board update comment,200,,Auth POST Validation Mini Thread Group 2-1,text,true,672,655,1,1,http://www.kj.ac.kr/api/board/posts/165/comments/35/update,15,0,0
+1774590102231,16,auth_post_005 [normal] board delete comment,204,,Auth POST Validation Mini Thread Group 2-1,,true,437,577,1,1,http://www.kj.ac.kr/api/board/posts/165/comments/35/delete,0,0,0
+1774590102598,28,auth_post_006 [normal] board delete post,204,,Auth POST Validation Mini Thread Group 2-1,,true,437,565,1,1,http://www.kj.ac.kr/api/board/posts/165/delete,0,0,0
+1774590103025,4,auth_post_007 [attack] board create explicit xss,403,Forbidden,Auth POST Validation Mini Thread Group 2-1,text,false,452,622,1,1,http://www.kj.ac.kr/api/board/posts,4,0,0
+1774590103343,16,auth_post_008 [normal] lms submit assignment,200,,Auth POST Validation Mini Thread Group 2-1,text,true,721,664,1,1,http://www.kj.ac.kr/api/lms/assignments/1/submissions,16,0,0
+1774590103678,20,auth_post_009 [normal] lms grade submission,200,,Auth POST Validation Mini Thread Group 2-1,text,true,740,616,1,1,http://www.kj.ac.kr/api/lms/submissions/3/grade,20,0,0
+1774590104039,18,auth_post_010 [ambiguous] lms resubmit security terms,200,,Auth POST Validation Mini Thread Group 2-1,text,true,751,698,1,1,http://www.kj.ac.kr/api/lms/assignments/1/submissions,18,0,0
+1774590104473,4,auth_post_011 [attack] lms submit explicit xss,403,Forbidden,Auth POST Validation Mini Thread Group 2-1,text,false,452,619,1,1,http://www.kj.ac.kr/api/lms/assignments/2/submissions,4,0,0
