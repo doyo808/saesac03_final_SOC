@@ -21,6 +21,10 @@ export function AssignmentDetailPage() {
     return assignment.submissions.find((submission) => submission.studentId === user.id) ?? null;
   }, [assignment, user]);
 
+  useEffect(() => {
+    setSubmitText(mySubmission?.contentText ?? "");
+  }, [mySubmission]);
+
   const load = async () => {
     if (!id) {
       setError("assignment id가 필요합니다.");
@@ -53,7 +57,6 @@ export function AssignmentDetailPage() {
     setError(null);
     try {
       await submitAssignment(id, submitText);
-      setSubmitText("");
       await load();
     } catch {
       setError("제출 처리에 실패했습니다.");
@@ -121,7 +124,7 @@ export function AssignmentDetailPage() {
       {canSubmit && (
         <section className="surface-card p-6 md:p-7">
           <h2 className="font-display text-2xl text-[#0d274d]">학생 제출</h2>
-          {mySubmission ? (
+          {mySubmission && (
             <div className="surface-soft mt-4 p-5">
               <p className="text-xs text-slate-500">제출일 {formatDateTime(mySubmission.submittedAt)}</p>
               <p className="mt-3 whitespace-pre-wrap text-sm leading-7">{mySubmission.contentText}</p>
@@ -131,25 +134,27 @@ export function AssignmentDetailPage() {
                 </p>
                 <p>피드백: {mySubmission.feedback ?? "-"}</p>
               </div>
+              <p className="mt-4 text-xs text-slate-500">
+                재제출하면 기존 제출 내용에 덮어쓰고, 기존 점수와 피드백은 초기화됩니다.
+              </p>
             </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="mt-4 space-y-3">
-              <textarea
-                value={submitText}
-                onChange={(event) => setSubmitText(event.target.value)}
-                className="h-44 w-full rounded-xl border border-[#cfd9e9] bg-white px-4 py-3 text-sm outline-none ring-[#173f72]/30 transition focus:ring-2"
-                placeholder="과제 제출 내용을 입력하세요."
-                required
-              />
-              <button
-                type="submit"
-                disabled={submitting}
-                className="btn-primary px-4 py-2 text-sm font-semibold disabled:opacity-60"
-              >
-                {submitting ? "제출 중..." : "과제 제출"}
-              </button>
-            </form>
           )}
+          <form onSubmit={handleSubmit} className="mt-4 space-y-3">
+            <textarea
+              value={submitText}
+              onChange={(event) => setSubmitText(event.target.value)}
+              className="h-44 w-full rounded-xl border border-[#cfd9e9] bg-white px-4 py-3 text-sm outline-none ring-[#173f72]/30 transition focus:ring-2"
+              placeholder="과제 제출 내용을 입력하세요."
+              required
+            />
+            <button
+              type="submit"
+              disabled={submitting}
+              className="btn-primary px-4 py-2 text-sm font-semibold disabled:opacity-60"
+            >
+              {submitting ? "제출 중..." : mySubmission ? "과제 재제출" : "과제 제출"}
+            </button>
+          </form>
         </section>
       )}
 

@@ -781,12 +781,19 @@ export async function mockSubmitAssignment(
     throw new MockApiError(403, "Not enrolled in this course");
   }
 
-  const alreadySubmitted = state.submissions.some(
+  const submittedAt = nowIso();
+  const existingSubmission = state.submissions.find(
     (submission) =>
       submission.assignmentId === assignmentId && submission.studentId === user.id,
   );
-  if (alreadySubmitted) {
-    throw new MockApiError(400, "Already submitted");
+
+  if (existingSubmission) {
+    existingSubmission.contentText = contentText;
+    existingSubmission.submittedAt = submittedAt;
+    existingSubmission.score = null;
+    existingSubmission.feedback = null;
+    saveState();
+    return toSubmissionResponse(existingSubmission);
   }
 
   const submission: MockSubmission = {
@@ -794,7 +801,7 @@ export async function mockSubmitAssignment(
     assignmentId,
     studentId: user.id,
     contentText,
-    submittedAt: nowIso(),
+    submittedAt,
     score: null,
     feedback: null,
   };

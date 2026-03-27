@@ -13,9 +13,11 @@ import com.campus.platform.dto.lms.AdminStudentOverviewResponse;
 import com.campus.platform.dto.lms.AdminUserResponse;
 import com.campus.platform.security.UserPrincipal;
 import com.campus.platform.service.LmsService;
+import com.campus.platform.service.SubmissionUpsertResult;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -58,13 +60,14 @@ public class LmsController {
     }
 
     @PostMapping("/assignments/{id}/submissions")
-    @ResponseStatus(HttpStatus.CREATED)
-    public SubmissionResponse submit(
+    public ResponseEntity<SubmissionResponse> submit(
             @PathVariable Long id,
             @Valid @RequestBody SubmitAssignmentRequest request,
             @AuthenticationPrincipal UserPrincipal principal
     ) {
-        return lmsService.submitAssignment(id, request, principal);
+        SubmissionUpsertResult result = lmsService.submitAssignment(id, request, principal);
+        HttpStatus status = result.created() ? HttpStatus.CREATED : HttpStatus.OK;
+        return ResponseEntity.status(status).body(result.submission());
     }
 
     @PostMapping("/submissions/{id}/grade")

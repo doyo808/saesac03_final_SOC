@@ -118,7 +118,7 @@ public class LmsService {
     }
 
     @Transactional
-    public SubmissionResponse submitAssignment(Long assignmentId, SubmitAssignmentRequest request, UserPrincipal principal) {
+    public SubmissionUpsertResult submitAssignment(Long assignmentId, SubmitAssignmentRequest request, UserPrincipal principal) {
         if (principal.getRole() != Role.STUDENT) {
             throw new ApiException(HttpStatus.FORBIDDEN, "Only students can submit assignments");
         }
@@ -132,21 +132,29 @@ public class LmsService {
             throw new ApiException(HttpStatus.FORBIDDEN, "Not enrolled in this course");
         }
 
-        if (submissionRepository.findByAssignmentIdAndStudentId(assignmentId, principal.getId()).isPresent()) {
-            throw new ApiException(HttpStatus.BAD_REQUEST, "Already submitted");
-        }
-
         User student = userRepository.findById(principal.getId())
                 .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "User not found"));
+        LocalDateTime submittedAt = LocalDateTime.now();
 
-        Submission submission = new Submission(
-                assignment,
-                student,
-                request.contentText(),
-                LocalDateTime.now()
-        );
-        Submission saved = submissionRepository.save(submission);
-        return toSubmissionResponse(saved);
+        return submissionRepository.findByAssignmentIdAndStudentId(assignmentId, principal.getId())
+                .map(existing -> {
+                    existing.setContentText(request.contentText());
+                    existing.setSubmittedAt(submittedAt);
+                    existing.setScore(null);
+                    existing.setFeedback(null);
+                    Submission saved = submissionRepository.save(existing);
+                    return new SubmissionUpsertResult(toSubmissionResponse(saved), false);
+                })
+                .orElseGet(() -> {
+                    Submission submission = new Submission(
+                            assignment,
+                            student,
+                            request.contentText(),
+                            submittedAt
+                    );
+                    Submission saved = submissionRepository.save(submission);
+                    return new SubmissionUpsertResult(toSubmissionResponse(saved), true);
+                });
     }
 
     @Transactional
