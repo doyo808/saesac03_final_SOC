@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
   <hashTree>
-    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="FP_POST_VALIDATION_MINI_20" enabled="true">
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="FP_POST_VALIDATION_MINI_20">
       <stringProp name="TestPlan.comments">Mini validation suite for unstable POST flows. It excludes already validated GET and search paths, keeps public POST traffic CSV-driven, and moves authenticated chained POST flows into direct JMX samplers so captured IDs are resolved without nested CSV path expansion.</stringProp>
-      <boolProp name="TestPlan.functional_mode">false</boolProp>
-      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
-      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
         <collectionProp name="Arguments.arguments">
           <elementProp name="post_mini_run_id" elementType="Argument">
             <stringProp name="Argument.name">post_mini_run_id</stringProp>
@@ -14,7 +12,6 @@
           </elementProp>
         </collectionProp>
       </elementProp>
-      <stringProp name="TestPlan.user_define_classpath"></stringProp>
     </TestPlan>
     <hashTree>
       <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree">
@@ -54,7 +51,7 @@
         <stringProp name="filename"></stringProp>
       </ResultCollector>
       <hashTree/>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Public POST Validation Mini Thread Group">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Public POST Validation Mini Thread Group" enabled="true">
         <stringProp name="TestPlan.comments">Eight public POST cases covering normal, ambiguous, and explicit attack traffic for support requests, register, and login.</stringProp>
         <intProp name="ThreadGroup.num_threads">1</intProp>
         <intProp name="ThreadGroup.ramp_time">1</intProp>
@@ -338,7 +335,7 @@ if (!(parsed instanceof List)) {
     return
 }
 
-parsed.findAll { it instanceof Map }.each { course ->
+parsed.findAll { it instanceof Map }.each { course -&gt;
     def code = course.code?.toString()
     def id = course.id?.toString()
     if (!id) {
@@ -827,8 +824,8 @@ if (parsed.size() &gt; 1) {
           </elementProp>
           <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
         </HTTPSamplerProxy>
-          <hashTree>
-            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header LMS Submit Mini" enabled="true">
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header LMS Submit Mini" enabled="true">
             <collectionProp name="HeaderManager.headers">
               <elementProp name="Accept" elementType="Header">
                 <stringProp name="Header.name">Accept</stringProp>
@@ -838,10 +835,10 @@ if (parsed.size() &gt; 1) {
                 <stringProp name="Header.name">Content-Type</stringProp>
                 <stringProp name="Header.value">application/json</stringProp>
               </elementProp>
-                <elementProp name="Authorization" elementType="Header">
-                  <stringProp name="Header.name">Authorization</stringProp>
-                  <stringProp name="Header.value">Bearer ${lms_student_access_token}</stringProp>
-                </elementProp>
+              <elementProp name="Authorization" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${lms_student_access_token}</stringProp>
+              </elementProp>
               <elementProp name="X-FP-Case-ID" elementType="Header">
                 <stringProp name="Header.name">X-FP-Case-ID</stringProp>
                 <stringProp name="Header.value">auth_post_008</stringProp>
@@ -862,7 +859,7 @@ if (parsed.size() &gt; 1) {
           <hashTree/>
         </hashTree>
         <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If LMS Submission Captured Mini" enabled="true">
-          <stringProp name="IfController.condition">${__jexl3('${submission_id_01}' != '0')}</stringProp>
+          <stringProp name="IfController.condition">${__jexl3(&apos;${submission_id_01}&apos; != &apos;0&apos;)}</stringProp>
           <boolProp name="IfController.useExpression">true</boolProp>
           <boolProp name="IfController.evaluateAll">false</boolProp>
         </IfController>
@@ -929,8 +926,8 @@ if (parsed.size() &gt; 1) {
           </elementProp>
           <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
         </HTTPSamplerProxy>
-          <hashTree>
-            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header LMS Ambiguous Submit Mini" enabled="true">
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header LMS Ambiguous Submit Mini" enabled="true">
             <collectionProp name="HeaderManager.headers">
               <elementProp name="Accept" elementType="Header">
                 <stringProp name="Header.name">Accept</stringProp>
@@ -940,10 +937,10 @@ if (parsed.size() &gt; 1) {
                 <stringProp name="Header.name">Content-Type</stringProp>
                 <stringProp name="Header.value">application/json</stringProp>
               </elementProp>
-                <elementProp name="Authorization" elementType="Header">
-                  <stringProp name="Header.name">Authorization</stringProp>
-                  <stringProp name="Header.value">Bearer ${lms_student_access_token}</stringProp>
-                </elementProp>
+              <elementProp name="Authorization" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${lms_student_access_token}</stringProp>
+              </elementProp>
               <elementProp name="X-FP-Case-ID" elementType="Header">
                 <stringProp name="Header.name">X-FP-Case-ID</stringProp>
                 <stringProp name="Header.value">auth_post_010</stringProp>
@@ -973,8 +970,8 @@ if (parsed.size() &gt; 1) {
           </elementProp>
           <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
         </HTTPSamplerProxy>
-          <hashTree>
-            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header LMS Attack Submit Mini" enabled="true">
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header LMS Attack Submit Mini" enabled="true">
             <collectionProp name="HeaderManager.headers">
               <elementProp name="Accept" elementType="Header">
                 <stringProp name="Header.name">Accept</stringProp>
@@ -984,10 +981,10 @@ if (parsed.size() &gt; 1) {
                 <stringProp name="Header.name">Content-Type</stringProp>
                 <stringProp name="Header.value">application/json</stringProp>
               </elementProp>
-                <elementProp name="Authorization" elementType="Header">
-                  <stringProp name="Header.name">Authorization</stringProp>
-                  <stringProp name="Header.value">Bearer ${lms_student_access_token}</stringProp>
-                </elementProp>
+              <elementProp name="Authorization" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${lms_student_access_token}</stringProp>
+              </elementProp>
               <elementProp name="X-FP-Case-ID" elementType="Header">
                 <stringProp name="Header.name">X-FP-Case-ID</stringProp>
                 <stringProp name="Header.value">auth_post_011</stringProp>
@@ -1001,7 +998,7 @@ if (parsed.size() &gt; 1) {
           <hashTree/>
         </hashTree>
       </hashTree>
-      <ResultCollector guiclass="SimpleDataWriter" testclass="ResultCollector" testname="JTL Writer" enabled="true">
+      <ResultCollector guiclass="SimpleDataWriter" testclass="ResultCollector" testname="JTL Writer">
         <boolProp name="ResultCollector.error_logging">false</boolProp>
         <objProp>
           <name>saveConfig</name>
