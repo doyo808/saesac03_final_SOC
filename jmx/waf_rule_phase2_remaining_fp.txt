@@ -1,0 +1,171 @@
+# ----------------------------------------------------------------
+# Project draft: remaining false-positive tuning + explicit deny
+# Target host: kj.ac.kr / www.kj.ac.kr
+# Date: 2026-03-28
+# Notes:
+# - This is a project-scoped draft for comparison with teammate rules.
+# - Keep path/method scoping tight.
+# - If the upstream custom deny rules are not tagged, replace the sample
+#   ruleRemoveById placeholders with the actual rule IDs from audit logs.
+# ----------------------------------------------------------------
+
+# [Phase 1] Contextual GET search allow markers
+# ----------------------------------------------------------------
+# Goal:
+# - Keep literal/educational search requests flowing to the app
+# - Only for real search routes
+# - Only when risky tokens appear together with context words
+
+SecRule REQUEST_HEADERS:Host "@rx ^(?:www\.)?kj\.ac\.kr(?::\d+)?$" \
+    "id:1000200,phase:1,pass,nolog,chain"
+    SecRule REQUEST_METHOD "@streq GET" "chain"
+    SecRule REQUEST_FILENAME "@rx ^/api/board/posts/?$" \
+    "t:none,setvar:tx.project_board_context_search=0"
+
+SecRule REQUEST_HEADERS:Host "@rx ^(?:www\.)?kj\.ac\.kr(?::\d+)?$" \
+    "id:1000201,phase:1,pass,nolog,chain"
+    SecRule REQUEST_METHOD "@streq GET" "chain"
+    SecRule REQUEST_FILENAME "@rx ^/api/public/announcements/?$" \
+    "t:none,setvar:tx.project_public_context_search=0"
+
+SecRule REQUEST_HEADERS:Host "@rx ^(?:www\.)?kj\.ac\.kr(?::\d+)?$" \
+    "id:1000202,phase:1,pass,nolog,chain"
+    SecRule REQUEST_METHOD "@streq GET" "chain"
+    SecRule REQUEST_FILENAME "@rx ^/api/board/posts/?$" "chain"
+    SecRule ARGS:keyword "@rx (?i)(?:\.\.%2fadmin|\.\./admin|\.\.%2fuploads|\.\./uploads|whoami|powershell(?:\s|%20)+-enc|nmap(?:\s|%20)+-sS|base64|jndi:ldap://)" "chain"
+    SecRule ARGS:keyword "@rx (?i)(?:설명|예시|실습|메모|정리|안내|수업|사례|교육|토론|리뷰|자료|로그|review|note|lab)" \
+    "t:none,\
+    setvar:tx.project_board_context_search=1,\
+    ctl:ruleRemoveTargetByTag=attack-sqli;ARGS:keyword,\
+    ctl:ruleRemoveTargetByTag=attack-xss;ARGS:keyword,\
+    ctl:ruleRemoveTargetByTag=attack-rce;ARGS:keyword,\
+    ctl:ruleRemoveTargetByTag=attack-lfi;ARGS:keyword,\
+    ctl:ruleRemoveTargetByTag=attack-sqli;REQUEST_URI_RAW,\
+    ctl:ruleRemoveTargetByTag=attack-xss;REQUEST_URI_RAW,\
+    ctl:ruleRemoveTargetByTag=attack-rce;REQUEST_URI_RAW,\
+    ctl:ruleRemoveTargetByTag=attack-lfi;REQUEST_URI_RAW,\
+    msg:'PROJECT_CONTEXTUAL_BOARD_SEARCH_ALLOW'"
+
+SecRule REQUEST_HEADERS:Host "@rx ^(?:www\.)?kj\.ac\.kr(?::\d+)?$" \
+    "id:1000203,phase:1,pass,nolog,chain"
+    SecRule REQUEST_METHOD "@streq GET" "chain"
+    SecRule REQUEST_FILENAME "@rx ^/api/public/announcements/?$" "chain"
+    SecRule ARGS:keyword "@rx (?i)(?:\.\.%2fadmin|\.\./admin|whoami|powershell(?:\s|%20)+-enc|base64)" "chain"
+    SecRule ARGS:keyword "@rx (?i)(?:설명|예시|실습|메모|정리|안내|수업|사례|교육|리뷰|자료|로그|review|note|lab)" \
+    "t:none,\
+    setvar:tx.project_public_context_search=1,\
+    ctl:ruleRemoveTargetByTag=attack-sqli;ARGS:keyword,\
+    ctl:ruleRemoveTargetByTag=attack-xss;ARGS:keyword,\
+    ctl:ruleRemoveTargetByTag=attack-rce;ARGS:keyword,\
+    ctl:ruleRemoveTargetByTag=attack-lfi;ARGS:keyword,\
+    ctl:ruleRemoveTargetByTag=attack-sqli;REQUEST_URI_RAW,\
+    ctl:ruleRemoveTargetByTag=attack-xss;REQUEST_URI_RAW,\
+    ctl:ruleRemoveTargetByTag=attack-rce;REQUEST_URI_RAW,\
+    ctl:ruleRemoveTargetByTag=attack-lfi;REQUEST_URI_RAW,\
+    msg:'PROJECT_CONTEXTUAL_PUBLIC_SEARCH_ALLOW'"
+
+# If custom project deny rules are firing on raw URI or full query string,
+# replace the IDs below with the actual IDs from audit logs.
+SecRule TX:project_board_context_search "@eq 1" \
+    "id:1000204,phase:1,pass,nolog,\
+    ctl:ruleRemoveById=1002001,\
+    ctl:ruleRemoveById=1002002,\
+    msg:'PROJECT_BOARD_SEARCH_SKIP_CUSTOM_RAW_DENY'"
+
+SecRule TX:project_public_context_search "@eq 1" \
+    "id:1000205,phase:1,pass,nolog,\
+    ctl:ruleRemoveById=1002001,\
+    ctl:ruleRemoveById=1002002,\
+    msg:'PROJECT_PUBLIC_SEARCH_SKIP_CUSTOM_RAW_DENY'"
+
+# [Phase 1] Public support request false-positive tuning
+# ----------------------------------------------------------------
+# Scope:
+# - POST /api/public/support-requests
+# - JSON fields only
+# Intent:
+# - Allow normal and contextual security-study submissions to reach app logic
+
+SecRule REQUEST_HEADERS:Host "@rx ^(?:www\.)?kj\.ac\.kr(?::\d+)?$" \
+    "id:1000210,phase:1,pass,nolog,chain"
+    SecRule REQUEST_METHOD "@streq POST" "chain"
+    SecRule REQUEST_FILENAME "@streq /api/public/support-requests" "chain"
+    SecRule REQUEST_HEADERS:Content-Type "@contains application/json" \
+    "t:none,\
+    ctl:ruleRemoveTargetByTag=attack-sqli;ARGS:category,\
+    ctl:ruleRemoveTargetByTag=attack-sqli;ARGS:subject,\
+    ctl:ruleRemoveTargetByTag=attack-sqli;ARGS:message,\
+    ctl:ruleRemoveTargetByTag=attack-xss;ARGS:subject,\
+    ctl:ruleRemoveTargetByTag=attack-xss;ARGS:message,\
+    ctl:ruleRemoveTargetByTag=attack-rce;ARGS:subject,\
+    ctl:ruleRemoveTargetByTag=attack-rce;ARGS:message,\
+    ctl:ruleRemoveTargetByTag=attack-lfi;ARGS:subject,\
+    ctl:ruleRemoveTargetByTag=attack-lfi;ARGS:message,\
+    ctl:ruleRemoveTargetByTag=attack-sqli;ARGS:referenceUrl,\
+    ctl:ruleRemoveTargetByTag=attack-xss;ARGS:referenceUrl,\
+    msg:'PROJECT_SUPPORT_REQUEST_FP_TUNING'"
+
+# [Phase 1] Register name false-positive tuning
+# ----------------------------------------------------------------
+# Scope:
+# - POST /api/auth/register
+# Intent:
+# - The display name field may contain lab/study words and should not trigger
+#   generic SQLi/XSS/RCE signatures by itself.
+
+SecRule REQUEST_HEADERS:Host "@rx ^(?:www\.)?kj\.ac\.kr(?::\d+)?$" \
+    "id:1000211,phase:1,pass,nolog,chain"
+    SecRule REQUEST_METHOD "@streq POST" "chain"
+    SecRule REQUEST_FILENAME "@streq /api/auth/register" "chain"
+    SecRule REQUEST_HEADERS:Content-Type "@contains application/json" \
+    "t:none,\
+    ctl:ruleRemoveTargetByTag=attack-sqli;ARGS:name,\
+    ctl:ruleRemoveTargetByTag=attack-xss;ARGS:name,\
+    ctl:ruleRemoveTargetByTag=attack-rce;ARGS:name,\
+    ctl:ruleRemoveTargetByTag=attack-lfi;ARGS:name,\
+    msg:'PROJECT_REGISTER_NAME_FP_TUNING'"
+
+# [Phase 1] Contextual board-write false-positive tuning
+# ----------------------------------------------------------------
+# Scope:
+# - POST /api/board/posts
+# Intent:
+# - Allow educational/security-context posts to reach the application
+# - Keep route and auth protections intact
+
+SecRule REQUEST_HEADERS:Host "@rx ^(?:www\.)?kj\.ac\.kr(?::\d+)?$" \
+    "id:1000212,phase:1,pass,nolog,chain"
+    SecRule REQUEST_METHOD "@streq POST" "chain"
+    SecRule REQUEST_FILENAME "@streq /api/board/posts" "chain"
+    SecRule REQUEST_HEADERS:Authorization "@rx ^Bearer\s+[A-Za-z0-9._-]+$" "chain"
+    SecRule REQUEST_BODY "@rx (?i)(?:(?:설명|예시|실습|메모|정리|안내|수업|사례|교육|토론|리뷰|자료|로그|review|note|lab).*(?:union(?:\s|%20)+select|whoami|powershell(?:\s|%20)+-enc|\.\./admin|script tag|xss payload|cmd\.exe)|(?:union(?:\s|%20)+select|whoami|powershell(?:\s|%20)+-enc|\.\./admin|script tag|xss payload|cmd\.exe).*(?:설명|예시|실습|메모|정리|안내|수업|사례|교육|토론|리뷰|자료|로그|review|note|lab))" \
+    "t:none,\
+    ctl:ruleRemoveTargetByTag=attack-sqli;ARGS:title,\
+    ctl:ruleRemoveTargetByTag=attack-sqli;ARGS:content,\
+    ctl:ruleRemoveTargetByTag=attack-xss;ARGS:title,\
+    ctl:ruleRemoveTargetByTag=attack-xss;ARGS:content,\
+    ctl:ruleRemoveTargetByTag=attack-rce;ARGS:title,\
+    ctl:ruleRemoveTargetByTag=attack-rce;ARGS:content,\
+    ctl:ruleRemoveTargetByTag=attack-lfi;ARGS:title,\
+    ctl:ruleRemoveTargetByTag=attack-lfi;ARGS:content,\
+    msg:'PROJECT_CONTEXTUAL_BOARD_WRITE_ALLOW'"
+
+# [Phase 2] Explicit deny to keep real attacks blocked
+# ----------------------------------------------------------------
+# These are intentionally narrow deny rules that should remain even after
+# the false-positive relaxations above.
+
+SecRule REQUEST_HEADERS:Host "@rx ^(?:www\.)?kj\.ac\.kr(?::\d+)?$" \
+    "id:1000220,phase:2,deny,status:403,log,chain,msg:'PROJECT_EXPLICIT_CMD_SUBSTITUTION_DENY'"
+    SecRule REQUEST_FILENAME "@rx ^/api/(?:board/posts|public/support-requests|auth/register)/?$" "chain"
+    SecRule REQUEST_BODY "@rx (?i)(?:`[^`\r\n]{1,80}`|\$\([^)\r\n]{1,80}\))"
+
+SecRule REQUEST_HEADERS:Host "@rx ^(?:www\.)?kj\.ac\.kr(?::\d+)?$" \
+    "id:1000221,phase:2,deny,status:403,log,chain,msg:'PROJECT_EXPLICIT_XSS_WRITE_DENY'"
+    SecRule REQUEST_FILENAME "@rx ^/api/(?:board/posts|public/support-requests)/?$" "chain"
+    SecRule REQUEST_BODY "@rx (?i)(?:<script\b|<svg[^>]*onload=|<img[^>]*onerror=|javascript:)"
+
+SecRule REQUEST_HEADERS:Host "@rx ^(?:www\.)?kj\.ac\.kr(?::\d+)?$" \
+    "id:1000222,phase:2,deny,status:403,log,chain,msg:'PROJECT_EXPLICIT_OS_PIPE_DENY'"
+    SecRule REQUEST_FILENAME "@rx ^/api/(?:board/posts|public/support-requests)/?$" "chain"
+    SecRule REQUEST_BODY "@rx (?i)(?:\|\s*(?:cat|type)\s+/?etc/passwd|&&\s*(?:curl|wget)\b|;\s*(?:bash|sh|cmd\.exe)\b)"

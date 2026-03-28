@@ -1215,220 +1215,234 @@ if (parsed.size() &gt; 1) {
           </JSONPostProcessor>
           <hashTree />
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_002 [normal] board create comment" enabled="true">
-          <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_11}/comments</stringProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-          <stringProp name="HTTPSampler.method">POST</stringProp>
-          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
-          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-            <collectionProp name="Arguments.arguments">
-              <elementProp name="" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{"content":"참고 감사합니다."}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-            </collectionProp>
-          </elementProp>
-          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-        </HTTPSamplerProxy>
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If board_post_id_11 captured" enabled="true">
+          <stringProp name="IfController.condition">${__jexl3('${board_post_id_11}' != '0')}</stringProp>
+          <boolProp name="IfController.useExpression">true</boolProp>
+          <boolProp name="IfController.evaluateAll">false</boolProp>
+        </IfController>
         <hashTree>
-          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header Board Comment Create Mini" enabled="true">
-            <collectionProp name="HeaderManager.headers">
-              <elementProp name="Accept" elementType="Header">
-                <stringProp name="Header.name">Accept</stringProp>
-                <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_002 [normal] board create comment" enabled="true">
+            <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_11}/comments</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{"content":"참고 감사합니다."}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header Board Comment Create Mini" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">application/json</stringProp>
+                </elementProp>
+                <elementProp name="Authorization" elementType="Header">
+                  <stringProp name="Header.name">Authorization</stringProp>
+                  <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-ID</stringProp>
+                  <stringProp name="Header.value">auth_post_002</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-Class</stringProp>
+                  <stringProp name="Header.value">normal</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree />
+            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Capture Board Comment ID Mini" enabled="true">
+              <stringProp name="JSONPostProcessor.referenceNames">board_comment_id_11</stringProp>
+              <stringProp name="JSONPostProcessor.jsonPathExprs">$.id</stringProp>
+              <stringProp name="JSONPostProcessor.match_numbers" />
+              <stringProp name="JSONPostProcessor.defaultValues">0</stringProp>
+            </JSONPostProcessor>
+            <hashTree />
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_003 [normal] board update post" enabled="true">
+            <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_11}/update</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{"title":"도서관 이용 안내 수정 ${mixed500_v2_run_id}","content":"도서관 좌석 배정과 운영 시간 안내를 공유하는 정상 게시글입니다. 수정본입니다."}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header Board Update Mini" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">application/json</stringProp>
+                </elementProp>
+                <elementProp name="Authorization" elementType="Header">
+                  <stringProp name="Header.name">Authorization</stringProp>
+                  <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-ID</stringProp>
+                  <stringProp name="Header.value">auth_post_003</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-Class</stringProp>
+                  <stringProp name="Header.value">normal</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree />
+          </hashTree>
+          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If board_comment_id_11 captured" enabled="true">
+            <stringProp name="IfController.condition">${__jexl3('${board_comment_id_11}' != '0')}</stringProp>
+            <boolProp name="IfController.useExpression">true</boolProp>
+            <boolProp name="IfController.evaluateAll">false</boolProp>
+          </IfController>
+          <hashTree>
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_004 [normal] board update comment" enabled="true">
+              <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_11}/comments/${board_comment_id_11}/update</stringProp>
+              <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+              <stringProp name="HTTPSampler.method">POST</stringProp>
+              <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+              <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+              <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+                <collectionProp name="Arguments.arguments">
+                  <elementProp name="" elementType="HTTPArgument">
+                    <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                    <stringProp name="Argument.value">{"content":"참고 감사합니다. 수정본"}</stringProp>
+                    <stringProp name="Argument.metadata">=</stringProp>
+                  </elementProp>
+                </collectionProp>
               </elementProp>
-              <elementProp name="Content-Type" elementType="Header">
-                <stringProp name="Header.name">Content-Type</stringProp>
-                <stringProp name="Header.value">application/json</stringProp>
+              <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+            </HTTPSamplerProxy>
+            <hashTree>
+              <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header Board Comment Update Mini" enabled="true">
+                <collectionProp name="HeaderManager.headers">
+                  <elementProp name="Accept" elementType="Header">
+                    <stringProp name="Header.name">Accept</stringProp>
+                    <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                  </elementProp>
+                  <elementProp name="Content-Type" elementType="Header">
+                    <stringProp name="Header.name">Content-Type</stringProp>
+                    <stringProp name="Header.value">application/json</stringProp>
+                  </elementProp>
+                  <elementProp name="Authorization" elementType="Header">
+                    <stringProp name="Header.name">Authorization</stringProp>
+                    <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
+                  </elementProp>
+                  <elementProp name="X-FP-Case-ID" elementType="Header">
+                    <stringProp name="Header.name">X-FP-Case-ID</stringProp>
+                    <stringProp name="Header.value">auth_post_004</stringProp>
+                  </elementProp>
+                  <elementProp name="X-FP-Case-Class" elementType="Header">
+                    <stringProp name="Header.name">X-FP-Case-Class</stringProp>
+                    <stringProp name="Header.value">normal</stringProp>
+                  </elementProp>
+                </collectionProp>
+              </HeaderManager>
+              <hashTree />
+            </hashTree>
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_005 [normal] board delete comment" enabled="true">
+              <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_11}/comments/${board_comment_id_11}/delete</stringProp>
+              <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+              <stringProp name="HTTPSampler.method">POST</stringProp>
+              <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+              <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+              <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+                <collectionProp name="Arguments.arguments" />
               </elementProp>
-              <elementProp name="Authorization" elementType="Header">
-                <stringProp name="Header.name">Authorization</stringProp>
-                <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-ID" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-ID</stringProp>
-                <stringProp name="Header.value">auth_post_002</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-Class" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-Class</stringProp>
-                <stringProp name="Header.value">normal</stringProp>
-              </elementProp>
-            </collectionProp>
-          </HeaderManager>
-          <hashTree />
-          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Capture Board Comment ID Mini" enabled="true">
-            <stringProp name="JSONPostProcessor.referenceNames">board_comment_id_11</stringProp>
-            <stringProp name="JSONPostProcessor.jsonPathExprs">$.id</stringProp>
-            <stringProp name="JSONPostProcessor.match_numbers" />
-            <stringProp name="JSONPostProcessor.defaultValues">0</stringProp>
-          </JSONPostProcessor>
-          <hashTree />
-        </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_003 [normal] board update post" enabled="true">
-          <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_11}/update</stringProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-          <stringProp name="HTTPSampler.method">POST</stringProp>
-          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
-          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-            <collectionProp name="Arguments.arguments">
-              <elementProp name="" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{"title":"도서관 이용 안내 수정 ${mixed500_v2_run_id}","content":"도서관 좌석 배정과 운영 시간 안내를 공유하는 정상 게시글입니다. 수정본입니다."}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-            </collectionProp>
-          </elementProp>
-          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-        </HTTPSamplerProxy>
-        <hashTree>
-          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header Board Update Mini" enabled="true">
-            <collectionProp name="HeaderManager.headers">
-              <elementProp name="Accept" elementType="Header">
-                <stringProp name="Header.name">Accept</stringProp>
-                <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
-              </elementProp>
-              <elementProp name="Content-Type" elementType="Header">
-                <stringProp name="Header.name">Content-Type</stringProp>
-                <stringProp name="Header.value">application/json</stringProp>
-              </elementProp>
-              <elementProp name="Authorization" elementType="Header">
-                <stringProp name="Header.name">Authorization</stringProp>
-                <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-ID" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-ID</stringProp>
-                <stringProp name="Header.value">auth_post_003</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-Class" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-Class</stringProp>
-                <stringProp name="Header.value">normal</stringProp>
-              </elementProp>
-            </collectionProp>
-          </HeaderManager>
-          <hashTree />
-        </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_004 [normal] board update comment" enabled="true">
-          <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_11}/comments/${board_comment_id_11}/update</stringProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-          <stringProp name="HTTPSampler.method">POST</stringProp>
-          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
-          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-            <collectionProp name="Arguments.arguments">
-              <elementProp name="" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{"content":"참고 감사합니다. 수정본"}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-            </collectionProp>
-          </elementProp>
-          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-        </HTTPSamplerProxy>
-        <hashTree>
-          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header Board Comment Update Mini" enabled="true">
-            <collectionProp name="HeaderManager.headers">
-              <elementProp name="Accept" elementType="Header">
-                <stringProp name="Header.name">Accept</stringProp>
-                <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
-              </elementProp>
-              <elementProp name="Content-Type" elementType="Header">
-                <stringProp name="Header.name">Content-Type</stringProp>
-                <stringProp name="Header.value">application/json</stringProp>
-              </elementProp>
-              <elementProp name="Authorization" elementType="Header">
-                <stringProp name="Header.name">Authorization</stringProp>
-                <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-ID" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-ID</stringProp>
-                <stringProp name="Header.value">auth_post_004</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-Class" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-Class</stringProp>
-                <stringProp name="Header.value">normal</stringProp>
-              </elementProp>
-            </collectionProp>
-          </HeaderManager>
-          <hashTree />
-        </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_005 [normal] board delete comment" enabled="true">
-          <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_11}/comments/${board_comment_id_11}/delete</stringProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-          <stringProp name="HTTPSampler.method">POST</stringProp>
-          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-          <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
-          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-            <collectionProp name="Arguments.arguments" />
-          </elementProp>
-          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-        </HTTPSamplerProxy>
-        <hashTree>
-          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header Board Comment Delete Mini" enabled="true">
-            <collectionProp name="HeaderManager.headers">
-              <elementProp name="Accept" elementType="Header">
-                <stringProp name="Header.name">Accept</stringProp>
-                <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
-              </elementProp>
-              <elementProp name="Content-Type" elementType="Header">
-                <stringProp name="Header.name">Content-Type</stringProp>
-                <stringProp name="Header.value">application/json</stringProp>
-              </elementProp>
-              <elementProp name="Authorization" elementType="Header">
-                <stringProp name="Header.name">Authorization</stringProp>
-                <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-ID" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-ID</stringProp>
-                <stringProp name="Header.value">auth_post_005</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-Class" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-Class</stringProp>
-                <stringProp name="Header.value">normal</stringProp>
-              </elementProp>
-            </collectionProp>
-          </HeaderManager>
-          <hashTree />
-        </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_006 [normal] board delete post" enabled="true">
-          <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_11}/delete</stringProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-          <stringProp name="HTTPSampler.method">POST</stringProp>
-          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-          <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
-          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-            <collectionProp name="Arguments.arguments" />
-          </elementProp>
-          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-        </HTTPSamplerProxy>
-        <hashTree>
-          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header Board Delete Mini" enabled="true">
-            <collectionProp name="HeaderManager.headers">
-              <elementProp name="Accept" elementType="Header">
-                <stringProp name="Header.name">Accept</stringProp>
-                <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
-              </elementProp>
-              <elementProp name="Content-Type" elementType="Header">
-                <stringProp name="Header.name">Content-Type</stringProp>
-                <stringProp name="Header.value">application/json</stringProp>
-              </elementProp>
-              <elementProp name="Authorization" elementType="Header">
-                <stringProp name="Header.name">Authorization</stringProp>
-                <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-ID" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-ID</stringProp>
-                <stringProp name="Header.value">auth_post_006</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-Class" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-Class</stringProp>
-                <stringProp name="Header.value">normal</stringProp>
-              </elementProp>
-            </collectionProp>
-          </HeaderManager>
-          <hashTree />
+              <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+            </HTTPSamplerProxy>
+            <hashTree>
+              <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header Board Comment Delete Mini" enabled="true">
+                <collectionProp name="HeaderManager.headers">
+                  <elementProp name="Accept" elementType="Header">
+                    <stringProp name="Header.name">Accept</stringProp>
+                    <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                  </elementProp>
+                  <elementProp name="Content-Type" elementType="Header">
+                    <stringProp name="Header.name">Content-Type</stringProp>
+                    <stringProp name="Header.value">application/json</stringProp>
+                  </elementProp>
+                  <elementProp name="Authorization" elementType="Header">
+                    <stringProp name="Header.name">Authorization</stringProp>
+                    <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
+                  </elementProp>
+                  <elementProp name="X-FP-Case-ID" elementType="Header">
+                    <stringProp name="Header.name">X-FP-Case-ID</stringProp>
+                    <stringProp name="Header.value">auth_post_005</stringProp>
+                  </elementProp>
+                  <elementProp name="X-FP-Case-Class" elementType="Header">
+                    <stringProp name="Header.name">X-FP-Case-Class</stringProp>
+                    <stringProp name="Header.value">normal</stringProp>
+                  </elementProp>
+                </collectionProp>
+              </HeaderManager>
+              <hashTree />
+            </hashTree>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_006 [normal] board delete post" enabled="true">
+            <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_11}/delete</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+              <collectionProp name="Arguments.arguments" />
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header Board Delete Mini" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">application/json</stringProp>
+                </elementProp>
+                <elementProp name="Authorization" elementType="Header">
+                  <stringProp name="Header.name">Authorization</stringProp>
+                  <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-ID</stringProp>
+                  <stringProp name="Header.value">auth_post_006</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-Class</stringProp>
+                  <stringProp name="Header.value">normal</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree />
+          </hashTree>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_007 [ambiguous] board create post" enabled="true">
           <stringProp name="HTTPSampler.path">/api/board/posts</stringProp>
@@ -1481,220 +1495,234 @@ if (parsed.size() &gt; 1) {
           </JSONPostProcessor>
           <hashTree />
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_008 [ambiguous] board create comment" enabled="true">
-          <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_12}/comments</stringProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-          <stringProp name="HTTPSampler.method">POST</stringProp>
-          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
-          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-            <collectionProp name="Arguments.arguments">
-              <elementProp name="" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{"content":"whoami 예시도 같이 정리했습니다."}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-            </collectionProp>
-          </elementProp>
-          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-        </HTTPSamplerProxy>
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If board_post_id_12 captured" enabled="true">
+          <stringProp name="IfController.condition">${__jexl3('${board_post_id_12}' != '0')}</stringProp>
+          <boolProp name="IfController.useExpression">true</boolProp>
+          <boolProp name="IfController.evaluateAll">false</boolProp>
+        </IfController>
         <hashTree>
-          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header Board Comment Create Mini" enabled="true">
-            <collectionProp name="HeaderManager.headers">
-              <elementProp name="Accept" elementType="Header">
-                <stringProp name="Header.name">Accept</stringProp>
-                <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_008 [ambiguous] board create comment" enabled="true">
+            <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_12}/comments</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{"content":"whoami 예시도 같이 정리했습니다."}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header Board Comment Create Mini" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">application/json</stringProp>
+                </elementProp>
+                <elementProp name="Authorization" elementType="Header">
+                  <stringProp name="Header.name">Authorization</stringProp>
+                  <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-ID</stringProp>
+                  <stringProp name="Header.value">auth_post_008</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-Class</stringProp>
+                  <stringProp name="Header.value">ambiguous</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree />
+            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Capture Board Comment ID Mini" enabled="true">
+              <stringProp name="JSONPostProcessor.referenceNames">board_comment_id_12</stringProp>
+              <stringProp name="JSONPostProcessor.jsonPathExprs">$.id</stringProp>
+              <stringProp name="JSONPostProcessor.match_numbers" />
+              <stringProp name="JSONPostProcessor.defaultValues">0</stringProp>
+            </JSONPostProcessor>
+            <hashTree />
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_009 [ambiguous] board update post" enabled="true">
+            <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_12}/update</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{"title":"보안 실습 메모 수정 ${mixed500_v2_run_id}","content":"select 문, script 태그, ../admin 경로를 방어 관점에서 정리하는 게시글입니다. 수정본입니다."}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header Board Update Mini" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">application/json</stringProp>
+                </elementProp>
+                <elementProp name="Authorization" elementType="Header">
+                  <stringProp name="Header.name">Authorization</stringProp>
+                  <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-ID</stringProp>
+                  <stringProp name="Header.value">auth_post_009</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-Class</stringProp>
+                  <stringProp name="Header.value">ambiguous</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree />
+          </hashTree>
+          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If board_comment_id_12 captured" enabled="true">
+            <stringProp name="IfController.condition">${__jexl3('${board_comment_id_12}' != '0')}</stringProp>
+            <boolProp name="IfController.useExpression">true</boolProp>
+            <boolProp name="IfController.evaluateAll">false</boolProp>
+          </IfController>
+          <hashTree>
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_010 [ambiguous] board update comment" enabled="true">
+              <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_12}/comments/${board_comment_id_12}/update</stringProp>
+              <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+              <stringProp name="HTTPSampler.method">POST</stringProp>
+              <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+              <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+              <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+                <collectionProp name="Arguments.arguments">
+                  <elementProp name="" elementType="HTTPArgument">
+                    <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                    <stringProp name="Argument.value">{"content":"whoami 예시도 같이 정리했습니다. 수정본"}</stringProp>
+                    <stringProp name="Argument.metadata">=</stringProp>
+                  </elementProp>
+                </collectionProp>
               </elementProp>
-              <elementProp name="Content-Type" elementType="Header">
-                <stringProp name="Header.name">Content-Type</stringProp>
-                <stringProp name="Header.value">application/json</stringProp>
+              <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+            </HTTPSamplerProxy>
+            <hashTree>
+              <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header Board Comment Update Mini" enabled="true">
+                <collectionProp name="HeaderManager.headers">
+                  <elementProp name="Accept" elementType="Header">
+                    <stringProp name="Header.name">Accept</stringProp>
+                    <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                  </elementProp>
+                  <elementProp name="Content-Type" elementType="Header">
+                    <stringProp name="Header.name">Content-Type</stringProp>
+                    <stringProp name="Header.value">application/json</stringProp>
+                  </elementProp>
+                  <elementProp name="Authorization" elementType="Header">
+                    <stringProp name="Header.name">Authorization</stringProp>
+                    <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
+                  </elementProp>
+                  <elementProp name="X-FP-Case-ID" elementType="Header">
+                    <stringProp name="Header.name">X-FP-Case-ID</stringProp>
+                    <stringProp name="Header.value">auth_post_010</stringProp>
+                  </elementProp>
+                  <elementProp name="X-FP-Case-Class" elementType="Header">
+                    <stringProp name="Header.name">X-FP-Case-Class</stringProp>
+                    <stringProp name="Header.value">ambiguous</stringProp>
+                  </elementProp>
+                </collectionProp>
+              </HeaderManager>
+              <hashTree />
+            </hashTree>
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_011 [ambiguous] board delete comment" enabled="true">
+              <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_12}/comments/${board_comment_id_12}/delete</stringProp>
+              <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+              <stringProp name="HTTPSampler.method">POST</stringProp>
+              <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+              <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+              <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+                <collectionProp name="Arguments.arguments" />
               </elementProp>
-              <elementProp name="Authorization" elementType="Header">
-                <stringProp name="Header.name">Authorization</stringProp>
-                <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-ID" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-ID</stringProp>
-                <stringProp name="Header.value">auth_post_008</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-Class" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-Class</stringProp>
-                <stringProp name="Header.value">ambiguous</stringProp>
-              </elementProp>
-            </collectionProp>
-          </HeaderManager>
-          <hashTree />
-          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Capture Board Comment ID Mini" enabled="true">
-            <stringProp name="JSONPostProcessor.referenceNames">board_comment_id_12</stringProp>
-            <stringProp name="JSONPostProcessor.jsonPathExprs">$.id</stringProp>
-            <stringProp name="JSONPostProcessor.match_numbers" />
-            <stringProp name="JSONPostProcessor.defaultValues">0</stringProp>
-          </JSONPostProcessor>
-          <hashTree />
-        </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_009 [ambiguous] board update post" enabled="true">
-          <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_12}/update</stringProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-          <stringProp name="HTTPSampler.method">POST</stringProp>
-          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
-          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-            <collectionProp name="Arguments.arguments">
-              <elementProp name="" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{"title":"보안 실습 메모 수정 ${mixed500_v2_run_id}","content":"select 문, script 태그, ../admin 경로를 방어 관점에서 정리하는 게시글입니다. 수정본입니다."}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-            </collectionProp>
-          </elementProp>
-          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-        </HTTPSamplerProxy>
-        <hashTree>
-          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header Board Update Mini" enabled="true">
-            <collectionProp name="HeaderManager.headers">
-              <elementProp name="Accept" elementType="Header">
-                <stringProp name="Header.name">Accept</stringProp>
-                <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
-              </elementProp>
-              <elementProp name="Content-Type" elementType="Header">
-                <stringProp name="Header.name">Content-Type</stringProp>
-                <stringProp name="Header.value">application/json</stringProp>
-              </elementProp>
-              <elementProp name="Authorization" elementType="Header">
-                <stringProp name="Header.name">Authorization</stringProp>
-                <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-ID" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-ID</stringProp>
-                <stringProp name="Header.value">auth_post_009</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-Class" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-Class</stringProp>
-                <stringProp name="Header.value">ambiguous</stringProp>
-              </elementProp>
-            </collectionProp>
-          </HeaderManager>
-          <hashTree />
-        </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_010 [ambiguous] board update comment" enabled="true">
-          <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_12}/comments/${board_comment_id_12}/update</stringProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-          <stringProp name="HTTPSampler.method">POST</stringProp>
-          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
-          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-            <collectionProp name="Arguments.arguments">
-              <elementProp name="" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{"content":"whoami 예시도 같이 정리했습니다. 수정본"}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-            </collectionProp>
-          </elementProp>
-          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-        </HTTPSamplerProxy>
-        <hashTree>
-          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header Board Comment Update Mini" enabled="true">
-            <collectionProp name="HeaderManager.headers">
-              <elementProp name="Accept" elementType="Header">
-                <stringProp name="Header.name">Accept</stringProp>
-                <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
-              </elementProp>
-              <elementProp name="Content-Type" elementType="Header">
-                <stringProp name="Header.name">Content-Type</stringProp>
-                <stringProp name="Header.value">application/json</stringProp>
-              </elementProp>
-              <elementProp name="Authorization" elementType="Header">
-                <stringProp name="Header.name">Authorization</stringProp>
-                <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-ID" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-ID</stringProp>
-                <stringProp name="Header.value">auth_post_010</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-Class" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-Class</stringProp>
-                <stringProp name="Header.value">ambiguous</stringProp>
-              </elementProp>
-            </collectionProp>
-          </HeaderManager>
-          <hashTree />
-        </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_011 [ambiguous] board delete comment" enabled="true">
-          <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_12}/comments/${board_comment_id_12}/delete</stringProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-          <stringProp name="HTTPSampler.method">POST</stringProp>
-          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-          <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
-          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-            <collectionProp name="Arguments.arguments" />
-          </elementProp>
-          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-        </HTTPSamplerProxy>
-        <hashTree>
-          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header Board Comment Delete Mini" enabled="true">
-            <collectionProp name="HeaderManager.headers">
-              <elementProp name="Accept" elementType="Header">
-                <stringProp name="Header.name">Accept</stringProp>
-                <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
-              </elementProp>
-              <elementProp name="Content-Type" elementType="Header">
-                <stringProp name="Header.name">Content-Type</stringProp>
-                <stringProp name="Header.value">application/json</stringProp>
-              </elementProp>
-              <elementProp name="Authorization" elementType="Header">
-                <stringProp name="Header.name">Authorization</stringProp>
-                <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-ID" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-ID</stringProp>
-                <stringProp name="Header.value">auth_post_011</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-Class" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-Class</stringProp>
-                <stringProp name="Header.value">ambiguous</stringProp>
-              </elementProp>
-            </collectionProp>
-          </HeaderManager>
-          <hashTree />
-        </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_012 [ambiguous] board delete post" enabled="true">
-          <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_12}/delete</stringProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-          <stringProp name="HTTPSampler.method">POST</stringProp>
-          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-          <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
-          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-            <collectionProp name="Arguments.arguments" />
-          </elementProp>
-          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-        </HTTPSamplerProxy>
-        <hashTree>
-          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header Board Delete Mini" enabled="true">
-            <collectionProp name="HeaderManager.headers">
-              <elementProp name="Accept" elementType="Header">
-                <stringProp name="Header.name">Accept</stringProp>
-                <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
-              </elementProp>
-              <elementProp name="Content-Type" elementType="Header">
-                <stringProp name="Header.name">Content-Type</stringProp>
-                <stringProp name="Header.value">application/json</stringProp>
-              </elementProp>
-              <elementProp name="Authorization" elementType="Header">
-                <stringProp name="Header.name">Authorization</stringProp>
-                <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-ID" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-ID</stringProp>
-                <stringProp name="Header.value">auth_post_012</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-Class" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-Class</stringProp>
-                <stringProp name="Header.value">ambiguous</stringProp>
-              </elementProp>
-            </collectionProp>
-          </HeaderManager>
-          <hashTree />
+              <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+            </HTTPSamplerProxy>
+            <hashTree>
+              <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header Board Comment Delete Mini" enabled="true">
+                <collectionProp name="HeaderManager.headers">
+                  <elementProp name="Accept" elementType="Header">
+                    <stringProp name="Header.name">Accept</stringProp>
+                    <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                  </elementProp>
+                  <elementProp name="Content-Type" elementType="Header">
+                    <stringProp name="Header.name">Content-Type</stringProp>
+                    <stringProp name="Header.value">application/json</stringProp>
+                  </elementProp>
+                  <elementProp name="Authorization" elementType="Header">
+                    <stringProp name="Header.name">Authorization</stringProp>
+                    <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
+                  </elementProp>
+                  <elementProp name="X-FP-Case-ID" elementType="Header">
+                    <stringProp name="Header.name">X-FP-Case-ID</stringProp>
+                    <stringProp name="Header.value">auth_post_011</stringProp>
+                  </elementProp>
+                  <elementProp name="X-FP-Case-Class" elementType="Header">
+                    <stringProp name="Header.name">X-FP-Case-Class</stringProp>
+                    <stringProp name="Header.value">ambiguous</stringProp>
+                  </elementProp>
+                </collectionProp>
+              </HeaderManager>
+              <hashTree />
+            </hashTree>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_012 [ambiguous] board delete post" enabled="true">
+            <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_12}/delete</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+              <collectionProp name="Arguments.arguments" />
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header Board Delete Mini" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">application/json</stringProp>
+                </elementProp>
+                <elementProp name="Authorization" elementType="Header">
+                  <stringProp name="Header.name">Authorization</stringProp>
+                  <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-ID</stringProp>
+                  <stringProp name="Header.value">auth_post_012</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-Class</stringProp>
+                  <stringProp name="Header.value">ambiguous</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree />
+          </hashTree>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_013 [normal] board create post" enabled="true">
           <stringProp name="HTTPSampler.path">/api/board/posts</stringProp>
@@ -1747,220 +1775,234 @@ if (parsed.size() &gt; 1) {
           </JSONPostProcessor>
           <hashTree />
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_014 [normal] board create comment" enabled="true">
-          <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_13}/comments</stringProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-          <stringProp name="HTTPSampler.method">POST</stringProp>
-          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
-          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-            <collectionProp name="Arguments.arguments">
-              <elementProp name="" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{"content":"일정 확인했습니다."}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-            </collectionProp>
-          </elementProp>
-          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-        </HTTPSamplerProxy>
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If board_post_id_13 captured" enabled="true">
+          <stringProp name="IfController.condition">${__jexl3('${board_post_id_13}' != '0')}</stringProp>
+          <boolProp name="IfController.useExpression">true</boolProp>
+          <boolProp name="IfController.evaluateAll">false</boolProp>
+        </IfController>
         <hashTree>
-          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header Board Comment Create Mini" enabled="true">
-            <collectionProp name="HeaderManager.headers">
-              <elementProp name="Accept" elementType="Header">
-                <stringProp name="Header.name">Accept</stringProp>
-                <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_014 [normal] board create comment" enabled="true">
+            <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_13}/comments</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{"content":"일정 확인했습니다."}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header Board Comment Create Mini" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">application/json</stringProp>
+                </elementProp>
+                <elementProp name="Authorization" elementType="Header">
+                  <stringProp name="Header.name">Authorization</stringProp>
+                  <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-ID</stringProp>
+                  <stringProp name="Header.value">auth_post_014</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-Class</stringProp>
+                  <stringProp name="Header.value">normal</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree />
+            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Capture Board Comment ID Mini" enabled="true">
+              <stringProp name="JSONPostProcessor.referenceNames">board_comment_id_13</stringProp>
+              <stringProp name="JSONPostProcessor.jsonPathExprs">$.id</stringProp>
+              <stringProp name="JSONPostProcessor.match_numbers" />
+              <stringProp name="JSONPostProcessor.defaultValues">0</stringProp>
+            </JSONPostProcessor>
+            <hashTree />
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_015 [normal] board update post" enabled="true">
+            <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_13}/update</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{"title":"캠퍼스 행사 공지 수정 ${mixed500_v2_run_id}","content":"캠퍼스 세미나와 공모전 일정을 공유하는 정상 게시글입니다. 수정본입니다."}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header Board Update Mini" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">application/json</stringProp>
+                </elementProp>
+                <elementProp name="Authorization" elementType="Header">
+                  <stringProp name="Header.name">Authorization</stringProp>
+                  <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-ID</stringProp>
+                  <stringProp name="Header.value">auth_post_015</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-Class</stringProp>
+                  <stringProp name="Header.value">normal</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree />
+          </hashTree>
+          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If board_comment_id_13 captured" enabled="true">
+            <stringProp name="IfController.condition">${__jexl3('${board_comment_id_13}' != '0')}</stringProp>
+            <boolProp name="IfController.useExpression">true</boolProp>
+            <boolProp name="IfController.evaluateAll">false</boolProp>
+          </IfController>
+          <hashTree>
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_016 [normal] board update comment" enabled="true">
+              <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_13}/comments/${board_comment_id_13}/update</stringProp>
+              <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+              <stringProp name="HTTPSampler.method">POST</stringProp>
+              <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+              <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+              <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+                <collectionProp name="Arguments.arguments">
+                  <elementProp name="" elementType="HTTPArgument">
+                    <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                    <stringProp name="Argument.value">{"content":"일정 확인했습니다. 수정본"}</stringProp>
+                    <stringProp name="Argument.metadata">=</stringProp>
+                  </elementProp>
+                </collectionProp>
               </elementProp>
-              <elementProp name="Content-Type" elementType="Header">
-                <stringProp name="Header.name">Content-Type</stringProp>
-                <stringProp name="Header.value">application/json</stringProp>
+              <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+            </HTTPSamplerProxy>
+            <hashTree>
+              <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header Board Comment Update Mini" enabled="true">
+                <collectionProp name="HeaderManager.headers">
+                  <elementProp name="Accept" elementType="Header">
+                    <stringProp name="Header.name">Accept</stringProp>
+                    <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                  </elementProp>
+                  <elementProp name="Content-Type" elementType="Header">
+                    <stringProp name="Header.name">Content-Type</stringProp>
+                    <stringProp name="Header.value">application/json</stringProp>
+                  </elementProp>
+                  <elementProp name="Authorization" elementType="Header">
+                    <stringProp name="Header.name">Authorization</stringProp>
+                    <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
+                  </elementProp>
+                  <elementProp name="X-FP-Case-ID" elementType="Header">
+                    <stringProp name="Header.name">X-FP-Case-ID</stringProp>
+                    <stringProp name="Header.value">auth_post_016</stringProp>
+                  </elementProp>
+                  <elementProp name="X-FP-Case-Class" elementType="Header">
+                    <stringProp name="Header.name">X-FP-Case-Class</stringProp>
+                    <stringProp name="Header.value">normal</stringProp>
+                  </elementProp>
+                </collectionProp>
+              </HeaderManager>
+              <hashTree />
+            </hashTree>
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_017 [normal] board delete comment" enabled="true">
+              <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_13}/comments/${board_comment_id_13}/delete</stringProp>
+              <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+              <stringProp name="HTTPSampler.method">POST</stringProp>
+              <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+              <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+              <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+                <collectionProp name="Arguments.arguments" />
               </elementProp>
-              <elementProp name="Authorization" elementType="Header">
-                <stringProp name="Header.name">Authorization</stringProp>
-                <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-ID" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-ID</stringProp>
-                <stringProp name="Header.value">auth_post_014</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-Class" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-Class</stringProp>
-                <stringProp name="Header.value">normal</stringProp>
-              </elementProp>
-            </collectionProp>
-          </HeaderManager>
-          <hashTree />
-          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Capture Board Comment ID Mini" enabled="true">
-            <stringProp name="JSONPostProcessor.referenceNames">board_comment_id_13</stringProp>
-            <stringProp name="JSONPostProcessor.jsonPathExprs">$.id</stringProp>
-            <stringProp name="JSONPostProcessor.match_numbers" />
-            <stringProp name="JSONPostProcessor.defaultValues">0</stringProp>
-          </JSONPostProcessor>
-          <hashTree />
-        </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_015 [normal] board update post" enabled="true">
-          <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_13}/update</stringProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-          <stringProp name="HTTPSampler.method">POST</stringProp>
-          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
-          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-            <collectionProp name="Arguments.arguments">
-              <elementProp name="" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{"title":"캠퍼스 행사 공지 수정 ${mixed500_v2_run_id}","content":"캠퍼스 세미나와 공모전 일정을 공유하는 정상 게시글입니다. 수정본입니다."}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-            </collectionProp>
-          </elementProp>
-          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-        </HTTPSamplerProxy>
-        <hashTree>
-          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header Board Update Mini" enabled="true">
-            <collectionProp name="HeaderManager.headers">
-              <elementProp name="Accept" elementType="Header">
-                <stringProp name="Header.name">Accept</stringProp>
-                <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
-              </elementProp>
-              <elementProp name="Content-Type" elementType="Header">
-                <stringProp name="Header.name">Content-Type</stringProp>
-                <stringProp name="Header.value">application/json</stringProp>
-              </elementProp>
-              <elementProp name="Authorization" elementType="Header">
-                <stringProp name="Header.name">Authorization</stringProp>
-                <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-ID" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-ID</stringProp>
-                <stringProp name="Header.value">auth_post_015</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-Class" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-Class</stringProp>
-                <stringProp name="Header.value">normal</stringProp>
-              </elementProp>
-            </collectionProp>
-          </HeaderManager>
-          <hashTree />
-        </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_016 [normal] board update comment" enabled="true">
-          <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_13}/comments/${board_comment_id_13}/update</stringProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-          <stringProp name="HTTPSampler.method">POST</stringProp>
-          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
-          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-            <collectionProp name="Arguments.arguments">
-              <elementProp name="" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{"content":"일정 확인했습니다. 수정본"}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-            </collectionProp>
-          </elementProp>
-          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-        </HTTPSamplerProxy>
-        <hashTree>
-          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header Board Comment Update Mini" enabled="true">
-            <collectionProp name="HeaderManager.headers">
-              <elementProp name="Accept" elementType="Header">
-                <stringProp name="Header.name">Accept</stringProp>
-                <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
-              </elementProp>
-              <elementProp name="Content-Type" elementType="Header">
-                <stringProp name="Header.name">Content-Type</stringProp>
-                <stringProp name="Header.value">application/json</stringProp>
-              </elementProp>
-              <elementProp name="Authorization" elementType="Header">
-                <stringProp name="Header.name">Authorization</stringProp>
-                <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-ID" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-ID</stringProp>
-                <stringProp name="Header.value">auth_post_016</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-Class" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-Class</stringProp>
-                <stringProp name="Header.value">normal</stringProp>
-              </elementProp>
-            </collectionProp>
-          </HeaderManager>
-          <hashTree />
-        </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_017 [normal] board delete comment" enabled="true">
-          <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_13}/comments/${board_comment_id_13}/delete</stringProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-          <stringProp name="HTTPSampler.method">POST</stringProp>
-          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-          <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
-          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-            <collectionProp name="Arguments.arguments" />
-          </elementProp>
-          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-        </HTTPSamplerProxy>
-        <hashTree>
-          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header Board Comment Delete Mini" enabled="true">
-            <collectionProp name="HeaderManager.headers">
-              <elementProp name="Accept" elementType="Header">
-                <stringProp name="Header.name">Accept</stringProp>
-                <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
-              </elementProp>
-              <elementProp name="Content-Type" elementType="Header">
-                <stringProp name="Header.name">Content-Type</stringProp>
-                <stringProp name="Header.value">application/json</stringProp>
-              </elementProp>
-              <elementProp name="Authorization" elementType="Header">
-                <stringProp name="Header.name">Authorization</stringProp>
-                <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-ID" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-ID</stringProp>
-                <stringProp name="Header.value">auth_post_017</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-Class" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-Class</stringProp>
-                <stringProp name="Header.value">normal</stringProp>
-              </elementProp>
-            </collectionProp>
-          </HeaderManager>
-          <hashTree />
-        </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_018 [normal] board delete post" enabled="true">
-          <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_13}/delete</stringProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-          <stringProp name="HTTPSampler.method">POST</stringProp>
-          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-          <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
-          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-            <collectionProp name="Arguments.arguments" />
-          </elementProp>
-          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-        </HTTPSamplerProxy>
-        <hashTree>
-          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header Board Delete Mini" enabled="true">
-            <collectionProp name="HeaderManager.headers">
-              <elementProp name="Accept" elementType="Header">
-                <stringProp name="Header.name">Accept</stringProp>
-                <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
-              </elementProp>
-              <elementProp name="Content-Type" elementType="Header">
-                <stringProp name="Header.name">Content-Type</stringProp>
-                <stringProp name="Header.value">application/json</stringProp>
-              </elementProp>
-              <elementProp name="Authorization" elementType="Header">
-                <stringProp name="Header.name">Authorization</stringProp>
-                <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-ID" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-ID</stringProp>
-                <stringProp name="Header.value">auth_post_018</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-Class" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-Class</stringProp>
-                <stringProp name="Header.value">normal</stringProp>
-              </elementProp>
-            </collectionProp>
-          </HeaderManager>
-          <hashTree />
+              <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+            </HTTPSamplerProxy>
+            <hashTree>
+              <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header Board Comment Delete Mini" enabled="true">
+                <collectionProp name="HeaderManager.headers">
+                  <elementProp name="Accept" elementType="Header">
+                    <stringProp name="Header.name">Accept</stringProp>
+                    <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                  </elementProp>
+                  <elementProp name="Content-Type" elementType="Header">
+                    <stringProp name="Header.name">Content-Type</stringProp>
+                    <stringProp name="Header.value">application/json</stringProp>
+                  </elementProp>
+                  <elementProp name="Authorization" elementType="Header">
+                    <stringProp name="Header.name">Authorization</stringProp>
+                    <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
+                  </elementProp>
+                  <elementProp name="X-FP-Case-ID" elementType="Header">
+                    <stringProp name="Header.name">X-FP-Case-ID</stringProp>
+                    <stringProp name="Header.value">auth_post_017</stringProp>
+                  </elementProp>
+                  <elementProp name="X-FP-Case-Class" elementType="Header">
+                    <stringProp name="Header.name">X-FP-Case-Class</stringProp>
+                    <stringProp name="Header.value">normal</stringProp>
+                  </elementProp>
+                </collectionProp>
+              </HeaderManager>
+              <hashTree />
+            </hashTree>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_018 [normal] board delete post" enabled="true">
+            <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_13}/delete</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+              <collectionProp name="Arguments.arguments" />
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header Board Delete Mini" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">application/json</stringProp>
+                </elementProp>
+                <elementProp name="Authorization" elementType="Header">
+                  <stringProp name="Header.name">Authorization</stringProp>
+                  <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-ID</stringProp>
+                  <stringProp name="Header.value">auth_post_018</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-Class</stringProp>
+                  <stringProp name="Header.value">normal</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree />
+          </hashTree>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_019 [ambiguous] board create post" enabled="true">
           <stringProp name="HTTPSampler.path">/api/board/posts</stringProp>
@@ -2013,220 +2055,234 @@ if (parsed.size() &gt; 1) {
           </JSONPostProcessor>
           <hashTree />
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_020 [ambiguous] board create comment" enabled="true">
-          <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_14}/comments</stringProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-          <stringProp name="HTTPSampler.method">POST</stringProp>
-          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
-          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-            <collectionProp name="Arguments.arguments">
-              <elementProp name="" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{"content":"교육용 문자열 정리입니다."}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-            </collectionProp>
-          </elementProp>
-          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-        </HTTPSamplerProxy>
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If board_post_id_14 captured" enabled="true">
+          <stringProp name="IfController.condition">${__jexl3('${board_post_id_14}' != '0')}</stringProp>
+          <boolProp name="IfController.useExpression">true</boolProp>
+          <boolProp name="IfController.evaluateAll">false</boolProp>
+        </IfController>
         <hashTree>
-          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header Board Comment Create Mini" enabled="true">
-            <collectionProp name="HeaderManager.headers">
-              <elementProp name="Accept" elementType="Header">
-                <stringProp name="Header.name">Accept</stringProp>
-                <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_020 [ambiguous] board create comment" enabled="true">
+            <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_14}/comments</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{"content":"교육용 문자열 정리입니다."}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header Board Comment Create Mini" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">application/json</stringProp>
+                </elementProp>
+                <elementProp name="Authorization" elementType="Header">
+                  <stringProp name="Header.name">Authorization</stringProp>
+                  <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-ID</stringProp>
+                  <stringProp name="Header.value">auth_post_020</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-Class</stringProp>
+                  <stringProp name="Header.value">ambiguous</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree />
+            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Capture Board Comment ID Mini" enabled="true">
+              <stringProp name="JSONPostProcessor.referenceNames">board_comment_id_14</stringProp>
+              <stringProp name="JSONPostProcessor.jsonPathExprs">$.id</stringProp>
+              <stringProp name="JSONPostProcessor.match_numbers" />
+              <stringProp name="JSONPostProcessor.defaultValues">0</stringProp>
+            </JSONPostProcessor>
+            <hashTree />
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_021 [ambiguous] board update post" enabled="true">
+            <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_14}/update</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{"title":"WAF 과탐 사례 수정 ${mixed500_v2_run_id}","content":"cmd.exe, powershell -enc, union select 같은 문자열을 문맥적으로 설명하는 게시글입니다. 수정본입니다."}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header Board Update Mini" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">application/json</stringProp>
+                </elementProp>
+                <elementProp name="Authorization" elementType="Header">
+                  <stringProp name="Header.name">Authorization</stringProp>
+                  <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-ID</stringProp>
+                  <stringProp name="Header.value">auth_post_021</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-Class</stringProp>
+                  <stringProp name="Header.value">ambiguous</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree />
+          </hashTree>
+          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If board_comment_id_14 captured" enabled="true">
+            <stringProp name="IfController.condition">${__jexl3('${board_comment_id_14}' != '0')}</stringProp>
+            <boolProp name="IfController.useExpression">true</boolProp>
+            <boolProp name="IfController.evaluateAll">false</boolProp>
+          </IfController>
+          <hashTree>
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_022 [ambiguous] board update comment" enabled="true">
+              <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_14}/comments/${board_comment_id_14}/update</stringProp>
+              <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+              <stringProp name="HTTPSampler.method">POST</stringProp>
+              <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+              <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+              <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+                <collectionProp name="Arguments.arguments">
+                  <elementProp name="" elementType="HTTPArgument">
+                    <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                    <stringProp name="Argument.value">{"content":"교육용 문자열 정리입니다. 수정본"}</stringProp>
+                    <stringProp name="Argument.metadata">=</stringProp>
+                  </elementProp>
+                </collectionProp>
               </elementProp>
-              <elementProp name="Content-Type" elementType="Header">
-                <stringProp name="Header.name">Content-Type</stringProp>
-                <stringProp name="Header.value">application/json</stringProp>
+              <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+            </HTTPSamplerProxy>
+            <hashTree>
+              <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header Board Comment Update Mini" enabled="true">
+                <collectionProp name="HeaderManager.headers">
+                  <elementProp name="Accept" elementType="Header">
+                    <stringProp name="Header.name">Accept</stringProp>
+                    <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                  </elementProp>
+                  <elementProp name="Content-Type" elementType="Header">
+                    <stringProp name="Header.name">Content-Type</stringProp>
+                    <stringProp name="Header.value">application/json</stringProp>
+                  </elementProp>
+                  <elementProp name="Authorization" elementType="Header">
+                    <stringProp name="Header.name">Authorization</stringProp>
+                    <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
+                  </elementProp>
+                  <elementProp name="X-FP-Case-ID" elementType="Header">
+                    <stringProp name="Header.name">X-FP-Case-ID</stringProp>
+                    <stringProp name="Header.value">auth_post_022</stringProp>
+                  </elementProp>
+                  <elementProp name="X-FP-Case-Class" elementType="Header">
+                    <stringProp name="Header.name">X-FP-Case-Class</stringProp>
+                    <stringProp name="Header.value">ambiguous</stringProp>
+                  </elementProp>
+                </collectionProp>
+              </HeaderManager>
+              <hashTree />
+            </hashTree>
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_023 [ambiguous] board delete comment" enabled="true">
+              <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_14}/comments/${board_comment_id_14}/delete</stringProp>
+              <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+              <stringProp name="HTTPSampler.method">POST</stringProp>
+              <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+              <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+              <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+                <collectionProp name="Arguments.arguments" />
               </elementProp>
-              <elementProp name="Authorization" elementType="Header">
-                <stringProp name="Header.name">Authorization</stringProp>
-                <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-ID" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-ID</stringProp>
-                <stringProp name="Header.value">auth_post_020</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-Class" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-Class</stringProp>
-                <stringProp name="Header.value">ambiguous</stringProp>
-              </elementProp>
-            </collectionProp>
-          </HeaderManager>
-          <hashTree />
-          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Capture Board Comment ID Mini" enabled="true">
-            <stringProp name="JSONPostProcessor.referenceNames">board_comment_id_14</stringProp>
-            <stringProp name="JSONPostProcessor.jsonPathExprs">$.id</stringProp>
-            <stringProp name="JSONPostProcessor.match_numbers" />
-            <stringProp name="JSONPostProcessor.defaultValues">0</stringProp>
-          </JSONPostProcessor>
-          <hashTree />
-        </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_021 [ambiguous] board update post" enabled="true">
-          <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_14}/update</stringProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-          <stringProp name="HTTPSampler.method">POST</stringProp>
-          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
-          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-            <collectionProp name="Arguments.arguments">
-              <elementProp name="" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{"title":"WAF 과탐 사례 수정 ${mixed500_v2_run_id}","content":"cmd.exe, powershell -enc, union select 같은 문자열을 문맥적으로 설명하는 게시글입니다. 수정본입니다."}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-            </collectionProp>
-          </elementProp>
-          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-        </HTTPSamplerProxy>
-        <hashTree>
-          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header Board Update Mini" enabled="true">
-            <collectionProp name="HeaderManager.headers">
-              <elementProp name="Accept" elementType="Header">
-                <stringProp name="Header.name">Accept</stringProp>
-                <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
-              </elementProp>
-              <elementProp name="Content-Type" elementType="Header">
-                <stringProp name="Header.name">Content-Type</stringProp>
-                <stringProp name="Header.value">application/json</stringProp>
-              </elementProp>
-              <elementProp name="Authorization" elementType="Header">
-                <stringProp name="Header.name">Authorization</stringProp>
-                <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-ID" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-ID</stringProp>
-                <stringProp name="Header.value">auth_post_021</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-Class" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-Class</stringProp>
-                <stringProp name="Header.value">ambiguous</stringProp>
-              </elementProp>
-            </collectionProp>
-          </HeaderManager>
-          <hashTree />
-        </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_022 [ambiguous] board update comment" enabled="true">
-          <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_14}/comments/${board_comment_id_14}/update</stringProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-          <stringProp name="HTTPSampler.method">POST</stringProp>
-          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
-          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-            <collectionProp name="Arguments.arguments">
-              <elementProp name="" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{"content":"교육용 문자열 정리입니다. 수정본"}</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-            </collectionProp>
-          </elementProp>
-          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-        </HTTPSamplerProxy>
-        <hashTree>
-          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header Board Comment Update Mini" enabled="true">
-            <collectionProp name="HeaderManager.headers">
-              <elementProp name="Accept" elementType="Header">
-                <stringProp name="Header.name">Accept</stringProp>
-                <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
-              </elementProp>
-              <elementProp name="Content-Type" elementType="Header">
-                <stringProp name="Header.name">Content-Type</stringProp>
-                <stringProp name="Header.value">application/json</stringProp>
-              </elementProp>
-              <elementProp name="Authorization" elementType="Header">
-                <stringProp name="Header.name">Authorization</stringProp>
-                <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-ID" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-ID</stringProp>
-                <stringProp name="Header.value">auth_post_022</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-Class" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-Class</stringProp>
-                <stringProp name="Header.value">ambiguous</stringProp>
-              </elementProp>
-            </collectionProp>
-          </HeaderManager>
-          <hashTree />
-        </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_023 [ambiguous] board delete comment" enabled="true">
-          <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_14}/comments/${board_comment_id_14}/delete</stringProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-          <stringProp name="HTTPSampler.method">POST</stringProp>
-          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-          <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
-          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-            <collectionProp name="Arguments.arguments" />
-          </elementProp>
-          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-        </HTTPSamplerProxy>
-        <hashTree>
-          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header Board Comment Delete Mini" enabled="true">
-            <collectionProp name="HeaderManager.headers">
-              <elementProp name="Accept" elementType="Header">
-                <stringProp name="Header.name">Accept</stringProp>
-                <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
-              </elementProp>
-              <elementProp name="Content-Type" elementType="Header">
-                <stringProp name="Header.name">Content-Type</stringProp>
-                <stringProp name="Header.value">application/json</stringProp>
-              </elementProp>
-              <elementProp name="Authorization" elementType="Header">
-                <stringProp name="Header.name">Authorization</stringProp>
-                <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-ID" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-ID</stringProp>
-                <stringProp name="Header.value">auth_post_023</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-Class" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-Class</stringProp>
-                <stringProp name="Header.value">ambiguous</stringProp>
-              </elementProp>
-            </collectionProp>
-          </HeaderManager>
-          <hashTree />
-        </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_024 [ambiguous] board delete post" enabled="true">
-          <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_14}/delete</stringProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-          <stringProp name="HTTPSampler.method">POST</stringProp>
-          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-          <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
-          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-            <collectionProp name="Arguments.arguments" />
-          </elementProp>
-          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-        </HTTPSamplerProxy>
-        <hashTree>
-          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header Board Delete Mini" enabled="true">
-            <collectionProp name="HeaderManager.headers">
-              <elementProp name="Accept" elementType="Header">
-                <stringProp name="Header.name">Accept</stringProp>
-                <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
-              </elementProp>
-              <elementProp name="Content-Type" elementType="Header">
-                <stringProp name="Header.name">Content-Type</stringProp>
-                <stringProp name="Header.value">application/json</stringProp>
-              </elementProp>
-              <elementProp name="Authorization" elementType="Header">
-                <stringProp name="Header.name">Authorization</stringProp>
-                <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-ID" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-ID</stringProp>
-                <stringProp name="Header.value">auth_post_024</stringProp>
-              </elementProp>
-              <elementProp name="X-FP-Case-Class" elementType="Header">
-                <stringProp name="Header.name">X-FP-Case-Class</stringProp>
-                <stringProp name="Header.value">ambiguous</stringProp>
-              </elementProp>
-            </collectionProp>
-          </HeaderManager>
-          <hashTree />
+              <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+            </HTTPSamplerProxy>
+            <hashTree>
+              <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header Board Comment Delete Mini" enabled="true">
+                <collectionProp name="HeaderManager.headers">
+                  <elementProp name="Accept" elementType="Header">
+                    <stringProp name="Header.name">Accept</stringProp>
+                    <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                  </elementProp>
+                  <elementProp name="Content-Type" elementType="Header">
+                    <stringProp name="Header.name">Content-Type</stringProp>
+                    <stringProp name="Header.value">application/json</stringProp>
+                  </elementProp>
+                  <elementProp name="Authorization" elementType="Header">
+                    <stringProp name="Header.name">Authorization</stringProp>
+                    <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
+                  </elementProp>
+                  <elementProp name="X-FP-Case-ID" elementType="Header">
+                    <stringProp name="Header.name">X-FP-Case-ID</stringProp>
+                    <stringProp name="Header.value">auth_post_023</stringProp>
+                  </elementProp>
+                  <elementProp name="X-FP-Case-Class" elementType="Header">
+                    <stringProp name="Header.name">X-FP-Case-Class</stringProp>
+                    <stringProp name="Header.value">ambiguous</stringProp>
+                  </elementProp>
+                </collectionProp>
+              </HeaderManager>
+              <hashTree />
+            </hashTree>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_024 [ambiguous] board delete post" enabled="true">
+            <stringProp name="HTTPSampler.path">/api/board/posts/${board_post_id_14}/delete</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+              <collectionProp name="Arguments.arguments" />
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Student JSON Header Board Delete Mini" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
+                </elementProp>
+                <elementProp name="Content-Type" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">application/json</stringProp>
+                </elementProp>
+                <elementProp name="Authorization" elementType="Header">
+                  <stringProp name="Header.name">Authorization</stringProp>
+                  <stringProp name="Header.value">Bearer ${student_access_token}</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-ID" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-ID</stringProp>
+                  <stringProp name="Header.value">auth_post_024</stringProp>
+                </elementProp>
+                <elementProp name="X-FP-Case-Class" elementType="Header">
+                  <stringProp name="Header.name">X-FP-Case-Class</stringProp>
+                  <stringProp name="Header.value">ambiguous</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree />
+          </hashTree>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="auth_post_025 [normal] board create post" enabled="true">
           <stringProp name="HTTPSampler.path">/api/board/posts</stringProp>

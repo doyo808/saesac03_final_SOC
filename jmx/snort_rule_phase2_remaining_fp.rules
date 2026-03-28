@@ -1,0 +1,111 @@
+# ----------------------------------------------------------------
+# Project draft Snort rules for remaining FP tuning comparison
+# Date: 2026-03-28
+# Notes:
+# - PASS rules must be loaded before broad alert/drop rules.
+# - These are comparison drafts, not final production rules.
+# - Use ALERT instead of DROP if the engine runs in IDS mode.
+# ----------------------------------------------------------------
+
+# [PASS] Contextual board search should not be blocked
+pass tcp $EXTERNAL_NET any -> $HOME_NET $HTTP_PORTS (
+    msg:"PROJECT PASS contextual board search keyword";
+    flow:to_server,established;
+    http.method; content:"GET";
+    http.host; pcre:"/^(?:www\.)?kj\.ac\.kr$/Hi";
+    http.uri; pcre:"/^\/api\/board\/posts\?/Ui";
+    http.uri; pcre:"/keyword=[^ \r\n]{0,180}(?:\.\.%2Fadmin|\.\.%2Fuploads|whoami|powershell%20-enc|nmap%20-sS|base64|%24%7Bjndi%3Aldap%3A)/Ui";
+    http.uri; pcre:"/(?:%EC%84%A4%EB%AA%85|%EC%98%88%EC%8B%9C|%EC%8B%A4%EC%8A%B5|%EB%A9%94%EB%AA%A8|%EC%A0%95%EB%A6%AC|%EC%82%AC%EB%A1%80|review|note|lab)/Ui";
+    classtype:not-suspicious;
+    sid:1003001; rev:1;
+)
+
+# [PASS] Contextual public announcement search should not be blocked
+pass tcp $EXTERNAL_NET any -> $HOME_NET $HTTP_PORTS (
+    msg:"PROJECT PASS contextual public announcement search";
+    flow:to_server,established;
+    http.method; content:"GET";
+    http.host; pcre:"/^(?:www\.)?kj\.ac\.kr$/Hi";
+    http.uri; pcre:"/^\/api\/public\/announcements\?/Ui";
+    http.uri; pcre:"/keyword=[^ \r\n]{0,180}(?:\.\.%2Fadmin|whoami|powershell%20-enc|base64)/Ui";
+    http.uri; pcre:"/(?:%EC%84%A4%EB%AA%85|%EC%98%88%EC%8B%9C|%EC%8B%A4%EC%8A%B5|%EB%A9%94%EB%AA%A8|%EC%A0%95%EB%A6%AC|%EC%82%AC%EB%A1%80|review|note|lab)/Ui";
+    classtype:not-suspicious;
+    sid:1003002; rev:1;
+)
+
+# [PASS] Public support requests for normal/contextual traffic
+pass tcp $EXTERNAL_NET any -> $HOME_NET $HTTP_PORTS (
+    msg:"PROJECT PASS public support request";
+    flow:to_server,established;
+    http.method; content:"POST";
+    http.host; pcre:"/^(?:www\.)?kj\.ac\.kr$/Hi";
+    http.uri; content:"/api/public/support-requests";
+    http.header_names; content:"Content-Type";
+    http.client_body; content:"\"category\":\"PORTAL\"";
+    http.client_body; content:"\"contactEmail\":\"";
+    classtype:not-suspicious;
+    sid:1003003; rev:1;
+)
+
+# [PASS] Register requests where only the display name is contextual
+pass tcp $EXTERNAL_NET any -> $HOME_NET $HTTP_PORTS (
+    msg:"PROJECT PASS register contextual display name";
+    flow:to_server,established;
+    http.method; content:"POST";
+    http.host; pcre:"/^(?:www\.)?kj\.ac\.kr$/Hi";
+    http.uri; content:"/api/auth/register";
+    http.client_body; content:"\"role\":\"STUDENT\"";
+    http.client_body; pcre:"/\"name\":\"(?:보안스터디|로그분석반|Script Review Note|WAF Test Lab|침해대응실습|시큐어코딩반)\"/U";
+    classtype:not-suspicious;
+    sid:1003004; rev:1;
+)
+
+# [PASS] Board write traffic with explicit study context
+pass tcp $EXTERNAL_NET any -> $HOME_NET $HTTP_PORTS (
+    msg:"PROJECT PASS contextual board write";
+    flow:to_server,established;
+    http.method; content:"POST";
+    http.host; pcre:"/^(?:www\.)?kj\.ac\.kr$/Hi";
+    http.uri; content:"/api/board/posts";
+    http.header; content:"Authorization: Bearer ";
+    http.client_body; pcre:"/(?i)(?:설명|예시|실습|메모|정리|사례|교육|토론|review|note|lab)/U";
+    http.client_body; pcre:"/(?i)(?:union select|whoami|powershell -enc|\.\.\/admin|cmd\.exe|script tag)/U";
+    classtype:not-suspicious;
+    sid:1003005; rev:1;
+)
+
+# [ALERT] Explicit command substitution on write routes
+alert tcp $EXTERNAL_NET any -> $HOME_NET $HTTP_PORTS (
+    msg:"PROJECT ALERT explicit command substitution on write route";
+    flow:to_server,established;
+    http.method; content:"POST";
+    http.host; pcre:"/^(?:www\.)?kj\.ac\.kr$/Hi";
+    http.uri; pcre:"/^\/api\/(?:board\/posts|public\/support-requests|auth\/register)/Ui";
+    http.client_body; pcre:"/(?i)(?:`[^`\r\n]{1,80}`|\$\([^)\r\n]{1,80}\))/U";
+    classtype:web-application-attack;
+    sid:1003010; rev:1;
+)
+
+# [ALERT] Explicit XSS tag on write routes
+alert tcp $EXTERNAL_NET any -> $HOME_NET $HTTP_PORTS (
+    msg:"PROJECT ALERT explicit XSS tag on write route";
+    flow:to_server,established;
+    http.method; content:"POST";
+    http.host; pcre:"/^(?:www\.)?kj\.ac\.kr$/Hi";
+    http.uri; pcre:"/^\/api\/(?:board\/posts|public\/support-requests)/Ui";
+    http.client_body; pcre:"/(?i)(?:<script\b|<svg[^>]*onload=|<img[^>]*onerror=|javascript:)/U";
+    classtype:web-application-attack;
+    sid:1003011; rev:1;
+)
+
+# [ALERT] Explicit shell pipe or downloader on write routes
+alert tcp $EXTERNAL_NET any -> $HOME_NET $HTTP_PORTS (
+    msg:"PROJECT ALERT explicit shell pipe or downloader on write route";
+    flow:to_server,established;
+    http.method; content:"POST";
+    http.host; pcre:"/^(?:www\.)?kj\.ac\.kr$/Hi";
+    http.uri; pcre:"/^\/api\/(?:board\/posts|public\/support-requests)/Ui";
+    http.client_body; pcre:"/(?i)(?:\|\s*(?:cat|type)\s+\/?etc\/passwd|&&\s*(?:curl|wget)\b|;\s*(?:bash|sh|cmd\.exe)\b)/U";
+    classtype:web-application-attack;
+    sid:1003012; rev:1;
+)
