@@ -1,0 +1,6 @@
+case_id,case_class,raw_path
+public_search_fp_001,proven-fp-200,/api/public/announcements?keyword=..%252Fadmin&sort=latest&page=0&size=5
+public_search_fp_002,proven-fp-200,/api/public/announcements?keyword=..%2Fadmin%20%EA%B2%BD%EB%A1%9C%20%EC%98%88%EC%8B%9C&sort=title&page=0&size=5
+public_search_fp_003,proven-fp-200,/api/public/announcements?keyword=whoami%20%EA%B2%B0%EA%B3%BC%20%EC%84%A4%EB%AA%85&sort=title&page=0&size=5
+public_search_fp_004,proven-fp-400,/api/public/announcements?keyword=union%20select%20%EC%8B%A4%EC%8A%B5%EC%9E%90%EB%A3%8C&sort=title&page=0&size=5
+public_search_fp_005,proven-fp-400,/api/public/announcements?keyword=powershell%20-enc%20%EC%98%88%EC%8B%9C&sort=title&page=1&size=5

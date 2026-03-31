@@ -1,0 +1,7 @@
+case_id,case_class,query_suffix
+board_search_exp_fp_001,proven-fp-200,?keyword=..%2Fadmin%20%EA%B2%BD%EB%A1%9C%20%EC%98%88%EC%8B%9C&sort=latest&page=0&size=5
+board_search_exp_fp_002,proven-fp-200,?keyword=whoami%20%EC%B6%9C%EB%A0%A5%20%EC%98%88%EC%8B%9C&sort=title&page=0&size=5
+board_search_exp_fp_003,proven-fp-200,?keyword=base64%20%EC%9A%B0%ED%9A%8C%20%EC%98%88%EC%8B%9C&sort=latest&page=1&size=6
+board_search_exp_fp_004,proven-fp-200,?keyword=nmap%20-sS%20%EB%A1%9C%EA%B7%B8&sort=oldest&page=0&size=5
+board_search_exp_fp_005,proven-fp-200,?keyword=%3Cimg%20onerror%3E%20%ED%95%84%ED%84%B0%20%EC%84%A4%EB%AA%85&sort=oldest&page=0&size=5
+board_search_exp_fp_006,proven-fp-200,?author=%EA%B9%80%EB%AF%BC%EC%A7%80&keyword=whoami%20%EC%B6%9C%EB%A0%A5%20%EC%98%88%EC%8B%9C&sort=latest&page=0&size=6

@@ -1,0 +1,6 @@
+case_id,case_class,raw_path
+url_typo_fp_001,proven-fp-200,/api/public/announcements?keyword=..%2Fadmin&sort=latest&size=5
+url_typo_fp_002,proven-fp-401,/api/board/posts?keyword=..%2Fadmin&sort=latest&size=5
+url_typo_fp_003,proven-fp-401,/api/board/posts?keyword=..%2Fadmin&sort=latest&size=5&variant=board-search
+url_typo_fp_004,proven-fp-400,/api/public/announcements?keyword=union%20select%20password%20from%20users--&sort=latest&size=5
+url_typo_fp_005,proven-fp-400,/api/public/announcements?keyword=union%20select&sort=latset&size=5
