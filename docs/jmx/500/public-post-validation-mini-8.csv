@@ -1,9 +1,0 @@
-case_id,case_class,request_path,request_body
-public_post_001,normal,/api/public/support-requests,"{""category"":""PORTAL"",""subject"":""Library seat request ${post_mini_run_id}"",""message"":""I need help checking the library seat reservation page for next week."",""contactEmail"":""mini-support-${__UUID()}@campus.local"",""referenceUrl"":""http://www.kj.ac.kr/support-center""}"
-public_post_002,ambiguous,/api/public/support-requests,"{""category"":""PORTAL"",""subject"":""Security class material request ${post_mini_run_id}"",""message"":""This request references script tag examples, ../admin path samples, and whoami output in a classroom context."",""contactEmail"":""mini-ambiguous-${__UUID()}@campus.local"",""referenceUrl"":""http://www.kj.ac.kr/security-lab""}"
-public_post_003,attack,/api/public/support-requests,"{""category"":""PORTAL"",""subject"":""<script>alert(1)</script> ${post_mini_run_id}"",""message"":""Testing whether an obvious XSS payload is blocked."",""contactEmail"":""mini-attack-${__UUID()}@campus.local"",""referenceUrl"":""http://www.kj.ac.kr/support-center""}"
-public_post_004,normal,/api/auth/register,"{""email"":""mini-normal-${__UUID()}@campus.local"",""password"":""Password123!"",""name"":""Mini Normal User"",""role"":""STUDENT""}"
-public_post_005,ambiguous,/api/auth/register,"{""email"":""mini-ambiguous-${__UUID()}@campus.local"",""password"":""Password123!"",""name"":""Script Review Note"",""role"":""STUDENT""}"
-public_post_006,normal,/api/auth/login,"{""email"":""student11@campus.local"",""password"":""Password123!""}"
-public_post_007,ambiguous,/api/auth/login,"{""email"":""student11@campus.local"",""password"":""Password123! ""}"
-public_post_008,attack,/api/auth/login,"{""email"":""' or 1=1--@campus.local"",""password"":""Password123!""}"
