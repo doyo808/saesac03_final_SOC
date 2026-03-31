@@ -1,0 +1,4 @@
+case_id,case_class,query_suffix,expected_statuses
+board_search_001,benign,?keyword=wifi&sort=latest&page=0&size=5,200
+board_search_021,ambiguous,?keyword=select%20%EB%AC%B8%20%EC%A0%95%EB%A6%AC&sort=latest&page=0&size=6,200
+board_search_041,attack-like,?keyword=%27%20OR%201%3D1%20--&sort=latest&page=0&size=5,400|403

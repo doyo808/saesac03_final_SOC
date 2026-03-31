@@ -1,0 +1,4 @@
+case_id,case_class,raw_path,expected_statuses
+url_typo_001,typo-benign,/api/public/annuoncements,404
+url_typo_021,typo-ambiguous,/api/public/announcements?keywrod=select%20%EB%AC%B8%20%EC%A0%95%EB%A6%AC&sort=latest&size=5,200
+url_typo_024,typo-attack,/api/public/announcements?keyword=union%20select%20password%20from%20users--&sort=latest&size=5,400|403

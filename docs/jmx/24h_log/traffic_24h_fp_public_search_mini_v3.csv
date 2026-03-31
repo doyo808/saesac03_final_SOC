@@ -1,0 +1,4 @@
+case_id,case_class,raw_path,expected_statuses
+public_search_001,normal,/api/public/announcements?keyword=%EB%8F%84%EC%84%9C%EA%B4%80&sort=latest&page=1&size=6,200
+public_search_031,ambiguous,/api/public/announcements?keyword=select%20%EB%AC%B8%20%EC%95%88%EB%82%B4&sort=latest&page=0&size=5,200
+public_search_049,attack,/api/public/announcements?keyword=%3Cscript%3Ealert%281%29%3C%2Fscript%3E&sort=latest&page=0&size=5,400|403

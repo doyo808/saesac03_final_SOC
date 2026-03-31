@@ -1,0 +1,4 @@
+case_id,case_class,query_suffix,expected_statuses
+board_search_exp_001,normal,?keyword=wifi&sort=title&page=1&size=6,200
+board_search_exp_057,ambiguous,?keyword=select%20%EB%AC%B8%20%EC%8B%A4%EC%8A%B5&sort=latest&page=1&size=6,200
+board_search_exp_097,attack,?keyword=%27%20OR%20%271%27%3D%271&sort=latest&page=0&size=5,400|403
