@@ -2,7 +2,7 @@
 <jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
   <hashTree>
     <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="WAF Dashboard Severity XSS Plan" enabled="true">
-      <stringProp name="TestPlan.comments">Continuously sends XSS-oriented board update requests for the severity dashboard. Login and seed post creation run once, then only the XSS write request repeats.</stringProp>
+      <stringProp name="TestPlan.comments">Continuously sends XSS-oriented assignment submission requests for the severity dashboard. Search routes are avoided because they are tuned as false-positive exceptions.</stringProp>
       <boolProp name="TestPlan.functional_mode">false</boolProp>
       <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
       <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -20,6 +20,11 @@
           <elementProp name="password" elementType="Argument">
             <stringProp name="Argument.name">password</stringProp>
             <stringProp name="Argument.value">Password123!</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="assignment_id" elementType="Argument">
+            <stringProp name="Argument.name">assignment_id</stringProp>
+            <stringProp name="Argument.value">2</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="threads" elementType="Argument">
@@ -47,24 +52,9 @@
             <stringProp name="Argument.value">400</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
-          <elementProp name="seed_title" elementType="Argument">
-            <stringProp name="Argument.name">seed_title</stringProp>
-            <stringProp name="Argument.value">Severity dashboard seed post</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
-          <elementProp name="seed_content" elementType="Argument">
-            <stringProp name="Argument.name">seed_content</stringProp>
-            <stringProp name="Argument.value">Seed post used to keep repeated XSS update traffic on a single board record.</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
-          <elementProp name="xss_title" elementType="Argument">
-            <stringProp name="Argument.name">xss_title</stringProp>
-            <stringProp name="Argument.value">[WAF-XSS] &lt;img src=x onerror=alert(1)&gt;</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
           <elementProp name="xss_content" elementType="Argument">
             <stringProp name="Argument.name">xss_content</stringProp>
-            <stringProp name="Argument.value">&lt;script&gt;alert(1)&lt;/script&gt; javascript:alert(1) document.cookie onerror=alert(1)</stringProp>
+            <stringProp name="Argument.value">&lt;script&gt;alert(1)&lt;/script&gt; &lt;img src=x onerror=alert(1)&gt; javascript:alert(1) document.cookie onerror=alert(1)</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="result_file" elementType="Argument">
@@ -78,7 +68,7 @@
     </TestPlan>
     <hashTree>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="XSS Severity Thread Group" enabled="true">
-        <stringProp name="TestPlan.comments">Logs in once, creates one benign seed post, then repeatedly sends only XSS update traffic.</stringProp>
+        <stringProp name="TestPlan.comments">Logs in once and then repeatedly submits XSS payloads to the same assignment. The backend upserts the student's submission, so this can run continuously without creating a new submission row every loop.</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Main Loop Controller" enabled="true">
           <stringProp name="LoopController.loops">${main_loops}</stringProp>
           <boolProp name="LoopController.continue_forever">false</boolProp>
@@ -119,7 +109,7 @@
           <stringProp name="ConstantTimer.delay">${base_delay_ms}</stringProp>
         </UniformRandomTimer>
         <hashTree/>
-        <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="Login And Seed Setup" enabled="true"/>
+        <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="Login Setup" enabled="true"/>
         <hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="login_success" enabled="true">
             <stringProp name="HTTPSampler.path">${base_url}/api/auth/login</stringProp>
@@ -160,7 +150,13 @@
             </JSONPostProcessor>
             <hashTree/>
           </hashTree>
-          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Authorization Header Seed Create" enabled="true">
+        </hashTree>
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="TC_repeated_xss_assignment_submission" enabled="true">
+          <stringProp name="TestPlan.comments">Only the XSS-bearing assignment submission repeats after login setup.</stringProp>
+          <boolProp name="TransactionController.parent">false</boolProp>
+        </TransactionController>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Authorization Header Submission" enabled="true">
             <collectionProp name="HeaderManager.headers">
               <elementProp name="Authorization" elementType="Header">
                 <stringProp name="Header.name">Authorization</stringProp>
@@ -169,8 +165,8 @@
             </collectionProp>
           </HeaderManager>
           <hashTree/>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="seed_board_create" enabled="true">
-            <stringProp name="HTTPSampler.path">${base_url}/api/board/posts</stringProp>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="xss_submit_assignment" enabled="true">
+            <stringProp name="HTTPSampler.path">${base_url}/api/lms/assignments/${assignment_id}/submissions</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
             <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
@@ -179,7 +175,7 @@
               <collectionProp name="Arguments.arguments">
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.value">{&quot;title&quot;:&quot;${seed_title} ${__time(yyyyMMddHHmmss,)}&quot;,&quot;content&quot;:&quot;${seed_content}&quot;}</stringProp>
+                  <stringProp name="Argument.value">{&quot;contentText&quot;:&quot;${xss_content} marker ${__time(yyyyMMddHHmmss,)} ${__UUID()}&quot;}</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                 </elementProp>
               </collectionProp>
@@ -187,61 +183,7 @@
             <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
           </HTTPSamplerProxy>
           <hashTree>
-            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="JSON Header Seed Create" enabled="true">
-              <collectionProp name="HeaderManager.headers">
-                <elementProp name="Content-Type" elementType="Header">
-                  <stringProp name="Header.name">Content-Type</stringProp>
-                  <stringProp name="Header.value">application/json</stringProp>
-                </elementProp>
-                <elementProp name="Accept" elementType="Header">
-                  <stringProp name="Header.name">Accept</stringProp>
-                  <stringProp name="Header.value">application/json</stringProp>
-                </elementProp>
-              </collectionProp>
-            </HeaderManager>
-            <hashTree/>
-            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract Seed Board Post Id" enabled="true">
-              <stringProp name="JSONPostProcessor.referenceNames">board_post_id</stringProp>
-              <stringProp name="JSONPostProcessor.jsonPathExprs">$.id</stringProp>
-              <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
-              <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
-            </JSONPostProcessor>
-            <hashTree/>
-          </hashTree>
-        </hashTree>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="TC_repeated_xss_update" enabled="true">
-          <stringProp name="TestPlan.comments">Only the XSS update request repeats after setup.</stringProp>
-          <boolProp name="TransactionController.parent">false</boolProp>
-        </TransactionController>
-        <hashTree>
-          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Authorization Header XSS Update" enabled="true">
-            <collectionProp name="HeaderManager.headers">
-              <elementProp name="Authorization" elementType="Header">
-                <stringProp name="Header.name">Authorization</stringProp>
-                <stringProp name="Header.value">Bearer ${access_token}</stringProp>
-              </elementProp>
-            </collectionProp>
-          </HeaderManager>
-          <hashTree/>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="xss_update_board_post" enabled="true">
-            <stringProp name="HTTPSampler.path">${base_url}/api/board/posts/${board_post_id}</stringProp>
-            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-            <stringProp name="HTTPSampler.method">PUT</stringProp>
-            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
-            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-              <collectionProp name="Arguments.arguments">
-                <elementProp name="" elementType="HTTPArgument">
-                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.value">{&quot;title&quot;:&quot;${xss_title}&quot;,&quot;content&quot;:&quot;${xss_content} marker ${__time(yyyyMMddHHmmss,)} ${__UUID()}&quot;}</stringProp>
-                  <stringProp name="Argument.metadata">=</stringProp>
-                </elementProp>
-              </collectionProp>
-            </elementProp>
-            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-          </HTTPSamplerProxy>
-          <hashTree>
-            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="JSON Header XSS Update" enabled="true">
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="JSON Header Submission" enabled="true">
               <collectionProp name="HeaderManager.headers">
                 <elementProp name="Content-Type" elementType="Header">
                   <stringProp name="Header.name">Content-Type</stringProp>
