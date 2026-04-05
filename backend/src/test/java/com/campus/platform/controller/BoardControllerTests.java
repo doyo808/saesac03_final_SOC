@@ -470,6 +470,24 @@ class BoardControllerTests {
     }
 
     @Test
+    void allowsWhitelistedBoardSearchKeywords() throws Exception {
+        User student = userRepository.findByEmail("student1@campus.local").orElseThrow();
+        boardPostRepository.save(new BoardPost(
+                student,
+                "union select reference guide",
+                "literal union select phrase should remain searchable",
+                LocalDateTime.now()
+        ));
+
+        mockMvc.perform(get("/api/board/posts")
+                        .param("keyword", "union select")
+                        .with(user(studentPrincipal)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElements").value(org.hamcrest.Matchers.greaterThan(0)))
+                .andExpect(jsonPath("$.items[0].title").value("union select reference guide"));
+    }
+
+    @Test
     void handlesAttackLikeBoardKeywordsWithoutServerError() throws Exception {
         String[] keywords = {
                 "' OR 1=1 --",

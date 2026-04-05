@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Map;
@@ -19,9 +20,11 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @Component
@@ -30,12 +33,15 @@ public class SuspiciousRequestGuardFilter extends OncePerRequestFilter {
     private static final Logger log = LoggerFactory.getLogger(SuspiciousRequestGuardFilter.class);
     private static final String ERROR_SOURCE_GUARD = "APP_GUARD";
     private static final String TRACE_ACCOUNT_EMAIL = "student1@campus.local";
+    private static final String BOARD_POST_SEARCH_PATH = "/api/board/posts";
+    private static final String BOARD_KEYWORD_PARAMETER = "keyword";
     private static final int MAX_REQUEST_URI_LENGTH = 256;
     private static final int MAX_QUERY_LENGTH = 512;
     private static final int MAX_DECODE_ROUNDS = 2;
+    private static final Pattern UNION_SELECT_PATTERN = Pattern.compile("(?i)\\bunion\\b\\s+(?:all\\s+)?\\bselect\\b");
     private static final Pattern[] BLOCK_PATTERNS = {
             Pattern.compile("(?i)(?:'|%27)\\s*(?:or|and)\\s+['\\w]+\\s*=\\s*['\\w]+"),
-            Pattern.compile("(?i)\\bunion\\b\\s+(?:all\\s+)?\\bselect\\b"),
+            UNION_SELECT_PATTERN,
             Pattern.compile("(?i)<\\s*script\\b"),
             Pattern.compile("(?i)\\$\\{jndi:"),
             Pattern.compile("(?i)(?:\\.\\./|\\.\\.\\\\|%2e%2e|%252e%252e).{0,16}(?:/|\\\\|%2f|%5c)"),
@@ -48,9 +54,15 @@ public class SuspiciousRequestGuardFilter extends OncePerRequestFilter {
     };
 
     private final ObjectMapper objectMapper;
+    private final Set<String> boardSearchKeywordAllowlist;
 
-    public SuspiciousRequestGuardFilter(ObjectMapper objectMapper) {
+    public SuspiciousRequestGuardFilter(
+            ObjectMapper objectMapper,
+            @Value("${app.security.guard.board-search-keyword-allowlist:union select,union all select}")
+            String boardSearchKeywordAllowlist
+    ) {
         this.objectMapper = objectMapper;
+        this.boardSearchKeywordAllowlist = parseAllowlist(boardSearchKeywordAllowlist);
     }
 
     @Override
@@ -90,7 +102,7 @@ public class SuspiciousRequestGuardFilter extends OncePerRequestFilter {
             return;
         }
 
-        Optional<String> matchedPattern = findBlockedPattern(requestUri, query, request.getParameterMap());
+        Optional<String> matchedPattern = findBlockedPattern(request, query);
         if (matchedPattern.isPresent()) {
             writeBlockedResponse(
                     request,
@@ -105,21 +117,14 @@ public class SuspiciousRequestGuardFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private Optional<String> findBlockedPattern(String requestUri, String query, Map<String, String[]> parameterMap) {
-        String raw = requestUri == null ? "" : requestUri;
-        if (query != null && !query.isBlank()) {
-            raw = raw + "?" + query;
-        }
-
+    private Optional<String> findBlockedPattern(HttpServletRequest request, String query) {
+        String requestUri = request.getRequestURI();
         Set<String> variants = new LinkedHashSet<>();
-        variants.add(raw);
-        variants.addAll(toParameterVariants(parameterMap));
-
-        String decoded = raw;
-        for (int index = 0; index < MAX_DECODE_ROUNDS; index++) {
-            decoded = safeDecode(decoded);
-            variants.add(decoded);
+        addDecodedVariants(variants, requestUri == null ? "" : requestUri);
+        if (!shouldSkipQueryStringInspection(request) && StringUtils.hasText(query)) {
+            addDecodedVariants(variants, (requestUri == null ? "" : requestUri) + "?" + query);
         }
+        variants.addAll(toParameterVariants(request));
 
         for (Pattern pattern : BLOCK_PATTERNS) {
             for (String candidate : variants) {
@@ -132,8 +137,9 @@ public class SuspiciousRequestGuardFilter extends OncePerRequestFilter {
         return Optional.empty();
     }
 
-    private Set<String> toParameterVariants(Map<String, String[]> parameterMap) {
+    private Set<String> toParameterVariants(HttpServletRequest request) {
         Set<String> variants = new LinkedHashSet<>();
+        Map<String, String[]> parameterMap = request.getParameterMap();
         if (parameterMap == null || parameterMap.isEmpty()) {
             return variants;
         }
@@ -147,18 +153,69 @@ public class SuspiciousRequestGuardFilter extends OncePerRequestFilter {
             }
 
             for (String value : values) {
-                String candidate = name + "=" + (value == null ? "" : value);
-                variants.add(candidate);
-
-                String decoded = candidate;
-                for (int index = 0; index < MAX_DECODE_ROUNDS; index++) {
-                    decoded = safeDecode(decoded);
-                    variants.add(decoded);
+                if (isAllowlistedBoardKeyword(request, name, value)) {
+                    continue;
                 }
+                addDecodedVariants(variants, name + "=" + (value == null ? "" : value));
             }
         }
 
         return variants;
+    }
+
+    private void addDecodedVariants(Set<String> variants, String candidate) {
+        variants.add(candidate);
+
+        String decoded = candidate;
+        for (int index = 0; index < MAX_DECODE_ROUNDS; index++) {
+            decoded = safeDecode(decoded);
+            variants.add(decoded);
+        }
+    }
+
+    private boolean shouldSkipQueryStringInspection(HttpServletRequest request) {
+        String[] keywords = request.getParameterMap().get(BOARD_KEYWORD_PARAMETER);
+        if (keywords == null || keywords.length == 0) {
+            return false;
+        }
+
+        for (String keyword : keywords) {
+            if (isAllowlistedBoardKeyword(request, BOARD_KEYWORD_PARAMETER, keyword)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isAllowlistedBoardKeyword(HttpServletRequest request, String parameterName, String value) {
+        return isBoardPostSearchRequest(request)
+                && BOARD_KEYWORD_PARAMETER.equals(parameterName)
+                && boardSearchKeywordAllowlist.contains(normalizeAllowlistToken(value));
+    }
+
+    private boolean isBoardPostSearchRequest(HttpServletRequest request) {
+        return "GET".equalsIgnoreCase(request.getMethod())
+                && BOARD_POST_SEARCH_PATH.equals(request.getRequestURI());
+    }
+
+    private Set<String> parseAllowlist(String raw) {
+        if (!StringUtils.hasText(raw)) {
+            return Set.of();
+        }
+
+        return Arrays.stream(raw.split(","))
+                .map(this::normalizeAllowlistToken)
+                .filter(StringUtils::hasText)
+                .collect(java.util.stream.Collectors.toUnmodifiableSet());
+    }
+
+    private String normalizeAllowlistToken(String value) {
+        if (!StringUtils.hasText(value)) {
+            return "";
+        }
+        return value.trim()
+                .toLowerCase(Locale.ROOT)
+                .replaceAll("\\s+", " ");
     }
 
     private String safeDecode(String value) {
