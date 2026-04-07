@@ -13,9 +13,9 @@
 
 비교 기준 파일:
 
-- [FP_BOARD_SEARCH_URL_EXPANDED_500_V2-results_on.jtl](C:/workspace/codex/saesac03_final/web/jmx/500/result/FP_BOARD_SEARCH_URL_EXPANDED_500_V2-results_on.jtl)
-- [FP_BOARD_SEARCH_URL_EXPANDED_500_V2-results_on5.jtl](C:/workspace/codex/saesac03_final/web/jmx/500/result/FP_BOARD_SEARCH_URL_EXPANDED_500_V2-results_on5.jtl)
-- [jmx-500-interpretation-full.csv](C:/workspace/codex/saesac03_final/web/docs/csv/jmx-500-interpretation-full.csv)
+- [FP_BOARD_SEARCH_URL_EXPANDED_500_V2-results_on.jtl](../jmeter/scenarios/load/500/result/FP_BOARD_SEARCH_URL_EXPANDED_500_V2-results_on.jtl)
+- [FP_BOARD_SEARCH_URL_EXPANDED_500_V2-results_on5.jtl](../archive/jmeter/load/500/result/FP_BOARD_SEARCH_URL_EXPANDED_500_V2-results_on5.jtl)
+- [jmx-500-interpretation-full.csv](../datasets/jmx-500-interpretation-full.csv)
 
 ## 요약
 
@@ -197,7 +197,7 @@
 
 비교용 초안 파일:
 
-- [waf_rule_phase2_remaining_fp.txt](C:/workspace/codex/saesac03_final/web/jmx/waf_rule_phase2_remaining_fp.txt)
-- [snort_rule_phase2_remaining_fp.rules](C:/workspace/codex/saesac03_final/web/jmx/snort_rule_phase2_remaining_fp.rules)
+- [waf_rule_phase2_remaining_fp.txt](../rules/waf_rule_phase2_remaining_fp.txt)
+- [snort_rule_phase2_remaining_fp.rules](../rules/snort_rule_phase2_remaining_fp.rules)
 
 위 초안은 팀 내 비교용이며, 실제 적용 전에는 감사 로그 기준 실제 hit rule id 확인 후 `ruleRemoveById` 값 치환이 필요하다.

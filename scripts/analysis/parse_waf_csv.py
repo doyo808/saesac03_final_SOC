@@ -765,12 +765,13 @@ def write_sessions_jsonl(output_path: Path, sessions: list[dict[str, object]]) -
 
 def parse_args() -> argparse.Namespace:
     script_dir = Path(__file__).resolve().parent
+    repo_root = script_dir.parents[1]
     parser = argparse.ArgumentParser(
-        description="Temporary parser for exported WAF CSV. Produces a reduced request CSV and a session JSONL.",
+        description="Exported WAF CSV를 정규화해서 요청 단위 CSV와 세션 JSONL을 생성합니다.",
     )
     parser.add_argument(
         "--input",
-        default=str(script_dir / "waf_log_260320.csv"),
+        default=str(repo_root / "docs" / "security" / "datasets" / "waf-log-260320.csv"),
         help="Path to the raw exported WAF CSV.",
     )
     parser.add_argument(

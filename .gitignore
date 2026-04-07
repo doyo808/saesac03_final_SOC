@@ -19,3 +19,4 @@ backend/.env
 
 # Misc
 *.log
+scripts/analysis/out/

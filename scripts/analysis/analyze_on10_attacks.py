@@ -3,10 +3,11 @@ from collections import Counter
 from pathlib import Path
 
 
-ROOT = Path(r"C:\workspace\codex\saesac03_final\web")
-INTERP = ROOT / r"docs\csv\jmx-500-interpretation-full.csv"
-ON = ROOT / r"docs\jmx\500\result\FP_BOARD_SEARCH_URL_EXPANDED_500_V2-results_on.jtl"
-ON10 = ROOT / r"docs\jmx\500\result\FP_BOARD_SEARCH_URL_EXPANDED_500_V2-results_on10.jtl"
+ROOT = Path(__file__).resolve().parents[2]
+SECURITY_DOCS = ROOT / "docs" / "security"
+INTERP = SECURITY_DOCS / "datasets" / "jmx-500-interpretation-full.csv"
+ON = SECURITY_DOCS / "jmeter" / "scenarios" / "load" / "500" / "result" / "FP_BOARD_SEARCH_URL_EXPANDED_500_V2-results_on.jtl"
+ON10 = SECURITY_DOCS / "jmeter" / "scenarios" / "load" / "500" / "result" / "FP_BOARD_SEARCH_URL_EXPANDED_500_V2-results_on10.jtl"
 
 GROUP_ORDER = [
     "Board Search Mixed",

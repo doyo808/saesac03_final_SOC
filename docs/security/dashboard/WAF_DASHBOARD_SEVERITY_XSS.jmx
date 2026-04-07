@@ -2,7 +2,7 @@
 <jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
   <hashTree>
     <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="WAF Dashboard Severity XSS Plan" enabled="true">
-      <stringProp name="TestPlan.comments">Continuously sends XSS-oriented board post creation requests for the severity dashboard. The request body is kept aligned with the Security Onion-confirmed block pattern.</stringProp>
+      <stringProp name="TestPlan.comments">Continuously sends XSS-oriented public support request submissions for the severity dashboard. The request uses a permitAll endpoint so the plan does not include any application login flow.</stringProp>
       <boolProp name="TestPlan.functional_mode">false</boolProp>
       <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
       <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -10,16 +10,6 @@
           <elementProp name="base_url" elementType="Argument">
             <stringProp name="Argument.name">base_url</stringProp>
             <stringProp name="Argument.value">http://www.kj.ac.kr</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
-          <elementProp name="email" elementType="Argument">
-            <stringProp name="Argument.name">email</stringProp>
-            <stringProp name="Argument.value">student1@campus.local</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
-          <elementProp name="password" elementType="Argument">
-            <stringProp name="Argument.name">password</stringProp>
-            <stringProp name="Argument.value">Password123!</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="threads" elementType="Argument">
@@ -47,14 +37,29 @@
             <stringProp name="Argument.value">400</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
-          <elementProp name="xss_title" elementType="Argument">
-            <stringProp name="Argument.name">xss_title</stringProp>
-            <stringProp name="Argument.value">xss-post</stringProp>
+          <elementProp name="support_category" elementType="Argument">
+            <stringProp name="Argument.name">support_category</stringProp>
+            <stringProp name="Argument.value">portal</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
-          <elementProp name="xss_content" elementType="Argument">
-            <stringProp name="Argument.name">xss_content</stringProp>
+          <elementProp name="support_subject" elementType="Argument">
+            <stringProp name="Argument.name">support_subject</stringProp>
+            <stringProp name="Argument.value">xss-support-request</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="xss_message" elementType="Argument">
+            <stringProp name="Argument.name">xss_message</stringProp>
             <stringProp name="Argument.value">&lt;script&gt;alert(1)&lt;/script&gt;</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="contact_email" elementType="Argument">
+            <stringProp name="Argument.name">contact_email</stringProp>
+            <stringProp name="Argument.value">supporttest@campus.local</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="reference_url" elementType="Argument">
+            <stringProp name="Argument.name">reference_url</stringProp>
+            <stringProp name="Argument.value">https://www.kj.ac.kr/help</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="result_file" elementType="Argument">
@@ -68,7 +73,7 @@
     </TestPlan>
     <hashTree>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="XSS Severity Thread Group" enabled="true">
-        <stringProp name="TestPlan.comments">Logs in once and then repeatedly sends the same XSS board-create payload that SO confirmed as a block candidate.</stringProp>
+        <stringProp name="TestPlan.comments">Repeatedly sends the same XSS-bearing public support request payload until manually stopped.</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Main Loop Controller" enabled="true">
           <stringProp name="LoopController.loops">${main_loops}</stringProp>
           <boolProp name="LoopController.continue_forever">false</boolProp>
@@ -81,12 +86,6 @@
         <stringProp name="ThreadGroup.delay"></stringProp>
       </ThreadGroup>
       <hashTree>
-        <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager" enabled="true">
-          <collectionProp name="CookieManager.cookies"/>
-          <boolProp name="CookieManager.clearEachIteration">false</boolProp>
-          <boolProp name="CookieManager.controlledByThreadGroup">false</boolProp>
-        </CookieManager>
-        <hashTree/>
         <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Global XSS Trace Headers" enabled="true">
           <collectionProp name="HeaderManager.headers">
             <elementProp name="X-Request-ID" elementType="Header">
@@ -99,7 +98,7 @@
             </elementProp>
             <elementProp name="User-Agent" elementType="Header">
               <stringProp name="Header.name">User-Agent</stringProp>
-              <stringProp name="Header.value">Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36</stringProp>
+              <stringProp name="Header.value">ApacheJMeter/5.6.3</stringProp>
             </elementProp>
           </collectionProp>
         </HeaderManager>
@@ -109,64 +108,13 @@
           <stringProp name="ConstantTimer.delay">${base_delay_ms}</stringProp>
         </UniformRandomTimer>
         <hashTree/>
-        <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="Login Setup" enabled="true"/>
-        <hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="login_success" enabled="true">
-            <stringProp name="HTTPSampler.path">${base_url}/api/auth/login</stringProp>
-            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-            <stringProp name="HTTPSampler.method">POST</stringProp>
-            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
-            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-              <collectionProp name="Arguments.arguments">
-                <elementProp name="" elementType="HTTPArgument">
-                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.value">{&quot;email&quot;:&quot;${email}&quot;,&quot;password&quot;:&quot;${password}&quot;}</stringProp>
-                  <stringProp name="Argument.metadata">=</stringProp>
-                </elementProp>
-              </collectionProp>
-            </elementProp>
-            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-          </HTTPSamplerProxy>
-          <hashTree>
-            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="JSON Header Login" enabled="true">
-              <collectionProp name="HeaderManager.headers">
-                <elementProp name="Content-Type" elementType="Header">
-                  <stringProp name="Header.name">Content-Type</stringProp>
-                  <stringProp name="Header.value">application/json</stringProp>
-                </elementProp>
-                <elementProp name="Accept" elementType="Header">
-                  <stringProp name="Header.name">Accept</stringProp>
-                  <stringProp name="Header.value">application/json</stringProp>
-                </elementProp>
-              </collectionProp>
-            </HeaderManager>
-            <hashTree/>
-            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract Access Token" enabled="true">
-              <stringProp name="JSONPostProcessor.referenceNames">access_token</stringProp>
-              <stringProp name="JSONPostProcessor.jsonPathExprs">$.accessToken</stringProp>
-              <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
-              <stringProp name="JSONPostProcessor.defaultValues">TOKEN_NOT_FOUND</stringProp>
-            </JSONPostProcessor>
-            <hashTree/>
-          </hashTree>
-        </hashTree>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="TC_repeated_xss_board_create" enabled="true">
-          <stringProp name="TestPlan.comments">Only the XSS-bearing board create request repeats after login setup.</stringProp>
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="TC_repeated_xss_support_request" enabled="true">
+          <stringProp name="TestPlan.comments">Only the XSS-bearing public support request repeats in this plan.</stringProp>
           <boolProp name="TransactionController.parent">false</boolProp>
         </TransactionController>
         <hashTree>
-          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Authorization Header Board Create" enabled="true">
-            <collectionProp name="HeaderManager.headers">
-              <elementProp name="Authorization" elementType="Header">
-                <stringProp name="Header.name">Authorization</stringProp>
-                <stringProp name="Header.value">Bearer ${access_token}</stringProp>
-              </elementProp>
-            </collectionProp>
-          </HeaderManager>
-          <hashTree/>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="xss_create_board_post" enabled="true">
-            <stringProp name="HTTPSampler.path">${base_url}/api/board/posts</stringProp>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="xss_create_support_request" enabled="true">
+            <stringProp name="HTTPSampler.path">${base_url}/api/public/support-requests</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
             <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
@@ -175,7 +123,7 @@
               <collectionProp name="Arguments.arguments">
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.value">{&quot;title&quot;:&quot;${xss_title}&quot;,&quot;content&quot;:&quot;${xss_content}&quot;}</stringProp>
+                  <stringProp name="Argument.value">{&quot;category&quot;:&quot;${support_category}&quot;,&quot;subject&quot;:&quot;${support_subject}&quot;,&quot;message&quot;:&quot;${xss_message}&quot;,&quot;contactEmail&quot;:&quot;${contact_email}&quot;,&quot;referenceUrl&quot;:&quot;${reference_url}&quot;}</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                 </elementProp>
               </collectionProp>
@@ -183,7 +131,7 @@
             <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
           </HTTPSamplerProxy>
           <hashTree>
-            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="JSON Header Board Create" enabled="true">
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="JSON Header Support Request" enabled="true">
               <collectionProp name="HeaderManager.headers">
                 <elementProp name="Content-Type" elementType="Header">
                   <stringProp name="Header.name">Content-Type</stringProp>
