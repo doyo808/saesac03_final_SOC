@@ -2,7 +2,7 @@
 <jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
   <hashTree>
     <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Traffic 1H Log Load Test Plan" enabled="true">
-      <stringProp name="TestPlan.comments">Load-test variant derived from the one-hour traffic log plan. Update the load_* variables in User Defined Variables to change duration, thread scale, ramp scale, and delay scale for all Thread Groups from one place.</stringProp>
+      <stringProp name="TestPlan.comments">Load-test variant derived from the one-hour traffic log plan. Update the simple load_* input variables in User Defined Variables to apply the same duration, thread count, ramp-up, and delay settings to all Thread Groups from one place.</stringProp>
       <boolProp name="TestPlan.functional_mode">false</boolProp>
       <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
       <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -32,19 +32,29 @@
             <stringProp name="Argument.value">0</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
-          <elementProp name="load_threads_scale" elementType="Argument">
-            <stringProp name="Argument.name">load_threads_scale</stringProp>
-            <stringProp name="Argument.value">1.0</stringProp>
+          <elementProp name="load_threads" elementType="Argument">
+            <stringProp name="Argument.name">load_threads</stringProp>
+            <stringProp name="Argument.value">5</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
-          <elementProp name="load_ramp_scale" elementType="Argument">
-            <stringProp name="Argument.name">load_ramp_scale</stringProp>
-            <stringProp name="Argument.value">1.0</stringProp>
+          <elementProp name="load_ramp_seconds" elementType="Argument">
+            <stringProp name="Argument.name">load_ramp_seconds</stringProp>
+            <stringProp name="Argument.value">30</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
-          <elementProp name="load_delay_scale" elementType="Argument">
-            <stringProp name="Argument.name">load_delay_scale</stringProp>
-            <stringProp name="Argument.value">1.0</stringProp>
+          <elementProp name="load_base_delay_ms" elementType="Argument">
+            <stringProp name="Argument.name">load_base_delay_ms</stringProp>
+            <stringProp name="Argument.value">4500</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="load_random_delay_ms" elementType="Argument">
+            <stringProp name="Argument.name">load_random_delay_ms</stringProp>
+            <stringProp name="Argument.value">2000</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="load_pause_ms" elementType="Argument">
+            <stringProp name="Argument.name">load_pause_ms</stringProp>
+            <stringProp name="Argument.value">5000</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="duration_seconds" elementType="Argument">
@@ -52,174 +62,134 @@
             <stringProp name="Argument.value">${load_duration_seconds}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
-          <elementProp name="normal_threads_base" elementType="Argument">
-            <stringProp name="Argument.name">normal_threads_base</stringProp>
-            <stringProp name="Argument.value">5</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
           <elementProp name="normal_threads" elementType="Argument">
             <stringProp name="Argument.name">normal_threads</stringProp>
-            <stringProp name="Argument.value">${__groovy(Math.max(1, ((vars.get('normal_threads_base') as BigDecimal) * (vars.get('load_threads_scale') as BigDecimal)).setScale(0, java.math.RoundingMode.HALF_UP).intValue()).toString(),)}</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
-          <elementProp name="normal_ramp_seconds_base" elementType="Argument">
-            <stringProp name="Argument.name">normal_ramp_seconds_base</stringProp>
-            <stringProp name="Argument.value">30</stringProp>
+            <stringProp name="Argument.value">${load_threads}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="normal_ramp_seconds" elementType="Argument">
             <stringProp name="Argument.name">normal_ramp_seconds</stringProp>
-            <stringProp name="Argument.value">${__groovy(Math.max(1, ((vars.get('normal_ramp_seconds_base') as BigDecimal) * (vars.get('load_ramp_scale') as BigDecimal)).setScale(0, java.math.RoundingMode.HALF_UP).intValue()).toString(),)}</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
-          <elementProp name="normal_base_delay_ms_base" elementType="Argument">
-            <stringProp name="Argument.name">normal_base_delay_ms_base</stringProp>
-            <stringProp name="Argument.value">4500</stringProp>
+            <stringProp name="Argument.value">${load_ramp_seconds}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="normal_base_delay_ms" elementType="Argument">
             <stringProp name="Argument.name">normal_base_delay_ms</stringProp>
-            <stringProp name="Argument.value">${__groovy(Math.max(0, ((vars.get('normal_base_delay_ms_base') as BigDecimal) * (vars.get('load_delay_scale') as BigDecimal)).setScale(0, java.math.RoundingMode.HALF_UP).intValue()).toString(),)}</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
-          <elementProp name="normal_random_delay_ms_base" elementType="Argument">
-            <stringProp name="Argument.name">normal_random_delay_ms_base</stringProp>
-            <stringProp name="Argument.value">2000</stringProp>
+            <stringProp name="Argument.value">${load_base_delay_ms}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="normal_random_delay_ms" elementType="Argument">
             <stringProp name="Argument.name">normal_random_delay_ms</stringProp>
-            <stringProp name="Argument.value">${__groovy(Math.max(0, ((vars.get('normal_random_delay_ms_base') as BigDecimal) * (vars.get('load_delay_scale') as BigDecimal)).setScale(0, java.math.RoundingMode.HALF_UP).intValue()).toString(),)}</stringProp>
+            <stringProp name="Argument.value">${load_random_delay_ms}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="boundary_threads" elementType="Argument">
             <stringProp name="Argument.name">boundary_threads</stringProp>
-            <stringProp name="Argument.value">${__groovy(Math.max(1, (1G * (vars.get('load_threads_scale') as BigDecimal)).setScale(0, java.math.RoundingMode.HALF_UP).intValue()).toString(),)}</stringProp>
+            <stringProp name="Argument.value">${load_threads}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="boundary_ramp_seconds" elementType="Argument">
             <stringProp name="Argument.name">boundary_ramp_seconds</stringProp>
-            <stringProp name="Argument.value">${__groovy(Math.max(1, (5G * (vars.get('load_ramp_scale') as BigDecimal)).setScale(0, java.math.RoundingMode.HALF_UP).intValue()).toString(),)}</stringProp>
+            <stringProp name="Argument.value">${load_ramp_seconds}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="boundary_base_delay_ms" elementType="Argument">
             <stringProp name="Argument.name">boundary_base_delay_ms</stringProp>
-            <stringProp name="Argument.value">${__groovy(Math.max(0, (15000G * (vars.get('load_delay_scale') as BigDecimal)).setScale(0, java.math.RoundingMode.HALF_UP).intValue()).toString(),)}</stringProp>
+            <stringProp name="Argument.value">${load_base_delay_ms}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="boundary_random_delay_ms" elementType="Argument">
             <stringProp name="Argument.name">boundary_random_delay_ms</stringProp>
-            <stringProp name="Argument.value">${__groovy(Math.max(0, (5000G * (vars.get('load_delay_scale') as BigDecimal)).setScale(0, java.math.RoundingMode.HALF_UP).intValue()).toString(),)}</stringProp>
+            <stringProp name="Argument.value">${load_random_delay_ms}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="waf_threads" elementType="Argument">
             <stringProp name="Argument.name">waf_threads</stringProp>
-            <stringProp name="Argument.value">${__groovy(Math.max(1, (1G * (vars.get('load_threads_scale') as BigDecimal)).setScale(0, java.math.RoundingMode.HALF_UP).intValue()).toString(),)}</stringProp>
+            <stringProp name="Argument.value">${load_threads}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="waf_ramp_seconds" elementType="Argument">
             <stringProp name="Argument.name">waf_ramp_seconds</stringProp>
-            <stringProp name="Argument.value">${__groovy(Math.max(1, (10G * (vars.get('load_ramp_scale') as BigDecimal)).setScale(0, java.math.RoundingMode.HALF_UP).intValue()).toString(),)}</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
-          <elementProp name="attack_base_delay_ms_base" elementType="Argument">
-            <stringProp name="Argument.name">attack_base_delay_ms_base</stringProp>
-            <stringProp name="Argument.value">20000</stringProp>
+            <stringProp name="Argument.value">${load_ramp_seconds}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="attack_base_delay_ms" elementType="Argument">
             <stringProp name="Argument.name">attack_base_delay_ms</stringProp>
-            <stringProp name="Argument.value">${__groovy(Math.max(0, ((vars.get('attack_base_delay_ms_base') as BigDecimal) * (vars.get('load_delay_scale') as BigDecimal)).setScale(0, java.math.RoundingMode.HALF_UP).intValue()).toString(),)}</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
-          <elementProp name="attack_random_delay_ms_base" elementType="Argument">
-            <stringProp name="Argument.name">attack_random_delay_ms_base</stringProp>
-            <stringProp name="Argument.value">10000</stringProp>
+            <stringProp name="Argument.value">${load_base_delay_ms}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="attack_random_delay_ms" elementType="Argument">
             <stringProp name="Argument.name">attack_random_delay_ms</stringProp>
-            <stringProp name="Argument.value">${__groovy(Math.max(0, ((vars.get('attack_random_delay_ms_base') as BigDecimal) * (vars.get('load_delay_scale') as BigDecimal)).setScale(0, java.math.RoundingMode.HALF_UP).intValue()).toString(),)}</stringProp>
+            <stringProp name="Argument.value">${load_random_delay_ms}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="app_threads" elementType="Argument">
             <stringProp name="Argument.name">app_threads</stringProp>
-            <stringProp name="Argument.value">${__groovy(Math.max(1, (1G * (vars.get('load_threads_scale') as BigDecimal)).setScale(0, java.math.RoundingMode.HALF_UP).intValue()).toString(),)}</stringProp>
+            <stringProp name="Argument.value">${load_threads}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="app_ramp_seconds" elementType="Argument">
             <stringProp name="Argument.name">app_ramp_seconds</stringProp>
-            <stringProp name="Argument.value">${__groovy(Math.max(1, (10G * (vars.get('load_ramp_scale') as BigDecimal)).setScale(0, java.math.RoundingMode.HALF_UP).intValue()).toString(),)}</stringProp>
+            <stringProp name="Argument.value">${load_ramp_seconds}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="app_base_delay_ms" elementType="Argument">
             <stringProp name="Argument.name">app_base_delay_ms</stringProp>
-            <stringProp name="Argument.value">${__groovy(Math.max(0, (30000G * (vars.get('load_delay_scale') as BigDecimal)).setScale(0, java.math.RoundingMode.HALF_UP).intValue()).toString(),)}</stringProp>
+            <stringProp name="Argument.value">${load_base_delay_ms}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="app_random_delay_ms" elementType="Argument">
             <stringProp name="Argument.name">app_random_delay_ms</stringProp>
-            <stringProp name="Argument.value">${__groovy(Math.max(0, (15000G * (vars.get('load_delay_scale') as BigDecimal)).setScale(0, java.math.RoundingMode.HALF_UP).intValue()).toString(),)}</stringProp>
+            <stringProp name="Argument.value">${load_random_delay_ms}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="burst_threads" elementType="Argument">
             <stringProp name="Argument.name">burst_threads</stringProp>
-            <stringProp name="Argument.value">${__groovy(Math.max(1, (20G * (vars.get('load_threads_scale') as BigDecimal)).setScale(0, java.math.RoundingMode.HALF_UP).intValue()).toString(),)}</stringProp>
+            <stringProp name="Argument.value">${load_threads}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="burst_ramp_seconds" elementType="Argument">
             <stringProp name="Argument.name">burst_ramp_seconds</stringProp>
-            <stringProp name="Argument.value">${__groovy(Math.max(1, (30G * (vars.get('load_ramp_scale') as BigDecimal)).setScale(0, java.math.RoundingMode.HALF_UP).intValue()).toString(),)}</stringProp>
+            <stringProp name="Argument.value">${load_ramp_seconds}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="burst_pause_before_a_ms" elementType="Argument">
             <stringProp name="Argument.name">burst_pause_before_a_ms</stringProp>
-            <stringProp name="Argument.value">${__groovy(Math.max(0, (600000G * (vars.get('load_delay_scale') as BigDecimal)).setScale(0, java.math.RoundingMode.HALF_UP).intValue()).toString(),)}</stringProp>
+            <stringProp name="Argument.value">${load_pause_ms}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="burst_pause_before_b_ms" elementType="Argument">
             <stringProp name="Argument.name">burst_pause_before_b_ms</stringProp>
-            <stringProp name="Argument.value">${__groovy(Math.max(0, (600000G * (vars.get('load_delay_scale') as BigDecimal)).setScale(0, java.math.RoundingMode.HALF_UP).intValue()).toString(),)}</stringProp>
+            <stringProp name="Argument.value">${load_pause_ms}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="burst_probe_pause_ms" elementType="Argument">
             <stringProp name="Argument.name">burst_probe_pause_ms</stringProp>
-            <stringProp name="Argument.value">${__groovy(Math.max(0, (5000G * (vars.get('load_delay_scale') as BigDecimal)).setScale(0, java.math.RoundingMode.HALF_UP).intValue()).toString(),)}</stringProp>
+            <stringProp name="Argument.value">${load_pause_ms}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="burst_pause_before_c_ms" elementType="Argument">
             <stringProp name="Argument.name">burst_pause_before_c_ms</stringProp>
-            <stringProp name="Argument.value">${__groovy(Math.max(0, (600000G * (vars.get('load_delay_scale') as BigDecimal)).setScale(0, java.math.RoundingMode.HALF_UP).intValue()).toString(),)}</stringProp>
+            <stringProp name="Argument.value">${load_pause_ms}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="fp_threads" elementType="Argument">
             <stringProp name="Argument.name">fp_threads</stringProp>
-            <stringProp name="Argument.value">${__groovy(Math.max(1, (1G * (vars.get('load_threads_scale') as BigDecimal)).setScale(0, java.math.RoundingMode.HALF_UP).intValue()).toString(),)}</stringProp>
+            <stringProp name="Argument.value">${load_threads}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="fp_ramp_seconds" elementType="Argument">
             <stringProp name="Argument.name">fp_ramp_seconds</stringProp>
-            <stringProp name="Argument.value">${__groovy(Math.max(1, (5G * (vars.get('load_ramp_scale') as BigDecimal)).setScale(0, java.math.RoundingMode.HALF_UP).intValue()).toString(),)}</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
-          <elementProp name="fp_base_delay_ms_base" elementType="Argument">
-            <stringProp name="Argument.name">fp_base_delay_ms_base</stringProp>
-            <stringProp name="Argument.value">4000</stringProp>
+            <stringProp name="Argument.value">${load_ramp_seconds}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="fp_base_delay_ms" elementType="Argument">
             <stringProp name="Argument.name">fp_base_delay_ms</stringProp>
-            <stringProp name="Argument.value">${__groovy(Math.max(0, ((vars.get('fp_base_delay_ms_base') as BigDecimal) * (vars.get('load_delay_scale') as BigDecimal)).setScale(0, java.math.RoundingMode.HALF_UP).intValue()).toString(),)}</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
-          <elementProp name="fp_random_delay_ms_base" elementType="Argument">
-            <stringProp name="Argument.name">fp_random_delay_ms_base</stringProp>
-            <stringProp name="Argument.value">2000</stringProp>
+            <stringProp name="Argument.value">${load_base_delay_ms}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="fp_random_delay_ms" elementType="Argument">
             <stringProp name="Argument.name">fp_random_delay_ms</stringProp>
-            <stringProp name="Argument.value">${__groovy(Math.max(0, ((vars.get('fp_random_delay_ms_base') as BigDecimal) * (vars.get('load_delay_scale') as BigDecimal)).setScale(0, java.math.RoundingMode.HALF_UP).intValue()).toString(),)}</stringProp>
+            <stringProp name="Argument.value">${load_random_delay_ms}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="normal_login_email" elementType="Argument">
