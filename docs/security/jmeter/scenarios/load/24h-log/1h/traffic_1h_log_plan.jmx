@@ -27,42 +27,42 @@
           </elementProp>
           <elementProp name="normal_threads" elementType="Argument">
             <stringProp name="Argument.name">normal_threads</stringProp>
-            <stringProp name="Argument.value">1500</stringProp>
+            <stringProp name="Argument.value">200</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="normal_ramp_seconds" elementType="Argument">
             <stringProp name="Argument.name">normal_ramp_seconds</stringProp>
-            <stringProp name="Argument.value">30</stringProp>
+            <stringProp name="Argument.value">120</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="normal_base_delay_ms" elementType="Argument">
             <stringProp name="Argument.name">normal_base_delay_ms</stringProp>
-            <stringProp name="Argument.value">30</stringProp>
+            <stringProp name="Argument.value">1500</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="normal_random_delay_ms" elementType="Argument">
             <stringProp name="Argument.name">normal_random_delay_ms</stringProp>
-            <stringProp name="Argument.value">30</stringProp>
+            <stringProp name="Argument.value">1000</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="attack_base_delay_ms" elementType="Argument">
             <stringProp name="Argument.name">attack_base_delay_ms</stringProp>
-            <stringProp name="Argument.value">30</stringProp>
+            <stringProp name="Argument.value">4000</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="attack_random_delay_ms" elementType="Argument">
             <stringProp name="Argument.name">attack_random_delay_ms</stringProp>
-            <stringProp name="Argument.value">30</stringProp>
+            <stringProp name="Argument.value">2000</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="fp_base_delay_ms" elementType="Argument">
             <stringProp name="Argument.name">fp_base_delay_ms</stringProp>
-            <stringProp name="Argument.value">30</stringProp>
+            <stringProp name="Argument.value">3000</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="fp_random_delay_ms" elementType="Argument">
             <stringProp name="Argument.name">fp_random_delay_ms</stringProp>
-            <stringProp name="Argument.value">30</stringProp>
+            <stringProp name="Argument.value">2000</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="normal_login_email" elementType="Argument">
@@ -106,9 +106,9 @@
     <hashTree>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="TG1 Normal Traffic Continuous">
         <stringProp name="TestPlan.comments">Pure normal baseline traffic. Keeps session-linked login, profile read, board browse, and lower-frequency board creation without failure or typo noise.</stringProp>
-        <stringProp name="ThreadGroup.num_threads">${normal_threads}</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">${normal_ramp_seconds}</stringProp>
-        <stringProp name="ThreadGroup.duration">${duration_seconds}</stringProp>
+        <stringProp name="ThreadGroup.num_threads">200</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">120</stringProp>
+        <stringProp name="ThreadGroup.duration">3600</stringProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
         <boolProp name="ThreadGroup.scheduler">true</boolProp>
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
@@ -157,8 +157,8 @@
         </HeaderManager>
         <hashTree/>
         <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="TG1 Uniform Random Timer" enabled="true">
-          <stringProp name="RandomTimer.range">${normal_random_delay_ms}</stringProp>
-          <stringProp name="ConstantTimer.delay">${normal_base_delay_ms}</stringProp>
+          <stringProp name="RandomTimer.range">1000</stringProp>
+          <stringProp name="ConstantTimer.delay">1500</stringProp>
         </UniformRandomTimer>
         <hashTree/>
         <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="TG1 Login And Session" enabled="true">
@@ -379,9 +379,9 @@
       </hashTree>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="TG1 Boundary Noise Continuous" enabled="true">
         <stringProp name="TestPlan.comments">Boundary-noise traffic separated from the pure normal baseline. Includes login failures and typo or 404-style requests only.</stringProp>
-        <intProp name="ThreadGroup.num_threads">250</intProp>
-        <intProp name="ThreadGroup.ramp_time">20</intProp>
-        <stringProp name="ThreadGroup.duration">${duration_seconds}</stringProp>
+        <intProp name="ThreadGroup.num_threads">30</intProp>
+        <intProp name="ThreadGroup.ramp_time">60</intProp>
+        <stringProp name="ThreadGroup.duration">3600</stringProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
         <boolProp name="ThreadGroup.scheduler">true</boolProp>
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
@@ -430,8 +430,8 @@
         </HeaderManager>
         <hashTree/>
         <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="TG1 Uniform Random Timer" enabled="true">
-          <stringProp name="RandomTimer.range">5000</stringProp>
-          <stringProp name="ConstantTimer.delay">15000</stringProp>
+          <stringProp name="RandomTimer.range">3000</stringProp>
+          <stringProp name="ConstantTimer.delay">5000</stringProp>
         </UniformRandomTimer>
         <hashTree/>
         <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="TG1 Boundary Noise" enabled="true">
@@ -496,9 +496,9 @@
       </hashTree>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="TG2 WAF Detection Continuous" enabled="true">
         <stringProp name="TestPlan.comments">Low-rate unauthenticated or perimeter-focused attacks intended mainly to validate WAF, web access logs, and signature detection.</stringProp>
-        <intProp name="ThreadGroup.num_threads">250</intProp>
-        <intProp name="ThreadGroup.ramp_time">10</intProp>
-        <stringProp name="ThreadGroup.duration">${duration_seconds}</stringProp>
+        <intProp name="ThreadGroup.num_threads">20</intProp>
+        <intProp name="ThreadGroup.ramp_time">60</intProp>
+        <stringProp name="ThreadGroup.duration">3600</stringProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
         <boolProp name="ThreadGroup.scheduler">true</boolProp>
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
@@ -547,8 +547,8 @@
         </HeaderManager>
         <hashTree/>
         <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="TG2 Uniform Random Timer" enabled="true">
-          <stringProp name="RandomTimer.range">${attack_random_delay_ms}</stringProp>
-          <stringProp name="ConstantTimer.delay">${attack_base_delay_ms}</stringProp>
+          <stringProp name="RandomTimer.range">2000</stringProp>
+          <stringProp name="ConstantTimer.delay">4000</stringProp>
         </UniformRandomTimer>
         <hashTree/>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="TG2_attack_login_sqli" enabled="true">
@@ -778,9 +778,9 @@
       </hashTree>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="TG2 App Reach Continuous" enabled="true">
         <stringProp name="TestPlan.comments">Low-rate authenticated attack traffic intended to reach the application, WAS, and DB layers after valid login.</stringProp>
-        <intProp name="ThreadGroup.num_threads">250</intProp>
-        <intProp name="ThreadGroup.ramp_time">10</intProp>
-        <stringProp name="ThreadGroup.duration">${duration_seconds}</stringProp>
+        <intProp name="ThreadGroup.num_threads">10</intProp>
+        <intProp name="ThreadGroup.ramp_time">60</intProp>
+        <stringProp name="ThreadGroup.duration">3600</stringProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
         <boolProp name="ThreadGroup.scheduler">true</boolProp>
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
@@ -829,8 +829,8 @@
         </HeaderManager>
         <hashTree/>
         <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="TG2 Uniform Random Timer" enabled="true">
-          <stringProp name="RandomTimer.range">15000</stringProp>
-          <stringProp name="ConstantTimer.delay">30000</stringProp>
+          <stringProp name="RandomTimer.range">4000</stringProp>
+          <stringProp name="ConstantTimer.delay">8000</stringProp>
         </UniformRandomTimer>
         <hashTree/>
         <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="TG2 App Login Once" enabled="true"/>
@@ -950,9 +950,9 @@
       </hashTree>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="TG3 Periodic Burst Traffic" enabled="true">
         <stringProp name="TestPlan.comments">Periodic burst traffic for access-log spikes. Each cycle pauses, sends a board list burst, pauses again, then sends slow nikto-style probes and invalid route bursts.</stringProp>
-        <intProp name="ThreadGroup.num_threads">250</intProp>
-        <intProp name="ThreadGroup.ramp_time">30</intProp>
-        <stringProp name="ThreadGroup.duration">${duration_seconds}</stringProp>
+        <intProp name="ThreadGroup.num_threads">30</intProp>
+        <intProp name="ThreadGroup.ramp_time">120</intProp>
+        <stringProp name="ThreadGroup.duration">3600</stringProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">false</boolProp>
         <boolProp name="ThreadGroup.scheduler">true</boolProp>
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
@@ -997,7 +997,7 @@
         <TestAction guiclass="TestActionGui" testclass="TestAction" testname="TG3 Pause Before Burst A" enabled="true">
           <intProp name="ActionProcessor.action">1</intProp>
           <intProp name="ActionProcessor.target">0</intProp>
-          <stringProp name="ActionProcessor.duration">600000</stringProp>
+          <stringProp name="ActionProcessor.duration">300000</stringProp>
         </TestAction>
         <hashTree/>
         <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="TG3 Burst A Board List Flood" enabled="true">
@@ -1030,7 +1030,7 @@
         <TestAction guiclass="TestActionGui" testclass="TestAction" testname="TG3 Pause Before Burst B" enabled="true">
           <intProp name="ActionProcessor.action">1</intProp>
           <intProp name="ActionProcessor.target">0</intProp>
-          <stringProp name="ActionProcessor.duration">600000</stringProp>
+          <stringProp name="ActionProcessor.duration">300000</stringProp>
         </TestAction>
         <hashTree/>
         <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="TG3 Burst B Loop" enabled="true">
@@ -1041,7 +1041,7 @@
           <TestAction guiclass="TestActionGui" testclass="TestAction" testname="TG3 Burst B Slow Probe Pause" enabled="true">
             <intProp name="ActionProcessor.action">1</intProp>
             <intProp name="ActionProcessor.target">0</intProp>
-            <stringProp name="ActionProcessor.duration">5000</stringProp>
+            <stringProp name="ActionProcessor.duration">1000</stringProp>
           </TestAction>
           <hashTree/>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="TG3_burst_b_nikto_probe" enabled="true">
@@ -1074,7 +1074,7 @@
         <TestAction guiclass="TestActionGui" testclass="TestAction" testname="TG3 Pause Before Burst C" enabled="true">
           <intProp name="ActionProcessor.action">1</intProp>
           <intProp name="ActionProcessor.target">0</intProp>
-          <stringProp name="ActionProcessor.duration">600000</stringProp>
+          <stringProp name="ActionProcessor.duration">300000</stringProp>
         </TestAction>
         <hashTree/>
         <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="TG3 Burst C Port Access Probes" enabled="true">
@@ -1130,9 +1130,9 @@
       </hashTree>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="TG4 FP Search And URL Mixed" enabled="true">
         <stringProp name="TestPlan.comments">FP verification replay using proven 403-reduction candidates borrowed from FP_BOARD_SEARCH_URL_EXPANDED_500_V2. These are mostly documentation/demo/log/explanation style search terms that previously shifted from WAF 403 to non-403 responses when custom rules were enabled.</stringProp>
-        <intProp name="ThreadGroup.num_threads">250</intProp>
-        <intProp name="ThreadGroup.ramp_time">5</intProp>
-        <stringProp name="ThreadGroup.duration">${duration_seconds}</stringProp>
+        <intProp name="ThreadGroup.num_threads">40</intProp>
+        <intProp name="ThreadGroup.ramp_time">60</intProp>
+        <stringProp name="ThreadGroup.duration">3600</stringProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
         <boolProp name="ThreadGroup.scheduler">true</boolProp>
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
@@ -1223,8 +1223,8 @@
           </hashTree>
         </hashTree>
         <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="TG4 Uniform Random Timer" enabled="true">
-          <stringProp name="RandomTimer.range">${fp_random_delay_ms}</stringProp>
-          <stringProp name="ConstantTimer.delay">${fp_base_delay_ms}</stringProp>
+          <stringProp name="RandomTimer.range">2000</stringProp>
+          <stringProp name="ConstantTimer.delay">3000</stringProp>
         </UniformRandomTimer>
         <hashTree/>
         <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="TG4 Board Search Mixed" enabled="true">
